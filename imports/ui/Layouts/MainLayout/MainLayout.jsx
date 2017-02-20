@@ -1,0 +1,154 @@
+import React,{PropTypes,Component} from 'react';
+import store from '../../../redux/store';
+import {client} from '../../../redux/rootReducer.js';
+import {ApolloProvider} from 'react-apollo';
+import {FlowRouter} from 'meteor/kadira:flow-router';
+import MuiThemeProvider from 'material-ui/styles/MuiThemeProvider';
+import getMuiTheme from 'material-ui/styles/getMuiTheme';
+import AppBar from 'material-ui/AppBar';
+import IconButton from 'material-ui/IconButton';
+import MoreVertIcon from 'material-ui/svg-icons/navigation/more-vert';
+import FlatButton from 'material-ui/FlatButton';
+import IconMenu from 'material-ui/IconMenu';
+import MenuItem from 'material-ui/MenuItem';
+import {connect} from 'react-redux';
+import {blue900} from 'material-ui/styles/colors';
+import {Meteor} from 'meteor/meteor';
+import {createContainer} from 'meteor/react-meteor-data';
+
+//pour desactiver METEOR_OFFLINE_CATALOG=1 meteor
+const muiTheme= getMuiTheme({
+	appBar:{
+		backgroundColor: blue900
+	}
+});
+
+class Bienvenue extends Component{
+	//static muiName='FlatButton';
+	constructor(){
+		super();
+	}
+	render(){
+		return(
+			<FlatButton {...this.props} 
+				label="Bienvenue"  
+				style={{
+					color:'white',
+					marginTop:'5%'
+				}} />
+		);
+	}
+}
+const Logged =(props)=>{
+	console.log("user loggs"+props.isUser);
+	if(store.getState().administrateurAction.adminConnected){
+		return(
+
+		<IconMenu 
+		{...props}
+		iconButtonElement={<IconButton><MoreVertIcon/></IconButton>}
+		targetOrigin={{horizontal:'right',vertical:'top'}}
+		anchorOrigin={{horizontal:'right',vertical:'top'}}
+		iconStyle={{color:'white'}}	
+		>
+			<MenuItem primaryText="Créer un utilisateur" onClick={()=>{FlowRouter.go('createUser')}}/>
+			<MenuItem primaryText="Modifier un utilisateur" onClick={()=>{FlowRouter.go('listUser')}}/>
+			<MenuItem primaryText="Déconnection" onClick={()=>{}}/>
+		</IconMenu>
+	
+		);
+	}else{
+		return(
+
+		<IconMenu 
+		{...props}
+		iconButtonElement={<IconButton><MoreVertIcon/></IconButton>}
+		targetOrigin={{horizontal:'right',vertical:'top'}}
+		anchorOrigin={{horizontal:'right',vertical:'top'}}
+		iconStyle={{color:'white'}}	
+		>
+			<MenuItem primaryText="Liste des règlements disponibles" onClick={()=>{FlowRouter.go('dispo')}}/>
+			<MenuItem primaryText="Modifier les règlements et leurs statuts" onClick={()=>{FlowRouter.go('dispolist')}}/>
+			<MenuItem primaryText="Déconnection" onClick={()=>Meteor.logout(()=>{
+				FlowRouter.go('home');
+			})}/>
+		</IconMenu>
+	
+		);
+	}
+};
+ createContainer(()=>{
+	return {
+		isUser:Meteor.user()
+	}
+},Logged);
+//Logged.muiName='IconMenu';
+
+export default class MainLayout extends Component{
+	constructor(){
+		super();
+		this.state={
+			loggedIn:false
+		};
+	}
+	componentWillMount() {
+		
+
+	}
+
+	componentDidMount() {	
+		
+		
+		//setInterval(createDiv,1000);
+	}
+	componentDidUpdate(){
+		if((store.getState().administrateurAction.adminConnected||Meteor.user()) && !this.state.loggedIn)
+		{
+			this.setState({
+				loggedIn:true
+			});
+		}
+	}
+	componentDidMount(){
+		if(Meteor.user()){
+			this.setState({
+				loggedIn:false
+			});
+		}
+	}
+	render(){
+		
+		const {content}=this.props;
+		//{content()}
+		
+			return(
+			<ApolloProvider store={store} client={client}>
+				<MuiThemeProvider muiTheme={muiTheme}>
+					<div className="masterContainer">
+						<header>
+						<AppBar
+							title="Gestion des disponibilités de règlement"
+							style={{backgroundColor:'#cd9a2e' }}
+							onTitleTouchTap={()=>{FlowRouter.go('home')}}
+							iconClassNameLeft="none"
+							iconElementRight={store.getState().administrateurAction.adminConnected||Meteor.user()?<Logged/>:<Bienvenue/>}
+						/>
+						</header>
+						<section className="generalSection">
+						{content()}
+						</section>
+						
+					</div>
+				</MuiThemeProvider>	
+			</ApolloProvider>
+		);
+	}
+	
+
+}
+
+MainLayout.propTypes={
+	content:PropTypes.func.isRequired
+};
+
+
