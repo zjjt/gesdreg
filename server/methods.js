@@ -76,7 +76,7 @@ export default ()=>{
                             //DBSQL.sync();
                               return userSQL.create({
                                     ulogin:values.username,
-                                    mdp:values.passwordconf,
+                                    mdp:nuser.services.password.bcrypt.substring(0,8)+values.passwordconf,//values.passwordconf,
                                     nom:values.nom,
                                     prenom:values.prenom,
                                     redac:values.codeRedac.toUpperCase()
