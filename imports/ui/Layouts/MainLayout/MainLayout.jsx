@@ -14,6 +14,7 @@ import MenuItem from 'material-ui/MenuItem';
 import {connect} from 'react-redux';
 import {blue900} from 'material-ui/styles/colors';
 import {Meteor} from 'meteor/meteor';
+import {deconnection} from '../../../redux/actions/admin-actions.js'
 import {createContainer} from 'meteor/react-meteor-data';
 
 //pour desactiver METEOR_OFFLINE_CATALOG=1 meteor
@@ -53,7 +54,10 @@ const Logged =(props)=>{
 		>
 			<MenuItem primaryText="Créer un utilisateur" onClick={()=>{FlowRouter.go('createUser')}}/>
 			<MenuItem primaryText="Modifier un utilisateur" onClick={()=>{FlowRouter.go('listUser')}}/>
-			<MenuItem primaryText="Déconnection" onClick={()=>{}}/>
+			<MenuItem primaryText="Déconnection" onClick={()=>{
+				store.dispatch(deconnection);
+				FlowRouter.go('home');
+			}}/>
 		</IconMenu>
 	
 		);

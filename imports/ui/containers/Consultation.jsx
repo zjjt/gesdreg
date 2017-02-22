@@ -91,7 +91,7 @@ class ConsultDispo extends Component {
                                     <Field
                                         name="birthdate" 
                                         component={TextField}
-                                        hintText="Date de naissance du bénéficiaire EX:1900-01-01"
+                                        hintText="Date de naissance du bénéficiaire"
                                         floatingLabelFixed={true}
                                         
                                     />

@@ -132,10 +132,15 @@ class ModRegForm extends Component{
             }
             else if(values.date_sort_treso 
             && moment(values.date_sort_treso).isBefore(this.props.data.voirInfoReg[0].DATE_REGLEMENT.replace(/\//g,"-"))
-            && moment(values.date_sort_treso).isBefore(this.props.data.voirInfoReg[0].DATE_SURVENANCE_SINISTRE)
-            ){
+            && moment(values.date_sort_treso).isBefore(this.props.data.voirInfoReg[0].DATE_SURVENANCE_SINISTRE)){
+                
                 this.setState({
                     errorMsg:"Veuillez re verifier la date de sortie de trésorerie. Elle ne peut être avant la date de survenance du sinistre ou la date du règlement "
+                });
+                this._dialogOpen();
+            }else if(moment(values.date_sort_treso).isBefore(moment(this.props.regSelected.date_depot_treso).format("YYYY-MM-DD"))){
+                this.setState({
+                    errorMsg:"Veuillez re verifier la date de sortie de trésorerie. Elle ne peut être avant la date de dépot à la trésorerie "
                 });
                 this._dialogOpen();
             }else if(values.date_sort_treso 
@@ -160,6 +165,12 @@ class ModRegForm extends Component{
                     errorMsg:"Veuillez re verifier la date de dépot pour signature. Elle ne peut être avant la date de survenance du sinistre ou la date du règlement "
                 });
                 this._dialogOpen();
+            }else if(moment(values.date_depot_sign).isBefore(moment(this.props.regSelected.date_depot_treso).format("YYYY-MM-DD"))
+                    ||moment(values.date_depot_sign).isBefore(moment(this.props.regSelected.date_sort_treso).format("YYYY-MM-DD"))){
+                this.setState({
+                    errorMsg:"Veuillez re verifier la date de dépot pour signature. Elle ne peut être avant la date de dépot à la trésorerie ou avant la date de sortie de trésorerie."
+                });
+                this._dialogOpen();
             }else if(values.date_depot_sign 
             &&(values.date_depot_treso||values.date_sort_treso||values.date_recep_sign_reg||values.date_retrait_reg)
             && (
@@ -180,6 +191,13 @@ class ModRegForm extends Component{
             ){
                 this.setState({
                     errorMsg:"Veuillez re verifier la date de retour de signature. Elle ne peut être avant la date de survenance du sinistre ou la date du règlement "
+                });
+                this._dialogOpen();
+            }else if(moment(values.date_recep_sign_reg).isBefore(moment(this.props.regSelected.date_depot_treso).format("YYYY-MM-DD"))
+                    ||moment(values.date_recep_sign_reg).isBefore(moment(this.props.regSelected.date_sort_treso).format("YYYY-MM-DD"))
+                    ||moment(values.date_recep_sign_reg).isBefore(moment(this.props.regSelected.date_depot_sign).format("YYYY-MM-DD"))){
+                this.setState({
+                    errorMsg:"Veuillez re verifier la date de retour de signature. Elle ne peut être avant la date de dépot à la trésorerie, la date de sortie de trésorerie, la date de dépot pour signature."
                 });
                 this._dialogOpen();
             }else if(values.date_recep_sign_reg 
@@ -204,6 +222,14 @@ class ModRegForm extends Component{
                     errorMsg:"Veuillez re verifier la date de retrait du règlement. Elle ne peut être avant la date de survenance du sinistre ou la date du règlement "
                 });
                 this._dialogOpen();
+            }else if(moment(values.date_retrait_reg).isBefore(moment(this.props.regSelected.date_depot_treso).format("YYYY-MM-DD"))
+                    ||moment(values.date_retrait_reg).isBefore(moment(this.props.regSelected.date_sort_treso).format("YYYY-MM-DD"))
+                    ||moment(values.date_retrait_reg).isBefore(moment(this.props.regSelected.date_depot_sign).format("YYYY-MM-DD"))
+                    ||moment(values.date_retrait_reg).isBefore(moment(this.props.regSelected.date_recep_sign_reg).format("YYYY-MM-DD"))){
+                this.setState({
+                    errorMsg:"Veuillez re verifier la date de retrait du règlement. Elle ne peut être avant la date de dépot à la trésorerie, la date de sortie de trésorerie, la date de dépot pour signature et la date de retour de signature."
+                });
+                this._dialogOpen();
             }else if(values.date_retrait_reg 
             &&(values.date_depot_treso||values.date_sort_treso||values.date_depot_sign||values.date_recep_sign_reg)
             && (
@@ -222,7 +248,7 @@ class ModRegForm extends Component{
 
                 //console.log(this.props.data.voirInfoReg[0].DATE_SURVENANCE_SINISTRE);
                     
-               
+               alert( );
                 console.dir(values);
                 Meteor.call('updateDispo',values,this.props.regSelected,(err)=>{
                     if(err){

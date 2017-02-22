@@ -14,6 +14,11 @@ export default function adminReducer(state=initialState,action){
                 ...state,
                 adminConnected:true
             };
+        case actions.ADMINDECONNECTION:
+            return{
+                ...state,
+                adminConnected:false
+            };
         case actions.DELUSER:
             return{
                 ...state,

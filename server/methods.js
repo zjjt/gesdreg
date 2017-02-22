@@ -127,11 +127,11 @@ export default ()=>{
         updateDispo(newval,initialValues){
             console.dir(newval);
             let statut="EN COURS";
-            newval.date_depot_treso=newval.date_depot_treso?newval.date_depot_treso:null;
-                    newval.date_sort_treso=newval.date_sort_treso?newval.date_sort_treso:null;
-                    newval.date_depot_sign=newval.date_depot_sign?newval.date_depot_sign:null;
-                    newval.date_recep_sign_reg= newval.date_recep_sign_reg? newval.date_recep_sign_reg:null;
-                    newval.date_retrait_reg=newval.date_retrait_reg?newval.date_retrait_reg:null;
+            newval.date_depot_treso=newval.date_depot_treso?newval.date_depot_treso:initialValues.date_depot_treso?initialValues.date_depot_treso:null;
+                    newval.date_sort_treso=newval.date_sort_treso?newval.date_sort_treso:initialValues.date_sort_treso?initialValues.date_sort_treso:null;
+                    newval.date_depot_sign=newval.date_depot_sign?newval.date_depot_sign:initialValues.date_depot_sign?initialValues.date_depot_sign:null;
+                    newval.date_recep_sign_reg= newval.date_recep_sign_reg? newval.date_recep_sign_reg:initialValues.date_recep_sign_reg?initialValues.date_recep_sign_reg:null;
+                    newval.date_retrait_reg=newval.date_retrait_reg?newval.date_retrait_reg:initialValues.date_retrait_reg?initialValues.date_retrait_reg:null;
                     /*let statut=!newval.statut?initialValues.statut_reg_retirer:"EN COURS";
                     newval.statut=newval.date_retrait_reg && !newval.date_recep_sign_reg?"SORTIE":newval.date_recep_sign_reg && !newval.date_retrait_reg?"PRET":"EN COURS";*/
            if(newval.date_depot_treso){

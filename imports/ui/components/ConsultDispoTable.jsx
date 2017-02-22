@@ -141,8 +141,8 @@ console.dir(this.props);
                             enableSelectAll={this.state.table.enableSelectAll}
                         >
                             <TableRow>
-                                <TableHeaderColumn tooltip="Numéro de l'assuré">Assuré</TableHeaderColumn>
-                                <TableHeaderColumn tooltip="Numéro de règlement">Règlement</TableHeaderColumn>
+                                <TableHeaderColumn tooltip="Numéro du bénéficiaire">Bénéficiaire No</TableHeaderColumn>
+                                <TableHeaderColumn tooltip="Numéro de règlement">Règlement No</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Numéro de police">Police</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Nom du bénéficiaire">Bénéficiaire</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Date de naissance du bénéficiaire">Date de naissance</TableHeaderColumn>
@@ -197,7 +197,7 @@ console.dir(this.props);
                      <div className="loadmoreDiv">
                      
                         <RaisedButton 
-                            label="Charger plus de règlements" 
+                            label="Voir les 10 prochaines lignes" 
                             labelColor="white"
                             backgroundColor="#cd9a2e"
                             onClick={()=>loadMoreEntries()}
@@ -205,7 +205,7 @@ console.dir(this.props);
                         {loading?"Chargement...":null}
                     </div>
                     <div className="helperDiv">
-                     Pour effectuer une recherche de règlement disponibles,veuillez entrez la date de naissance du bénéficiaire selon le format indiqué, ou le numéro de police ou le nom complet du bénéficiaire.
+                     Pour effectuer une recherche de règlement disponibles,veuillez entrez la date de naissance du bénéficiaire selon le format indiqué <b>AAAA-MM-JJ</b>, ou le numéro de police ou le nom complet du bénéficiaire.
                      <br/>Les recherches sont complémentaires et peuvent être combinés pour un résultat plus précis.<br/>
                      <b>NB:LES RECHERCHES SONT EXECUTEES DYNAMIQUEMENT.</b>
                      </div>

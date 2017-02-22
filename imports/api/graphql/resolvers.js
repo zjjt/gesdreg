@@ -35,7 +35,9 @@ DBSQLSERVER.authenticate().then(()=>{
         userSQL(_,args){
             if(args.nom &&(args.orderDesc||!args.orderDesc)){
                 return userSQL.findAll({attributes:{exclude:['id']},where:{
-                    nom:args.nom
+                    nom:{
+                            $like:'%'+args.nom
+                         }
                 }});
             }else if(args.orderDesc){
                 return userSQL.findAll({attributes:{exclude:['id']},order:[['nom','DESC']]});

@@ -61,7 +61,7 @@ class AdminUserList extends Component {
                             <Field
                                 name="searchField" 
                                 component={TextField}
-                                hintText="recherche par nom de famille"
+                                hintText="rechercher par nom "
                             />
                         </form>
                     </div>
