@@ -86,11 +86,14 @@ class InfExport extends Component{
                                     backgroundColor="#141e51"
                                     className="inAppBtnForm"
                                     onClick={()=>{
-                                        if(data.dataToExport){//si les donnees excel existent
+                                        if(data.dataToExport&&data.dataToExport.length){//si les donnees excel existent
                                             console.dir(fullEXL);
-                                            let filename=prompt("Veuillez entrez le npm du fichier");
+                                            let filename=prompt("Veuillez entrez le nom du fichier");
 
-                                            Meteor.call("exportToExcel",data.dataToExport,(err,res)=>{
+                                           if(!filename){
+                                            return;
+                                           }else{
+                                                Meteor.call("exportToExcel",data.dataToExport,(err,res)=>{
                                                 if(res){
                                                     const buf=new ArrayBuffer(res.length);
                                                     const view=new Uint8Array(buf);
@@ -109,6 +112,7 @@ class InfExport extends Component{
                                                     document.body.removeChild(a);
                                                 }
                                             });
+                                           }
                                             //FileSaver.saveAs(xls,[filename+'.xls']);
                                         }else{
                                             return;
