@@ -64,7 +64,7 @@ class Exportation extends Component {
                             />
                         </ToolbarGroup>
                         <ToolbarGroup>
-                            <ToolbarTitle text="Liste des règlements disponibles" className="toolbarTitle"/>
+                            <ToolbarTitle text="Export des règlements" className="toolbarTitle"/>
                         </ToolbarGroup>
                     </Toolbar>
                     <Divider/>

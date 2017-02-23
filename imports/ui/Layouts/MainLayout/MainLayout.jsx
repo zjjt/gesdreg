@@ -54,6 +54,7 @@ const Logged =(props)=>{
 		>
 			<MenuItem primaryText="Créer un utilisateur" onClick={()=>{FlowRouter.go('createUser')}}/>
 			<MenuItem primaryText="Modifier un utilisateur" onClick={()=>{FlowRouter.go('listUser')}}/>
+			
 			<MenuItem primaryText="Déconnection" onClick={()=>{
 				store.dispatch(deconnection);
 				FlowRouter.go('home');
@@ -73,6 +74,7 @@ const Logged =(props)=>{
 		>
 			<MenuItem primaryText="Liste des règlements disponibles" onClick={()=>{FlowRouter.go('dispo')}}/>
 			<MenuItem primaryText="Modifier les règlements et leurs statuts" onClick={()=>{FlowRouter.go('dispolist')}}/>
+			<MenuItem primaryText="Exporter vers Excel" onClick={()=>{FlowRouter.go('excel')}}/>
 			<MenuItem primaryText="Déconnection" onClick={()=>Meteor.logout(()=>{
 				FlowRouter.go('home');
 			})}/>

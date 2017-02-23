@@ -81,7 +81,7 @@ class InfExport extends Component{
                 <div style={{display:'flex',flexDirection:'row',textAlign:'center',justifyContent:'space-around',alignItems:'center',height:'50px'}}>
                     <div>Nombre de lignes actuellement chargées:{data.dataToExport?data.dataToExport.length:(<marquee>Veuillez patientez traitement en cours</marquee>)} </div>
                      <RaisedButton
-                                    label="exporter pour excel" 
+                                    label="exporter vers excel" 
                                     labelColor="white"
                                     backgroundColor="#141e51"
                                     className="inAppBtnForm"

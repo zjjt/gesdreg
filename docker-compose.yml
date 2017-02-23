@@ -1,0 +1,16 @@
+app:
+  image: gesdreg
+  ports:
+    - "82:3000"
+    - "83:4000"
+    
+  links:
+    - mongo
+  environment:
+    - ROOT_URL=http://localhost
+    - MONGO_URL=mongodb://mongo:27017/meteor
+    - 'METEOR_SETTINGS={ "DBSQLSERVER_HOST":"10.8.3.29","DBSQLSERVER_PORT":"57055", "DBSQLSERVER_USER":"reportvie","DBSQLSERVER_PASSWORD":"reportvie","DBSQLSERVER_DATABASE":"SUN_COTEDIVOIRE","ADMINLOGMDP":"Nsia@RGT2017"}'
+  restart: always
+mongo:
+  image: mongo:latest 
+  restart: always
