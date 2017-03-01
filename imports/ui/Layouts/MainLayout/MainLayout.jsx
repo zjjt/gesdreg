@@ -14,8 +14,10 @@ import MenuItem from 'material-ui/MenuItem';
 import {connect} from 'react-redux';
 import {blue900} from 'material-ui/styles/colors';
 import {Meteor} from 'meteor/meteor';
-import {deconnection} from '../../../redux/actions/admin-actions.js'
-import {createContainer} from 'meteor/react-meteor-data';
+import {deconnection} from '../../../redux/actions/admin-actions.js';
+import { createContainer } from 'meteor/react-meteor-data';
+import Logged from './Logged.jsx';
+
 
 //pour desactiver METEOR_OFFLINE_CATALOG=1 meteor
 const muiTheme= getMuiTheme({
@@ -40,54 +42,9 @@ class Bienvenue extends Component{
 		);
 	}
 }
-const Logged =(props)=>{
-	console.log("user loggs"+props.isUser);
-	if(store.getState().administrateurAction.adminConnected){
-		return(
 
-		<IconMenu 
-		{...props}
-		iconButtonElement={<IconButton><MoreVertIcon/></IconButton>}
-		targetOrigin={{horizontal:'right',vertical:'top'}}
-		anchorOrigin={{horizontal:'right',vertical:'top'}}
-		iconStyle={{color:'white'}}	
-		>
-			<MenuItem primaryText="Créer un utilisateur" onClick={()=>{FlowRouter.go('createUser')}}/>
-			<MenuItem primaryText="Modifier un utilisateur" onClick={()=>{FlowRouter.go('listUser')}}/>
-			
-			<MenuItem primaryText="Déconnection" onClick={()=>{
-				store.dispatch(deconnection);
-				FlowRouter.go('home');
-			}}/>
-		</IconMenu>
-	
-		);
-	}else{
-		return(
 
-		<IconMenu 
-		{...props}
-		iconButtonElement={<IconButton><MoreVertIcon/></IconButton>}
-		targetOrigin={{horizontal:'right',vertical:'top'}}
-		anchorOrigin={{horizontal:'right',vertical:'top'}}
-		iconStyle={{color:'white'}}	
-		>
-			<MenuItem primaryText="Liste des règlements disponibles" onClick={()=>{FlowRouter.go('dispo')}}/>
-			<MenuItem primaryText="Modifier les règlements et leurs statuts" onClick={()=>{FlowRouter.go('dispolist')}}/>
-			<MenuItem primaryText="Exporter vers Excel" onClick={()=>{FlowRouter.go('excel')}}/>
-			<MenuItem primaryText="Déconnection" onClick={()=>Meteor.logout(()=>{
-				FlowRouter.go('home');
-			})}/>
-		</IconMenu>
-	
-		);
-	}
-};
- createContainer(()=>{
-	return {
-		isUser:Meteor.user()
-	}
-},Logged);
+
 //Logged.muiName='IconMenu';
 
 export default class MainLayout extends Component{
@@ -143,7 +100,9 @@ export default class MainLayout extends Component{
 						<section className="generalSection">
 						{content()}
 						</section>
-						
+						<footer>
+							GESDREG v.0.1.0 &copy; Nsia Vie Assurances tous droits réservés. 
+						</footer>
 					</div>
 				</MuiThemeProvider>	
 			</ApolloProvider>

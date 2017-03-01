@@ -19,7 +19,7 @@ const DBSQLSERVER= new Sequelize(Meteor.settings.DBSQLSERVER_DATABASE,Meteor.set
     port:57055,//Meteor.settings.DBSQLSERVER_PORT,
     dialect: 'mssql',
     dialectOptions:{
-      requestTimeout:625000
+      requestTimeout:1625000
     },
     //storage: './DB/moduleRGT.db',
 });
@@ -41,6 +41,12 @@ const UserModel=DBSQLSERVER.define('reguser',{
       type: Sequelize.STRING,
       allowNull: true,
       field: 'redac',
+     // primaryKey:true
+    },
+    role: {
+      type: Sequelize.STRING,
+      allowNull: true,
+      field: 'role',
      // primaryKey:true
     },
     nom: {

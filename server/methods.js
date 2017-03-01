@@ -71,6 +71,7 @@ export default ()=>{
                                 prenoms:values.prenom,
                                 fullname: values.nom+' '+values.prenom,
                                 codeRedac:values.codeRedac.toUpperCase(),
+                                role:values.role
                             }
                         })){
                             //DBSQL.sync();
@@ -79,7 +80,8 @@ export default ()=>{
                                     mdp:nuser.services.password.bcrypt.substring(0,8)+values.passwordconf,//values.passwordconf,
                                     nom:values.nom,
                                     prenom:values.prenom,
-                                    redac:values.codeRedac.toUpperCase()
+                                    redac:values.codeRedac.toUpperCase(),
+                                    role:values.role
                                 }).then((err,res)=>{
                                     if(err){
                                         

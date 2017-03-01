@@ -6,7 +6,8 @@ import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
 import { connect } from 'react-redux';
 import {Field,reduxForm,formValueSelector} from 'redux-form';
-import {TextField} from 'redux-form-material-ui';
+import MenuItem from 'material-ui/MenuItem';
+import {TextField,SelectField} from 'redux-form-material-ui';
 import Home from 'material-ui/svg-icons/action/home';
 import Divider from 'material-ui/Divider';
 import Snackbar from 'material-ui/Snackbar';
@@ -97,8 +98,14 @@ import _ from 'lodash';
                 });
                 this._dialogOpen();
             }
+            else if(values.role===''||!values.role){
+                this.setState({
+                    errorMsg:"Veuillez donner un rôle à cet utilisateur."
+                });
+                this._dialogOpen();
+            }
             else{
-                //alert(JSON.stringify(values));
+               //alert(JSON.stringify(values));
                 Meteor.call('createNewUser',values,(err)=>{
                     if(err){
                         this.setState({
@@ -200,6 +207,19 @@ import _ from 'lodash';
                     floatingLabelFixed={true}
                     validate={[ required ]}
                 />
+                <Field
+                    name="role" 
+                    component={SelectField}
+                    floatingLabelText="Rôle de l'utilisateur"
+                    hintText="Profile de l'utilisateur"
+                    floatingLabelFixed={true}
+                    //validate={[required]}
+                    value={this.props.role}
+                >
+                    <MenuItem value="C" primaryText="CONSULTANT"/>
+                    <MenuItem value="G" primaryText="GESTIONNAIRE"/>
+                </Field>
+
                 <div className="inAppBtnDiv">
                     <RaisedButton
                         label="Créer l'utilisateur" 
@@ -217,7 +237,7 @@ import _ from 'lodash';
 }
 CreateUserForm=reduxForm({
     form:'createUser',
-    fields:['nom','prenom','username','password','passwordconf','codeRedac']
+    fields:['nom','prenom','username','password','passwordconf','codeRedac','role']
 })(CreateUserForm);
 
 const selector = formValueSelector('createUser');
@@ -229,9 +249,13 @@ const formation2LastLetters=(prenom)=>{
                 lastletter+=prenoms.substring(0,1);
             })
         );
-        
-        return lastletter;
+        if(lastletter.length>3){
+            return lastletter.substring(0,4);
+        }else{
+            return lastletter;
+        }  
     };
+
 CreateUserForm = connect(
   state => {
     // or together as a group

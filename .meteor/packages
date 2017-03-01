@@ -29,7 +29,7 @@ momentjs:moment
 react-meteor-data
 accounts-base
 accounts-password
-
+ultimatejs:tracker-react
 
 
 
