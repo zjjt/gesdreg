@@ -28,8 +28,10 @@ DBSQLSERVER.authenticate().then(()=>{
         user(_,args){
             if(args.username){
                 return Meteor.users.find({username:args.username}).fetch();
-            }else{
+            }else if(args.username==="allstar"){
                 return Meteor.users.find({}).fetch();
+            }else{
+                return [];
             }
         },
         userSQL(_,args){

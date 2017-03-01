@@ -167,7 +167,7 @@ export default ()=>{
                     return err.reason;
                 });
             });
-            /////////////////////////////              
+            ///////////////////////////            
         },
         voirInfoReg(args){
                  let query="exec info_reg_dispo :numero_reg,:domaine ";
@@ -187,7 +187,9 @@ export default ()=>{
                             });
                             return res;
         },
+        
     });
 };
+
 
 

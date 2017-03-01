@@ -7,6 +7,7 @@ const schema=`
             prenoms:String
             fullname: String
             codeRedac:String
+            role:String
             createdAt:String
         }
         type UserSQL{
@@ -14,6 +15,7 @@ const schema=`
             mdp:String
             nom:String
             prenom:String
+            role:String
             redac:String
         }
         type InfosREG{

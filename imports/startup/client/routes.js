@@ -15,6 +15,7 @@ import Exportation from '../../ui/containers/Exportation.jsx';
 import AdminUserList from '../../ui/containers/AdminUserList.jsx';
 import ConsultDispo from '../../ui/containers/Consultation.jsx';
 import injectTapEventPlugin from 'react-tap-event-plugin';
+import {Session} from 'meteor/session';
 
 injectTapEventPlugin();
 FlowRouter.route('/',{
