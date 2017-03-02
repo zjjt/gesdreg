@@ -15,7 +15,7 @@ export default function userReducer(state=initialState,action){
                 mettreAjour:!state.mettreAjour
             };
         case actions.USERCONNECTED:
-        alert(action.user);
+       // alert(action.user);
         return{
             ...state,
             isUserConnected:true,

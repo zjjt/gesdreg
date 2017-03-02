@@ -626,20 +626,20 @@ DBSQLSERVER.authenticate().then(()=>{
         },consultDispo(_,args){
             if(args.numpolice && !args.birthdate && !args.nomtotal){
                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
-                    wnupo:args.numpolice,
+                    wnupo:parseInt(args.numpolice),
                      //statut_reg_retirer:'PRET'
             },offset:args.offset,limit:args.limit});
  
             }else if(args.numpolice && args.birthdate && !args.nomtotal){
                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
-                    wnupo:args.numpolice,
+                    wnupo:parseInt(args.numpolice),
                     date_naiss:args.birthdate,
                     // statut_reg_retirer:'PRET'
                 },offset:args.offset,limit:args.limit});
  
             }else if(args.numpolice && !args.birthdate && args.nomtotal){
                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
-                    wnupo:args.numpolice,
+                    wnupo:parseInt(args.numpolice),
                     nom_beneficiaire:{
                                     $like:'%'+args.nomtotal
                                  },
@@ -671,7 +671,7 @@ DBSQLSERVER.authenticate().then(()=>{
  
             }else if(args.numpolice && args.birthdate && args.nomtotal){
                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
-                    wnupo:args.numpolice,
+                    wnupo:parseInt(args.numpolice),
                     date_naiss:args.birthdate,
                     nom_beneficiaire:{
                                     $like:'%'+args.nomtotal
