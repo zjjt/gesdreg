@@ -151,8 +151,8 @@ export default ()=>{
            if(newval.date_retrait_reg){
                statut="SORTIE"
            }
-            const redac=Meteor.users.findOne({_id:Meteor.userId});
-            dispoSQL.findOne({where:{wnrgt:newval.wnrgt,wasrg:newval.wasrg}}).then((e)=>{
+            const redac=Meteor.users.findOne({_id:Meteor.user()._id});
+            dispoSQL.findOne({where:{wnrgt:newval.wnrgt,wasrg:newval.wasrg,domaine:newval.domaine}}).then((e)=>{
                 e.update({
                     date_depot_treso:newval.date_depot_treso,
                     date_sort_treso:newval.date_sort_treso,

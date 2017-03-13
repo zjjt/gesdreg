@@ -94,6 +94,7 @@ class ModRegForm extends Component{
             
              values.wasrg=this.props.data?this.props.data.voirInfoReg[0].NUMERO_BENEFICIAIRE:null;
              values.wnrgt=this.props.regSelected?this.props.regSelected.wnrgt:this.props.data.voirInfoReg[0].NUMERO_REGLEMENT;
+             values.domaine=this.props.regSelected?this.props.regSelected.domaine:this.props.data.voirInfoReg[0].DOMAINE;
              console.dir(values);
                 if((values.date_depot_treso===''||!values.date_depot_treso)
             &&(values.date_sort_treso===''||!values.date_sort_treso)
