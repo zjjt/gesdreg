@@ -152,7 +152,26 @@ export default ()=>{
                statut="SORTIE"
            }
             const redac=Meteor.users.findOne({_id:Meteor.user()._id});
-            dispoSQL.findOne({where:{wnrgt:newval.wnrgt,wasrg:newval.wasrg,domaine:newval.domaine}}).then((e)=>{
+             let query="update exp.regdispo set date_depot_treso=:ddt, date_sort_treso=:dst, date_depot_sign=:dds,date_recep_sign_reg=:drsr,date_retrait_reg=:drr,redac=:r,statut_reg_retirer=:srr where wnupo=:wnupo and wnrgt=:wnrgt and domaine=:d ";
+                let res=DBSQLSERVER.query(query,{
+                                replacements:{
+                                    wnrgt:newval.wnrgt,
+                                    wnupo:newval.wnupo,
+                                    d:newval.domaine,
+                                    ddt:newval.date_depot_treso,
+                                    dst:newval.date_sort_treso,
+                                    dds:newval.date_depot_sign,
+                                    drsr:newval.date_recep_sign_reg,
+                                    drr:newval.date_retrait_reg,
+                                    r:redac.codeRedac,
+                                    srr:statut
+                                },
+                                type:DBSQLSERVER.QueryTypes.UPDATE
+                            }).catch((err)=>{
+                    console.log(err);
+                    return err.reason;
+                });
+            /*dispoSQL.findOne({where:{wnrgt:newval.wnrgt,domaine:newval.domaine}}).then((e)=>{
                 e.update({
                     date_depot_treso:newval.date_depot_treso,
                     date_sort_treso:newval.date_sort_treso,
@@ -166,7 +185,7 @@ export default ()=>{
                     console.log(err);
                     return err.reason;
                 });
-            });
+            });*/
             ///////////////////////////            
         },
         voirInfoReg(args){

@@ -95,6 +95,8 @@ class ModRegForm extends Component{
              values.wasrg=this.props.data?this.props.data.voirInfoReg[0].NUMERO_BENEFICIAIRE:null;
              values.wnrgt=this.props.regSelected?this.props.regSelected.wnrgt:this.props.data.voirInfoReg[0].NUMERO_REGLEMENT;
              values.domaine=this.props.regSelected?this.props.regSelected.domaine:this.props.data.voirInfoReg[0].DOMAINE;
+             values.wnupo=this.props.regSelected?this.props.regSelected.wnupo:this.props.data.voirInfoReg[0].POLICE;
+             values.wnupo=parseInt(values.wnupo,10);
              console.dir(values);
                 if((values.date_depot_treso===''||!values.date_depot_treso)
             &&(values.date_sort_treso===''||!values.date_sort_treso)
@@ -144,17 +146,18 @@ class ModRegForm extends Component{
                     errorMsg:"Veuillez re verifier la date de sortie de trésorerie. Elle ne peut être avant la date de dépot à la trésorerie "
                 });
                 this._dialogOpen();
-            }else if(values.date_sort_treso 
+            }
+            else if(values.date_sort_treso 
             &&(values.date_depot_treso||values.date_depot_sign||values.date_recep_sign_reg||values.date_retrait_reg)
             && (
                 moment(values.date_sort_treso).isBefore(values.date_depot_treso)
-                ||moment(values.date_sort_treso).isAfter(values.date_depot_sign)
-                ||moment(values.date_sort_treso).isAfter(values.date_recep_sign_reg)
-                ||moment(values.date_sort_treso).isAfter(values.date_retrait_reg)
+                ||(values.date_depot_sign && moment(values.date_sort_treso).isAfter(values.date_depot_sign))
+                ||(values.date_recep_sign_reg && moment(values.date_sort_treso).isAfter(values.date_recep_sign_reg))
+                ||(values.date_retrait_reg && moment(values.date_sort_treso).isAfter(values.date_retrait_reg))
             )
             ){
                 this.setState({
-                    errorMsg:"Veuillez re verifier la date de sortie de trésorerie. Elle ne peut être avant la date de dépot à la trésorerie ou après les dates de depot et retour de signature ou encore la date du retrait du règlement"
+                    errorMsg:"Veuillez re verifier la date de sortie de trésorerie. Elle ne peut être avant la date de dépot à la trésorerie ou après les dates de depot et retour de signature ou encore la date du retrait du règlement"+moment(values.date_sort_treso).isAfter(values.date_depot_sign)+values.date_depot_sign
                 });
                 this._dialogOpen();
             }
@@ -177,8 +180,8 @@ class ModRegForm extends Component{
             && (
                 moment(values.date_depot_sign).isBefore(values.date_depot_treso)
                 ||moment(values.date_depot_sign).isBefore(values.date_sort_treso)
-                ||moment(values.date_depot_sign).isAfter(values.date_recep_sign_reg)
-                ||moment(values.date_depot_sign).isAfter(values.date_retrait_reg)
+                ||(values.date_recep_sign_reg && moment(values.date_depot_sign).isAfter(values.date_recep_sign_reg))
+                ||(values.date_retrait_reg && moment(values.date_depot_sign).isAfter(values.date_retrait_reg))
             )
             ){
                 this.setState({
@@ -207,7 +210,7 @@ class ModRegForm extends Component{
                 moment(values.date_recep_sign_reg).isBefore(values.date_depot_treso)
                 ||moment(values.date_recep_sign_reg).isBefore(values.date_sort_treso)
                 ||moment(values.date_recep_sign_reg).isBefore(values.date_depot_sign)
-                ||moment(values.date_recep_sign_reg).isAfter(values.date_retrait_reg)
+                ||(values.date_retrait_reg && moment(values.date_recep_sign_reg).isAfter(values.date_retrait_reg))
             )
             ){
                 this.setState({
@@ -249,7 +252,7 @@ class ModRegForm extends Component{
 
                 //console.log(this.props.data.voirInfoReg[0].DATE_SURVENANCE_SINISTRE);
                     
-               alert( );
+              // alert( );
                 console.dir(values);
                 Meteor.call('updateDispo',values,this.props.regSelected,(err)=>{
                     if(err){
