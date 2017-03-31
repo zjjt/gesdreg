@@ -82,7 +82,7 @@ class Exportation extends Component {
                                         <MenuItem value="date_depot_treso" primaryText="Date de dépot à la trésorerie"/>
                                         <MenuItem value="date_sort_treso" primaryText="Date de sortie de la trésorerie"/>
                                         <MenuItem value="date_depot_sign" primaryText="Date de dépot pour signature"/>
-                                        <MenuItem value="date_recep_sign" primaryText="Date de réception du règlement après signature"/>
+                                        <MenuItem value="date_recep_sign_reg" primaryText="Date de réception du règlement après signature"/>
                                         <MenuItem value="date_retrait_reg" primaryText="Date de retrait du règlement"/>
                                     </Field>
                                     <Field
