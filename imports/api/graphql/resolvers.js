@@ -38,7 +38,7 @@ DBSQLSERVER.authenticate().then(()=>{
             if(args.nom &&(args.orderDesc||!args.orderDesc)){
                 return userSQL.findAll({attributes:{exclude:['id']},where:{
                     nom:{
-                            $like:'%'+args.nom
+                            $like:'%'+args.nom+'%'
                          }
                 }});
             }else if(args.orderDesc){
@@ -595,7 +595,7 @@ DBSQLSERVER.authenticate().then(()=>{
             }else if(!args.typeDate && !args.date && !args.statut && !args.domaine && !args.numregl && !args.numpol && args.nomtotal ){
                  return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                              nom_beneficiaire:{
-                                    $like:'%'+args.nomtotal
+                                    $like:'%'+args.nomtotal+'%'
                                  }
                         },offset:args.offset,limit:args.limit}).then((res)=>{
                                 let promises=[];
@@ -641,7 +641,7 @@ DBSQLSERVER.authenticate().then(()=>{
                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                     wnupo:parseInt(args.numpolice),
                     nom_beneficiaire:{
-                                    $like:'%'+args.nomtotal
+                                    $like:'%'+args.nomtotal+'%'
                                  },
                      //statut_reg_retirer:'PRET'
                 },offset:args.offset,limit:args.limit});
@@ -656,7 +656,7 @@ DBSQLSERVER.authenticate().then(()=>{
                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                     date_naiss:args.birthdate,
                     nom_beneficiaire:{
-                                    $like:'%'+args.nomtotal
+                                    $like:'%'+args.nomtotal+'%'
                                  },
                      //statut_reg_retirer:'PRET'
                 },offset:args.offset,limit:args.limit});
@@ -664,7 +664,7 @@ DBSQLSERVER.authenticate().then(()=>{
             }else if(!args.numpolice && !args.birthdate && args.nomtotal){
                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                     nom_beneficiaire:{
-                                    $like:'%'+args.nomtotal
+                                    $like:'%'+args.nomtotal+'%'
                                  },
                     // statut_reg_retirer:'PRET'
                 },offset:args.offset,limit:args.limit});
@@ -674,7 +674,7 @@ DBSQLSERVER.authenticate().then(()=>{
                     wnupo:parseInt(args.numpolice),
                     date_naiss:args.birthdate,
                     nom_beneficiaire:{
-                                    $like:'%'+args.nomtotal
+                                    $like:'%'+args.nomtotal+'%'
                                  },
                      //statut_reg_retirer:'PRET'
                 },offset:args.offset,limit:args.limit});
