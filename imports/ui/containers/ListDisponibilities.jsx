@@ -81,7 +81,7 @@ class ListDisponibilities extends Component {
                                     <MenuItem value="date_depot_treso" primaryText="Date de dépot à la trésorerie"/>
                                     <MenuItem value="date_sort_treso" primaryText="Date de sortie de la trésorerie"/>
                                     <MenuItem value="date_depot_sign" primaryText="Date de dépot pour signature"/>
-                                    <MenuItem value="date_recep_sign" primaryText="Date de réception du règlement après signature"/>
+                                    <MenuItem value="date_recep_sign_reg" primaryText="Date de réception du règlement après signature"/>
                                     <MenuItem value="date_retrait_reg" primaryText="Date de retrait du règlement"/>
                                 </Field>
                                
@@ -99,22 +99,25 @@ class ListDisponibilities extends Component {
                                     <Field
                                         name="statut" 
                                         component={SelectField}
-                                        hintText="Selectionner un statut"
+                                        hintText=""
                                         floatingLabelFixed={true}
                                         value={this.props.statut}
+                                        maxHeight={300}
                                     >
                                         <MenuItem value="EN COURS" primaryText="EN COURS"/>
                                         <MenuItem value="A LA TRESO" primaryText="A LA TRESO"/>
                                         <MenuItem value="SORTIE DE TRESO" primaryText="SORTIE DE TRESO"/>
                                         <MenuItem value="A LA SIGNATURE" primaryText="A LA SIGNATURE"/>
                                         <MenuItem value="PRET" primaryText="PRET"/>
+                                        <MenuItem value="SORTIE" primaryText="SORTIE"/>
+                                        <MenuItem value="" primaryText="AFFICHER TOUS LES STATUTS"/>
                                     </Field>
                                
                                 
                                     <Field
                                         name="domaine" 
                                         component={SelectField}
-                                        hintText="Choix du domaine"
+                                        hintText=""
                                         floatingLabelFixed={true}
                                         //validate={[required]}
                                         value={this.props.domaine}
@@ -122,6 +125,7 @@ class ListDisponibilities extends Component {
                                         <MenuItem value="I" primaryText="INDIVIDUEL"/>
                                         <MenuItem value="G" primaryText="GROUPE"/>
                                         <MenuItem value="R" primaryText="RENTE"/>
+                                        <MenuItem value="" primaryText="AFFICHER TOUS LES DOMAINES"/>
                                     </Field>
                                 
                                 
@@ -131,8 +135,18 @@ class ListDisponibilities extends Component {
                                         hintText="Entrez le numéro de règlement"
                                         floatingLabelFixed={true}
                                     />
-                               
-                                
+                                    <Field
+                                        name="numreglStart" 
+                                        component={TextField}
+                                        hintText="Num RGT de début"
+                                        floatingLabelFixed={true}
+                                    />
+                                    <Field
+                                        name="numreglEnd" 
+                                        component={TextField}
+                                        hintText="Num RGT de fin"
+                                        floatingLabelFixed={true}
+                                    />
                                     <Field
                                     name="numpol" 
                                     component={TextField}
@@ -152,14 +166,17 @@ class ListDisponibilities extends Component {
                         </form>
                         <Divider/>
                     <DispoTable 
-                        typeDate={this.props.typeDate} 
+                        typeDate={this.props.typeDate?this.props.typeDate:null} 
                         date={this.props.date?moment(this.props.date).format("YYYY-MM-DD"):null} 
-                        statut={this.props.statut}domaine={this.props.domaine} 
-                        numregl={this.props.numregl}
-                        numpol={this.props.numpol}
-                        nomtotal={this.props.nomtotal}
-                        withRedactor={this.state.withRedactor}
-                        orderbyNumReg={this.state.orderbyNumReg}
+                        statut={this.props.statut?this.props.statut:null}
+                        domaine={this.props.domaine?this.props.domaine:null} 
+                        numregl={this.props.numregl?this.props.numregl:null}
+                        numpol={this.props.numpol?this.props.numpol:null}
+                        nomtotal={this.props.nomtotal?this.props.nomtotal:null}
+                        numreglStart={this.props.numreglStart?this.props.numreglStart:null}
+                        numreglEnd={this.props.numreglEnd?this.props.numreglEnd:null}
+                        withRedactor={this.state.withRedactor?this.state.withRedactor:null}
+                        orderbyNumReg={this.state.orderbyNumReg?this.state.orderbyNumReg:null}
                         iamTheRedactor={'CKM'}/>
                     
                 </div>
@@ -178,7 +195,7 @@ const selector = formValueSelector('searchDispo');
 ListDisponibilities=connect(
     state => {
     // or together as a group
-    let { typeDate, date, statut, numregl,domaine,numpol,nomtotal } = selector(state, 'typeDate', 'date','statut','numregl','domaine','numpol','nomtotal');
+    let { typeDate, date, statut, numregl,domaine,numpol,nomtotal,numreglStart,numreglEnd } = selector(state, 'typeDate', 'date','statut','numregl','domaine','numpol','nomtotal','numreglStart','numreglEnd');
   /* let dd=date?date.substring(0,2):'';
    let mm=date?date.substring(3,5):'';
    let yy=date?date.substring(6):'';
@@ -190,7 +207,9 @@ ListDisponibilities=connect(
       domaine,
       numregl,
       numpol,
-      nomtotal
+      nomtotal,
+      numreglStart,
+      numreglEnd
     }
   }
 )(ListDisponibilities);

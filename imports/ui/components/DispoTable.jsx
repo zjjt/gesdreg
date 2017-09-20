@@ -48,7 +48,7 @@ class DispoTable extends Component{
                         stripedRows:false,
                         showRowHover:false,
                         selectable:true,
-                        multiSelectable: false,
+                        multiSelectable: true,
                         enableSelectAll:false,
                         deselectOnClickaway:false,
                         showCheckboxes:true,
@@ -58,13 +58,14 @@ class DispoTable extends Component{
         }
 
         componentDidUpdate(){
-          console.dir(this.props.data);
+          console.dir(this.props);
         }
         componentDidMount(){
-            $('.tableau').parent().css("width","4288px");
+            $('.tableau').parent().css("width","5100px");
         }
 
         _dialogTOpen(){
+            if(this.state.regSelected.length)
             this.setState({dialogTIsOpen: true});
         }
 
@@ -97,14 +98,16 @@ class DispoTable extends Component{
             this.setState({
                 selectedRows:rowsarr,
                 regSelected:regarray,
-                dialogTIsOpen:true
+                //dialogTIsOpen:true
             });
             console.dir(regarray);
             
         }
         render(){
-            const {handleSubmit,pristine,submitting,dispatch,data,listeDispo,loadMoreEntries,loading}=this.props;
-            
+            const {handleSubmit,pristine,submitting,dispatch,data,error,listeDispo,loadMoreEntries,loading}=this.props;
+            let statutClass='animated bounceInRight ';
+            console.log(JSON.stringify(error));
+            console.dir(this.state.regSelected);
             const mettreAjour=()=>{
                 this.setState({
                     loaderVisible:true
@@ -136,11 +139,11 @@ class DispoTable extends Component{
                     onTouchTap={()=>dispatch(miseajourDispo())}
                 />,
                 ];
-console.dir(this.props);
+                //alert(JSON.stringify(data))
             return(
                 <div >
                     <Dialog
-                    title={this.state.regSelected.length?`Modification de la disponibilité du règlement ${this.state.regSelected[0].wnrgt} dans le domaine ${this.state.regSelected[0].domainefull}`:null}
+                    title={this.state.regSelected.length?`Modification de la disponibilité des ${this.state.regSelected.length} règlements sélectionnés`:null}
                     actions={dialogTActions}
                     modal={false}
                     open={this.state.dialogTIsOpen}
@@ -149,7 +152,7 @@ console.dir(this.props);
                     contentStyle={{width:'60%',maxWidth:'none'}}
                     autoScrollBodyContent={true}
                     >
-                        <ModRegForm dispatch={dispatch} regSelected={this.state.regSelected.length?this.state.regSelected[0]:null} wnrgt={this.state.regSelected.length?this.state.regSelected[0].wnrgt:null} domaine={this.state.regSelected.length?this.state.regSelected[0].domaine:null}/>
+                        <ModRegForm dispatch={dispatch} regSelected={this.state.regSelected.length?this.state.regSelected:null} wnrgt={this.state.regSelected.length?this.state.regSelected[0].wnrgt:null} domaine={this.state.regSelected.length?this.state.regSelected[0].domaine:null}/>
                     </Dialog>
                     <Table
                         height={this.state.table.height}
@@ -168,6 +171,9 @@ console.dir(this.props);
                             <TableRow>
                                 <TableHeaderColumn tooltip="Numéro de l'assuré">No Assuré</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Numéro de règlement">No Règlement</TableHeaderColumn>
+                                <TableHeaderColumn tooltip="Numéro de chèque">No Chèque</TableHeaderColumn>
+                                <TableHeaderColumn tooltip="Montant du règlement">Montant Règlement</TableHeaderColumn>
+                                <TableHeaderColumn tooltip="Mode de règlement">Mode de règlement</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Numéro de police">No Police</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Nom du bénéficiaire">Bénéficiaire</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="libellé du sinistre">Libellé du sinistre</TableHeaderColumn>
@@ -207,15 +213,25 @@ console.dir(this.props);
                                             if(row.domaine==="I")domaine="INDIVIDUEL";
                                             if(row.domaine==="G")domaine="GROUPE";
                                             if(row.domaine==="R")domaine="RENTE";
-                                            return(<TableRow key={index} className="animated bounceInRight" selected={this.state.selectedRows.indexOf(index)!==-1} ref={`user${index}`}>
+                                            if(row.statut_reg_retirer==="EN COURS")statutClass='animated bounceInRight ';
+                                            if(row.statut_reg_retirer==="A LA TRESO")statutClass='animated bounceInRight yellowBack';
+                                            if(row.statut_reg_retirer==="SORTIE DE TRESO")statutClass='animated bounceInRight orangeBack';
+                                            if(row.statut_reg_retirer==="A LA SIGNATURE")statutClass='animated bounceInRight roseBack';
+                                            if(row.statut_reg_retirer==="PRET")statutClass='animated bounceInRight greenBack';
+                                            if(row.statut_reg_retirer==="SORTIE")statutClass='animated bounceInRight redBack';
+
+                                            return(<TableRow key={index} className={ statutClass } selected={this.state.selectedRows.indexOf(index)!==-1} ref={`user${index}`}>
                                                 <TableRowColumn>{row.wasrg}</TableRowColumn>
                                                 <TableRowColumn>{row.wnrgt}</TableRowColumn>
+                                                <TableRowColumn>{row.infoSurRgt[0]?row.infoSurRgt[0].NUMERO_CHEQUE!=''?row.infoSurRgt[0].NUMERO_CHEQUE:'Aucun numero':'Aucun numero'}</TableRowColumn>
+                                                <TableRowColumn>{row.MNTGT}</TableRowColumn>
+                                                <TableRowColumn>{row.MRGGT}</TableRowColumn>
                                                 <TableRowColumn>{row.wnupo}</TableRowColumn>
                                                 <TableRowColumn>{row.nom_beneficiaire}</TableRowColumn>
-                                                <TableRowColumn>{row.infoSurRgt[0].LIBELLE_SINISTRE}</TableRowColumn>
-                                                <TableRowColumn>{row.infoSurRgt[0].CAUSE_SINISTRE}</TableRowColumn>
-                                                <TableRowColumn>{row.infoSurRgt[0].TYPE_SINISTRE}</TableRowColumn>
-                                                <TableRowColumn>{row.infoSurRgt[0].DATE_RECEPTION}</TableRowColumn>
+                                                <TableRowColumn>{row.infoSurRgt[0]?row.infoSurRgt[0].LIBELLE_SINISTRE:''}</TableRowColumn>
+                                                <TableRowColumn>{row.infoSurRgt[0]?row.infoSurRgt[0].CAUSE_SINISTRE:''}</TableRowColumn>
+                                                <TableRowColumn>{row.infoSurRgt[0]?row.infoSurRgt[0].TYPE_SINISTRE:''}</TableRowColumn>
+                                                <TableRowColumn>{row.infoSurRgt[0]?row.infoSurRgt[0].DATE_RECEPTION:''}</TableRowColumn>
                                                 <TableRowColumn>{row.date_naiss?moment(row.date_naiss).format("DD-MM-YYYY"):"NON DEFINIE"}</TableRowColumn>
                                                 <TableRowColumn>{row.date_depot_treso?moment(row.date_depot_treso).format("DD-MM-YYYY"):"NON DEFINIE"}</TableRowColumn>
                                                 <TableRowColumn >{row.date_sort_treso?moment(row.date_sort_treso).format("DD-MM-YYYY"):"NON DEFINIE"}</TableRowColumn> 
@@ -239,14 +255,24 @@ console.dir(this.props);
                     </Table>
                      <div className="loadmoreDiv">
                      <RaisedButton 
-                            label="Mettre à jour la base de données" 
+                            label="Rafraîchir la base de données" 
+                            title="Insérer les derniers règlements traités/générés dans sunshine"
                             labelColor="white"
                             backgroundColor="#cd9a2e"
                             onClick={()=>mettreAjour()}
                         />
                         <div style={{width:'3%'}}></div>
                         <RaisedButton 
+                            label="Modifier les règlements sélectionnés" 
+                            title="Que dire...Tout est dans le libéllé"
+                            labelColor="white"
+                            backgroundColor="#cd9a2e"
+                            onClick={this._dialogTOpen.bind(this)}
+                        />
+                        <div style={{width:'3%'}}></div>
+                        <RaisedButton 
                             label="Voir les 10 prochaines lignes" 
+                            title="afficher les dix lignes suivantes"
                             labelColor="white"
                             backgroundColor="#cd9a2e"
                             onClick={()=>loadMoreEntries()}
@@ -256,13 +282,29 @@ console.dir(this.props);
                     <div style={{textAlign:"center"}}>{loading?"Chargement...":null}</div>
                     <LinearProgress mode="indeterminate" style={this.state.loaderVisible?{visibility:'visible'}:{visibility:'hidden'}}/>
                     <div className="helperDiv">
+                    Veuillez cliquer dans les cases à cocher pour sélectionner un ou plusieur règlements.<br/> 
                      Pour effectuer une recherche de règlement,veuillez choisir un type de date comme critère de recherche et entrez la date selon le format indiqué.Pour plus de pertinence dans la recherche,
                      Veuillez ajouter les precisions suivantes:<br/>
-                     - Statut du règlement dans la base de données (SORTIE,PRET,EN COURS)<br/>
-                     - Domaine (INDIVIDUEL,GROUPE,RENTE)<br/>
-                     
+                     - Statut du règlement dans la base de données (SORTIE,PRET,EN COURS...)<br/>
+                     - Domaine (INDIVIDUEL,GROUPE,RENTE)<br/><br/>
+                      Vous pouvez aussi utiliser les critères de recherche suivant individuellement:<br/>
+                      -RECHERCHE PAR STATUT<br/>
+                      -RECHERCHE PAR DOMAINE<br/>
+                      -RECHERCHE PAR NUMERO DE REGLEMENT<br/>
+                      -RECHERCHE PAR INTERVALLE DE NUMERO DE REGLEMENT<br/>
+                      -RECHERCHE PAR NUMERO DE POLICE<br/>
+                      -RECHERCHE PAR NOM DU BENEFICIAIRE<br/>
+
+                      Vous pouvez reconnaitre le statut qu'un règlement a dans le système en observant la couleur de fond de la ligne du tableau qu'il occupe<br/>
+                      Ces couleurs sont:<br/>
+                        -<span style={{color:"white"}}>BLANC</span> pour le statut <b>EN COURS</b><br/>
+                        -<span style={{color:"yellow"}}>JAUNE</span> pour le statut <b>A LA TRESO</b><br/>
+                        -<span style={{color:"orange"}}>ORANGE</span> pour le statut <b>SORTIE DE TRESO</b><br/> 
+                        -<span style={{color:"pink"}}>ROSE</span> pour le statut <b>A LA SIGNATURE</b><br/> 
+                        -<span style={{color:"green"}}>VERT</span> pour le statut <b>PRET</b><br/> 
+                        -<span style={{color:"red"}}>ROUGE</span> pour le statut <b>SORTIE</b><br/><br/>
                      Ces informations ci-dessus associées au type de date et à la date renverront des résultats précis.<br/><br/>
-                     Si ces informations ne sont pas disponibles,effectuez une recherche par numéro de règlement ou numéro de police ou par le nom du bénéficiaire.
+                     Si ces informations ne sont pas disponibles,effectuez une recherche par numéro de règlement, par statut, par domaine ou numéro de police ou par le nom du bénéficiaire.
                      <br/>Les recherches par numéro de règlement ou numéro de police ou nom du bénéficiaire sont exclusives et ne necessitent aucune autre information.<br/>
                      <b>NB:LES RECHERCHES SONT EXECUTEES DYNAMIQUEMENT.</b>
                      </div>
@@ -298,8 +340,8 @@ DispoTable.propTypes={
 };
 
 const listeDisponibilities=gql`
-    query listeDisponibilities($typeDate:String,$date:String,$statut:String,$domaine:String,$numregl:Int,$numpol:Int,$nomtotal:String,$offset:Int,$limit:Int){
-        listeDispo(typeDate:$typeDate,date:$date,statut:$statut,domaine:$domaine,numregl:$numregl,numpol:$numpol,nomtotal:$nomtotal,offset:$offset,limit:$limit){
+    query listeDisponibilities($typeDate:String,$date:String,$statut:String,$domaine:String,$numregl:Int,$numpol:Int,$nomtotal:String,$numreglStart:Int,$numreglEnd:Int,$offset:Int,$limit:Int){
+        listeDispo(typeDate:$typeDate,date:$date,statut:$statut,domaine:$domaine,numregl:$numregl,numpol:$numpol,nomtotal:$nomtotal,numreglStart:$numreglStart,numreglEnd:$numreglEnd,offset:$offset,limit:$limit){
             wasrg
             wnrgt
             wnupo
@@ -313,11 +355,14 @@ const listeDisponibilities=gql`
             statut_reg_retirer
             domaine
             redac
+            MNTGT
+            MRGGT
             infoSurRgt{
                 LIBELLE_SINISTRE
                 CAUSE_SINISTRE
                 TYPE_SINISTRE
                 DATE_RECEPTION
+                NUMERO_CHEQUE
                 MONTANT_BRUT
                 MONTANT_NET_REGLEMENT
                 NUMERO_BENEFICIAIRE
@@ -328,7 +373,7 @@ const listeDisponibilities=gql`
 
 
 export default graphql(listeDisponibilities,{
-    options:({ typeDate,date,statut,domaine,numregl,numpol,nomtotal}) => ({ 
+    options:({ typeDate,date,statut,domaine,numregl,numpol,nomtotal,numreglStart,numreglEnd}) => ({ 
         variables: {
             typeDate,
             date,
@@ -337,12 +382,16 @@ export default graphql(listeDisponibilities,{
             numregl,
             numpol,
             nomtotal,
+            numreglStart,
+            numreglEnd,
             offset:0,
             limit:ITEMS_PER_PAGE          
     },forceFetch:true }),
-        props:({data:{loading,listeDispo,fetchMore}})=>{
+        props:({data:{loading,error,listeDispo,fetchMore}})=>{
+            //alert(JSON.stringify(error));
             return{
                 loading,
+                error,
                 listeDispo,
                 loadMoreEntries(){
                     return fetchMore({

@@ -1,0 +1,10 @@
+{
+    "DBSQLSERVER_HOST":"",
+    "DBSQLSERVER_PORT":"",
+    "DBSQLSERVER_USER":"",
+    "DBSQLSERVER_PASSWORD":"",
+    "DBSQLSERVER_DATABASE":"",
+    "MAIL_SETTINGS":"",
+    "ADMINLOGMDP":"" 
+   
+}

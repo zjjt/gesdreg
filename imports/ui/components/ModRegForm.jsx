@@ -89,14 +89,8 @@ class ModRegForm extends Component{
         />,
         ];
          const {handleSubmit,pristine,submitting,dispatch,reset}=this.props;
-            
+            console.dir(this.props);
           const submit=(values,dispatch)=>{
-            
-             values.wasrg=this.props.data?this.props.data.voirInfoReg[0].NUMERO_BENEFICIAIRE:null;
-             values.wnrgt=this.props.regSelected?this.props.regSelected.wnrgt:this.props.data.voirInfoReg[0].NUMERO_REGLEMENT;
-             values.domaine=this.props.regSelected?this.props.regSelected.domaine:this.props.data.voirInfoReg[0].DOMAINE;
-             values.wnupo=this.props.regSelected?this.props.regSelected.wnupo:this.props.data.voirInfoReg[0].POLICE;
-             values.wnupo=parseInt(values.wnupo,10);
              console.dir(values);
                 if((values.date_depot_treso===''||!values.date_depot_treso)
             &&(values.date_sort_treso===''||!values.date_sort_treso)
@@ -111,154 +105,23 @@ class ModRegForm extends Component{
                 return false;
                 
             }
-            else if(values.date_depot_treso 
-            && moment(values.date_depot_treso).isBefore(this.props.data.voirInfoReg[0].DATE_REGLEMENT.replace(/\//g,"-"))
-            && moment(values.date_depot_treso).isBefore(this.props.data.voirInfoReg[0].DATE_SURVENANCE_SINISTRE)
-            ){
-                this.setState({
-                    errorMsg:"Veuillez re verifier la date de dépot à la trésorerie. Elle ne peut être avant la date de survenance du sinistre ou la date du règlement "
-                });
-                this._dialogOpen();
-            }else if(values.date_depot_treso 
-            &&(values.date_sort_treso||values.date_depot_sign||values.date_recep_sign_reg||values.date_retrait_reg)
-            && (
-                moment(values.date_depot_treso).isAfter(values.date_sort_treso)
-                ||moment(values.date_depot_treso).isAfter(values.date_depot_sign)
-                ||moment(values.date_depot_treso).isAfter(values.date_recep_sign_reg)
-                ||moment(values.date_depot_treso).isAfter(values.date_retrait_reg)
-            )
-            ){
-                this.setState({
-                    errorMsg:"Veuillez re verifier la date de dépot à la trésorerie. Elle ne peut être après la date de sortie de trésorerie ou les dates de depot et retour de signature ou encore la date du retrait du règlement"
-                });
-                this._dialogOpen();
-            }
-            else if(values.date_sort_treso 
-            && moment(values.date_sort_treso).isBefore(this.props.data.voirInfoReg[0].DATE_REGLEMENT.replace(/\//g,"-"))
-            && moment(values.date_sort_treso).isBefore(this.props.data.voirInfoReg[0].DATE_SURVENANCE_SINISTRE)){
-                
-                this.setState({
-                    errorMsg:"Veuillez re verifier la date de sortie de trésorerie. Elle ne peut être avant la date de survenance du sinistre ou la date du règlement "
-                });
-                this._dialogOpen();
-            }else if(moment(values.date_sort_treso).isBefore(moment(this.props.regSelected.date_depot_treso).format("YYYY-MM-DD"))){
-                this.setState({
-                    errorMsg:"Veuillez re verifier la date de sortie de trésorerie. Elle ne peut être avant la date de dépot à la trésorerie "
-                });
-                this._dialogOpen();
-            }
-            else if(values.date_sort_treso 
-            &&(values.date_depot_treso||values.date_depot_sign||values.date_recep_sign_reg||values.date_retrait_reg)
-            && (
-                moment(values.date_sort_treso).isBefore(values.date_depot_treso)
-                ||(values.date_depot_sign && moment(values.date_sort_treso).isAfter(values.date_depot_sign))
-                ||(values.date_recep_sign_reg && moment(values.date_sort_treso).isAfter(values.date_recep_sign_reg))
-                ||(values.date_retrait_reg && moment(values.date_sort_treso).isAfter(values.date_retrait_reg))
-            )
-            ){
-                this.setState({
-                    errorMsg:"Veuillez re verifier la date de sortie de trésorerie. Elle ne peut être avant la date de dépot à la trésorerie ou après les dates de depot et retour de signature ou encore la date du retrait du règlement"+moment(values.date_sort_treso).isAfter(values.date_depot_sign)+values.date_depot_sign
-                });
-                this._dialogOpen();
-            }
-            else if(values.date_depot_sign 
-            && moment(values.date_depot_sign).isBefore(this.props.data.voirInfoReg[0].DATE_REGLEMENT.replace(/\//g,"-"))
-            && moment(values.date_depot_sign).isBefore(this.props.data.voirInfoReg[0].DATE_SURVENANCE_SINISTRE)
-            ){
-                this.setState({
-                    errorMsg:"Veuillez re verifier la date de dépot pour signature. Elle ne peut être avant la date de survenance du sinistre ou la date du règlement "
-                });
-                this._dialogOpen();
-            }else if(moment(values.date_depot_sign).isBefore(moment(this.props.regSelected.date_depot_treso).format("YYYY-MM-DD"))
-                    ||moment(values.date_depot_sign).isBefore(moment(this.props.regSelected.date_sort_treso).format("YYYY-MM-DD"))){
-                this.setState({
-                    errorMsg:"Veuillez re verifier la date de dépot pour signature. Elle ne peut être avant la date de dépot à la trésorerie ou avant la date de sortie de trésorerie."
-                });
-                this._dialogOpen();
-            }else if(values.date_depot_sign 
-            &&(values.date_depot_treso||values.date_sort_treso||values.date_recep_sign_reg||values.date_retrait_reg)
-            && (
-                moment(values.date_depot_sign).isBefore(values.date_depot_treso)
-                ||moment(values.date_depot_sign).isBefore(values.date_sort_treso)
-                ||(values.date_recep_sign_reg && moment(values.date_depot_sign).isAfter(values.date_recep_sign_reg))
-                ||(values.date_retrait_reg && moment(values.date_depot_sign).isAfter(values.date_retrait_reg))
-            )
-            ){
-                this.setState({
-                    errorMsg:"Veuillez re verifier la date de dépot pour signature. Elle ne peut être avant la date de dépot à la trésorerie ou la date de sortie de la trésorerie ,ni après la date de retour de signature ou encore la date du retrait du règlement"
-                });
-                this._dialogOpen();
-            }
-            else if(values.date_recep_sign_reg 
-            && moment(values.date_recep_sign_reg).isBefore(this.props.data.voirInfoReg[0].DATE_REGLEMENT.replace(/\//g,"-"))
-            && moment(values.date_recep_sign_reg).isBefore(this.props.data.voirInfoReg[0].DATE_SURVENANCE_SINISTRE)
-            ){
-                this.setState({
-                    errorMsg:"Veuillez re verifier la date de retour de signature. Elle ne peut être avant la date de survenance du sinistre ou la date du règlement "
-                });
-                this._dialogOpen();
-            }else if(moment(values.date_recep_sign_reg).isBefore(moment(this.props.regSelected.date_depot_treso).format("YYYY-MM-DD"))
-                    ||moment(values.date_recep_sign_reg).isBefore(moment(this.props.regSelected.date_sort_treso).format("YYYY-MM-DD"))
-                    ||moment(values.date_recep_sign_reg).isBefore(moment(this.props.regSelected.date_depot_sign).format("YYYY-MM-DD"))){
-                this.setState({
-                    errorMsg:"Veuillez re verifier la date de retour de signature. Elle ne peut être avant la date de dépot à la trésorerie, la date de sortie de trésorerie, la date de dépot pour signature."
-                });
-                this._dialogOpen();
-            }else if(values.date_recep_sign_reg 
-            &&(values.date_depot_treso||values.date_sort_treso||values.date_depot_sign||values.date_retrait_reg)
-            && (
-                moment(values.date_recep_sign_reg).isBefore(values.date_depot_treso)
-                ||moment(values.date_recep_sign_reg).isBefore(values.date_sort_treso)
-                ||moment(values.date_recep_sign_reg).isBefore(values.date_depot_sign)
-                ||(values.date_retrait_reg && moment(values.date_recep_sign_reg).isAfter(values.date_retrait_reg))
-            )
-            ){
-                this.setState({
-                    errorMsg:"Veuillez re verifier la date de retour de signature. Elle ne peut être avant la date de dépot à la trésorerie,la date de sortie de la trésorerie et la date de dépot à la signature ,ni après la date du retrait du règlement"
-                });
-                this._dialogOpen();
-            }
-            else if(values.date_retrait_reg 
-            && moment(values.date_retrait_reg).isBefore(this.props.data.voirInfoReg[0].DATE_REGLEMENT.replace(/\//g,"-"))
-            && moment(values.date_retrait_reg).isBefore(this.props.data.voirInfoReg[0].DATE_SURVENANCE_SINISTRE)
-            ){
-                this.setState({
-                    errorMsg:"Veuillez re verifier la date de retrait du règlement. Elle ne peut être avant la date de survenance du sinistre ou la date du règlement "
-                });
-                this._dialogOpen();
-            }else if(moment(values.date_retrait_reg).isBefore(moment(this.props.regSelected.date_depot_treso).format("YYYY-MM-DD"))
-                    ||moment(values.date_retrait_reg).isBefore(moment(this.props.regSelected.date_sort_treso).format("YYYY-MM-DD"))
-                    ||moment(values.date_retrait_reg).isBefore(moment(this.props.regSelected.date_depot_sign).format("YYYY-MM-DD"))
-                    ||moment(values.date_retrait_reg).isBefore(moment(this.props.regSelected.date_recep_sign_reg).format("YYYY-MM-DD"))){
-                this.setState({
-                    errorMsg:"Veuillez re verifier la date de retrait du règlement. Elle ne peut être avant la date de dépot à la trésorerie, la date de sortie de trésorerie, la date de dépot pour signature et la date de retour de signature."
-                });
-                this._dialogOpen();
-            }else if(values.date_retrait_reg 
-            &&(values.date_depot_treso||values.date_sort_treso||values.date_depot_sign||values.date_recep_sign_reg)
-            && (
-                moment(values.date_retrait_reg).isBefore(values.date_depot_treso)
-                ||moment(values.date_retrait_reg).isBefore(values.date_sort_treso)
-                ||moment(values.date_retrait_reg).isBefore(values.date_depot_sign)
-                ||moment(values.date_retrait_reg).isBefore(values.date_recep_sign_reg)
-            )
-            ){
-                this.setState({
-                    errorMsg:"Veuillez re verifier la date de retrait du règlement. Elle ne peut être avant la date de dépot à la trésorerie,la date de sortie de la trésorerie,la date de dépot à la signature et la date de retour de signature"
-                });
-                this._dialogOpen();
-            }
             else{
 
                 //console.log(this.props.data.voirInfoReg[0].DATE_SURVENANCE_SINISTRE);
                     
               // alert( );
                 console.dir(values);
-                Meteor.call('updateDispo',values,this.props.regSelected,(err)=>{
+                Meteor.call('updateDispos',values,this.props.regSelected,(err)=>{
                     if(err){
-                        this.setState({
-                            errorMsg:"Une erreur s'est produite lors de la mise à jour de la disponibilité. "+err.reason
+                        
+                        if(err.error==="bad-date"){
+                            this.setState({
+                            errorMsg:err.reason
                             });
+                        }else{
+                            console.log("Erreur survenue: "+err.reason);
+                        }
+                            
                         this._dialogOpen();
                     }else{
                         this.setState({
@@ -266,7 +129,7 @@ class ModRegForm extends Component{
                         snackOpen:true
                         });
                         //dispatch(miseajourDispo());
-                        //this.props.closeBigDialog();
+                        this.props.closeBigDialog();
                     }
                 });
             }
@@ -283,131 +146,8 @@ class ModRegForm extends Component{
                     onRequestClose={this._snackClose.bind(this)}
                     style={{width:'auto !important'}}
                 />
-                {this.props.data.loading?<div style={{textAlign:"center"}}><CircularProgress /></div>:this.props.data.voirInfoReg.map((row,index)=>(
-                        <div key={index} style={{display:'flex',flexDirection:'column'}}>
-                            <TextField
-                                floatingLabelText="DATE_SURVENANCE_SINISTRE"
-                                floatingLabelFixed={true}
-                                value={row.DATE_SURVENANCE_SINISTRE}
-                                fullWidth={true}
-                                disabled={true}
-                            />
-                            <TextField
-                                floatingLabelText="NOM_BENEFICIAIRE"
-                                floatingLabelFixed={true}
-                                value={row.NOM_BENEFICIAIRE}
-                                fullWidth={true}
-                                disabled={true}
-                            />
-                            
-                            <TextField
-                                floatingLabelText="NUMERO_BENEFICIAIRE"
-                                floatingLabelFixed={true}
-                                value={row.NUMERO_BENEFICIAIRE}
-                                fullWidth={true}
-                                disabled={true}
-                            />
-                             <TextField
-                                floatingLabelText="LIBELLE_SINISTRE"
-                                floatingLabelFixed={true}
-                                value={row.LIBELLE_SINISTRE}
-                                fullWidth={true}
-                                disabled={true}
-                            />
-                            <TextField
-                                floatingLabelText="NUMERO_SINISTRE"
-                                floatingLabelFixed={true}
-                                value={row.NUMERO_SINISTRE}
-                                fullWidth={true}
-                                disabled={true}
-                            />
-                            <TextField
-                                floatingLabelText="NUMERO_REGLEMENT"
-                                floatingLabelFixed={true}
-                                value={row.NUMERO_REGLEMENT}
-                                fullWidth={true}
-                                disabled={true}
-                            />
-                            <TextField
-                                floatingLabelText="DECOMPTE"
-                                floatingLabelFixed={true}
-                                value={row.DECOMPTE}
-                                fullWidth={true}
-                                disabled={true}
-                            />
-                            <TextField
-                                floatingLabelText="POLICE"
-                                floatingLabelFixed={true}
-                                value={row.POLICE}
-                                fullWidth={true}
-                                disabled={true}
-                            />
-                            <TextField
-                                floatingLabelText="DATE_REGLEMENT"
-                                floatingLabelFixed={true}
-                                value={row.DATE_REGLEMENT.replace(/\//g,"-")}
-                                fullWidth={true}
-                                disabled={true}
-                            />
-                            <TextField
-                                floatingLabelText="MONTANT_BRUT"
-                                floatingLabelFixed={true}
-                                value={row.MONTANT_BRUT}
-                                fullWidth={true}
-                                disabled={true}
-                            />
-                            <TextField
-                                floatingLabelText="MONTANT_NET_REGLEMENT"
-                                floatingLabelFixed={true}
-                                value={row.MONTANT_NET_REGLEMENT}
-                                fullWidth={true}
-                                disabled={true}
-                            />
-                            
-                        </div>
-                    ))}
-                    <TextField
-                        floatingLabelText="ANCIENNE DATE DEPOT TRESORERIE"
-                        floatingLabelFixed={true}
-                        value={moment(this.props.regSelected.date_depot_treso).format("DD-MM-YYYY")}
-                        fullWidth={true}
-                        disabled={true}
-                    />
-                    <TextField
-                        floatingLabelText="ANCIENNE DATE SORTIE TRESORERIE"
-                        floatingLabelFixed={true}
-                        value={moment(this.props.regSelected.date_sort_treso).format("DD-MM-YYYY")}
-                        fullWidth={true}
-                        disabled={true}
-                    />
-                    <TextField
-                        floatingLabelText="ANCIENNE DATE DEPOT SIGNATURE"
-                        floatingLabelFixed={true}
-                        value={moment(this.props.regSelected.date_depot_sign).format("DD-MM-YYYY")}
-                        fullWidth={true}
-                        disabled={true}
-                    />
-                    <TextField
-                        floatingLabelText="ANCIENNE DATE RECEPTION SIGNATURE"
-                        floatingLabelFixed={true}
-                        value={moment(this.props.regSelected.date_recep_sign_reg).format("DD-MM-YYYY")}
-                        fullWidth={true}
-                        disabled={true}
-                    />
-                    <TextField
-                        floatingLabelText="ANCIENNE DATE RETRAIT REGLEMENT"
-                        floatingLabelFixed={true}
-                        value={moment(this.props.regSelected.date_retrait_reg).format("DD-MM-YYYY")}
-                        fullWidth={true}
-                        disabled={true}
-                    />
-                    <TextField
-                        floatingLabelText="STATUT ACTUEL DU REGLEMENT"
-                        floatingLabelFixed={true}
-                        value={this.props.regSelected.statut_reg_retirer}
-                        fullWidth={true}
-                        disabled={true}
-                    />
+                
+                    
                     <Divider/>
                             <div style={{textAlign:"center",color:"1e2c67",backgroundColor:"#cc992c"}}>ENTREZ VOS MODIFICATIONS CI-DESSOUS</div>
                      <Divider/>

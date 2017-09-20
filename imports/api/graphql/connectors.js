@@ -58,6 +58,11 @@ const UserModel=DBSQLSERVER.define('reguser',{
       type: Sequelize.STRING,
       allowNull: true,
       field: 'prenom'
+    },
+    email: {
+      type: Sequelize.STRING,
+      allowNull: true,
+      field: 'email'
     }
         
 },{
@@ -132,7 +137,17 @@ const regDispoModel=DBSQLSERVER.define('regdispo',{
       type: Sequelize.STRING,
       allowNull: true,
       field: 'redac'
-    }      
+    },
+    MNTGT: {
+      type: Sequelize.STRING,
+      allowNull: true,
+      field: 'MNTGT'
+    },
+    MRGGT: {
+      type: Sequelize.STRING,
+      allowNull: true,
+      field: 'MRGGT'
+    }        
 },{
     schema:'exp',
     timestamps:false,

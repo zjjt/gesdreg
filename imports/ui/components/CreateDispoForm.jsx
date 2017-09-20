@@ -45,7 +45,7 @@ if(areIntlLocalesSupported(['fr'])){
                 showRowHover:false,
                 selectable:true,
                 multiSelectable: true,
-                enableSelectAll:true,
+                enableSelectAll:false,
                 deselectOnClickaway:false,
                 showCheckboxes:true,
                 height:'50px'
@@ -267,7 +267,7 @@ if(areIntlLocalesSupported(['fr'])){
                 this._dialogOpen();
          }*/
             else{
-                alert(JSON.stringify(values));
+               // alert(JSON.stringify(values));
                 let newval=values;
                 newval.wasrg=this.state.infos_sur_rgt[0].NUMERO_BENEFICIAIRE;
                 console.dir(newval);

@@ -54,6 +54,7 @@ FlowRouter.route('/dashboard',{
 		}
 	}],
 	action(){
+		
 		mount(MainLayout,
 			{content:()=><Dashboard/>})
 	}

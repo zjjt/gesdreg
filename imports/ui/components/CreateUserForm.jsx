@@ -86,6 +86,12 @@ import _ from 'lodash';
                 });
                 this._dialogOpen();
             }
+            else if(values.email===''||!values.email){
+                this.setState({
+                    errorMsg:"Le champs email ne peut être vide."
+                });
+                this._dialogOpen();
+            }
             else if(values.password!==values.passwordconf){
                 this.setState({
                     errorMsg:"Les champs mot de passe et confirmation du mot de passe ne correspondent pas."
@@ -196,6 +202,15 @@ import _ from 'lodash';
                     hintText="Confirmer le mot de passe du gestionnaire"
                     floatingLabelText="Confirmation du mot de passe"
                     fullWidth={true}
+                    floatingLabelFixed={true}
+                />
+                <Field
+                    name="email" 
+                    component={TextField}
+                    hintText="Entrer l'email du gestionnaire"
+                    floatingLabelText="Email"
+                    fullWidth={true}
+                    type="mail"
                     floatingLabelFixed={true}
                 />
                  <Field

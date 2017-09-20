@@ -54,7 +54,7 @@ class InfExport extends Component{
     }
 
     componentDidMount(){
-        $('.tableau').parent().css("width","4288px");
+        $('.tableau').parent().css("width","5100px");
     }
     componentWillReceiveProps(){
         fullEXL=[];
@@ -136,24 +136,26 @@ class InfExport extends Component{
                             enableSelectAll={this.state.table.enableSelectAll}
                         >
                             <TableRow>
-                                <TableHeaderColumn tooltip="Numéro de ligne">Ligne No</TableHeaderColumn>
-                               <TableHeaderColumn tooltip="Numéro du bénéficiaire">No Bénéficiaire</TableHeaderColumn>
-                                <TableHeaderColumn tooltip="Numéro de règlement">No Règlement</TableHeaderColumn>
-                                <TableHeaderColumn tooltip="Numéro de police">No Police</TableHeaderColumn>
-                                <TableHeaderColumn tooltip="Nom du bénéficiaire">Bénéficiaire</TableHeaderColumn>
-                                <TableHeaderColumn tooltip="libellé du sinistre">Libellé du sinistre</TableHeaderColumn>
-                                <TableHeaderColumn tooltip="Cause du sinistre">Cause du sinistre</TableHeaderColumn>
-                                <TableHeaderColumn tooltip="Type du sinistre">Type du sinistre</TableHeaderColumn>
-                                <TableHeaderColumn tooltip="Date de réception de la demande">Date de réception de la demande</TableHeaderColumn>
-                                <TableHeaderColumn tooltip="Date de naissance du bénéficiaire">Date de naissance du Bénéficiaire</TableHeaderColumn>
-                                <TableHeaderColumn tooltip="Date de dépot à la trésorerie">Dépot Tréso</TableHeaderColumn>
-                                <TableHeaderColumn tooltip="Date de sortie de la trésorerie">Sortie Tréso</TableHeaderColumn>
-                                <TableHeaderColumn tooltip="Date de dépot pour la signature">Dépot Signature</TableHeaderColumn>
-                                <TableHeaderColumn tooltip="Date de réception du règlement après signature">Sortie Signature</TableHeaderColumn>
-                                <TableHeaderColumn tooltip="Date de retrait du règlement">Retrait Règlement</TableHeaderColumn>
-                                <TableHeaderColumn tooltip="Statut du règlement dans le système">Statut règlement</TableHeaderColumn>
-                                <TableHeaderColumn tooltip="Domaine du règlement">Domaine</TableHeaderColumn>
-                                <TableHeaderColumn tooltip="Code rédacteur">Rédacteur</TableHeaderColumn>
+                            <TableHeaderColumn tooltip="Numéro de l'assuré">No Assuré</TableHeaderColumn>
+                            <TableHeaderColumn tooltip="Numéro de règlement">No Règlement</TableHeaderColumn>
+                            <TableHeaderColumn tooltip="Numéro de chèque">No Chèque</TableHeaderColumn>
+                            <TableHeaderColumn tooltip="Montant du règlement">Montant Règlement</TableHeaderColumn>
+                            <TableHeaderColumn tooltip="Mode de règlement">Mode de règlement</TableHeaderColumn>
+                            <TableHeaderColumn tooltip="Numéro de police">No Police</TableHeaderColumn>
+                            <TableHeaderColumn tooltip="Nom du bénéficiaire">Bénéficiaire</TableHeaderColumn>
+                            <TableHeaderColumn tooltip="libellé du sinistre">Libellé du sinistre</TableHeaderColumn>
+                            <TableHeaderColumn tooltip="Cause du sinistre">Cause du sinistre</TableHeaderColumn>
+                            <TableHeaderColumn tooltip="Type du sinistre">Type du sinistre</TableHeaderColumn>
+                            <TableHeaderColumn tooltip="Date de réception de la demande">Date de réception de la demande</TableHeaderColumn>
+                            <TableHeaderColumn tooltip="Date de naissance du bénéficiaire">Date de naissance du Bénéficiaire</TableHeaderColumn>
+                            <TableHeaderColumn tooltip="Date de dépot à la trésorerie">Dépot Tréso</TableHeaderColumn>
+                            <TableHeaderColumn tooltip="Date de sortie de la trésorerie">Sortie Tréso</TableHeaderColumn>
+                            <TableHeaderColumn tooltip="Date de dépot pour la signature">Dépot Signature</TableHeaderColumn>
+                            <TableHeaderColumn tooltip="Date de réception du règlement après signature">Sortie Signature</TableHeaderColumn>
+                            <TableHeaderColumn tooltip="Date de retrait du règlement">Retrait Règlement</TableHeaderColumn>
+                            <TableHeaderColumn tooltip="Statut du règlement dans le système">Statut règlement</TableHeaderColumn>
+                            <TableHeaderColumn tooltip="Domaine du règlement">Domaine</TableHeaderColumn>
+                            <TableHeaderColumn tooltip="Code rédacteur">Rédacteur</TableHeaderColumn>
                             </TableRow>
                         </TableHeader>
                         <TableBody
@@ -172,12 +174,15 @@ class InfExport extends Component{
                                                 <TableRowColumn>{++index}</TableRowColumn>
                                                 <TableRowColumn>{row.wasrg}</TableRowColumn>
                                                 <TableRowColumn>{row.wnrgt}</TableRowColumn>
+                                                <TableRowColumn>{row.infoSurRgt[0]?row.infoSurRgt[0].NUMERO_CHEQUE!=''?row.infoSurRgt[0].NUMERO_CHEQUE:'Aucun numero':'Aucun numero'}</TableRowColumn>
+                                                <TableRowColumn>{row.MNTGT}</TableRowColumn>
+                                                <TableRowColumn>{row.MRGGT}</TableRowColumn>
                                                 <TableRowColumn>{row.wnupo}</TableRowColumn>
                                                 <TableRowColumn>{row.nom_beneficiaire}</TableRowColumn>
-                                                <TableRowColumn>{row.infoSurRgt[0]?row.infoSurRgt[0].LIBELLE_SINISTRE:null}</TableRowColumn>
-                                                <TableRowColumn>{row.infoSurRgt[0]?row.infoSurRgt[0].CAUSE_SINISTRE:null}</TableRowColumn>
-                                                <TableRowColumn>{row.infoSurRgt[0]?row.infoSurRgt[0].TYPE_SINISTRE:null}</TableRowColumn>
-                                                <TableRowColumn>{row.infoSurRgt[0]?row.infoSurRgt[0].DATE_RECEPTION:null}</TableRowColumn>
+                                                <TableRowColumn>{row.infoSurRgt[0]?row.infoSurRgt[0].LIBELLE_SINISTRE:''}</TableRowColumn>
+                                                <TableRowColumn>{row.infoSurRgt[0]?row.infoSurRgt[0].CAUSE_SINISTRE:''}</TableRowColumn>
+                                                <TableRowColumn>{row.infoSurRgt[0]?row.infoSurRgt[0].TYPE_SINISTRE:''}</TableRowColumn>
+                                                <TableRowColumn>{row.infoSurRgt[0]?row.infoSurRgt[0].DATE_RECEPTION:''}</TableRowColumn>
                                                 <TableRowColumn>{row.date_naiss?moment(row.date_naiss).format("DD-MM-YYYY"):"NON DEFINIE"}</TableRowColumn>
                                                 <TableRowColumn>{row.date_depot_treso?moment(row.date_depot_treso).format("DD-MM-YYYY"):"NON DEFINIE"}</TableRowColumn>
                                                 <TableRowColumn >{row.date_sort_treso?moment(row.date_sort_treso).format("DD-MM-YYYY"):"NON DEFINIE"}</TableRowColumn> 
@@ -217,7 +222,7 @@ InfExport.propTypes={
 const exportdata=gql`
     query exportdata($typeDate:String,$startDate:String,$endDate:String,$domaine:String){
         dataToExport(typeDate:$typeDate,startDate:$startDate,endDate:$endDate,domaine:$domaine){
-             wasrg
+            wasrg
             wnrgt
             wnupo
             nom_beneficiaire
@@ -230,11 +235,14 @@ const exportdata=gql`
             statut_reg_retirer
             domaine
             redac
+            MNTGT
+            MRGGT
             infoSurRgt{
                 LIBELLE_SINISTRE
                 CAUSE_SINISTRE
                 TYPE_SINISTRE
                 DATE_RECEPTION
+                NUMERO_CHEQUE
                 MONTANT_BRUT
                 MONTANT_NET_REGLEMENT
                 NUMERO_BENEFICIAIRE

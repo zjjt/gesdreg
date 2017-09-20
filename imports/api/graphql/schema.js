@@ -25,6 +25,7 @@ const schema=`
             LIBELLE_SINISTRE:String
             NUMERO_SINISTRE:String
             NUMERO_REGLEMENT:String
+            NUMERO_CHEQUE:String
             DECOMPTE:String
             POLICE:String
             DATE_REGLEMENT:String
@@ -48,6 +49,8 @@ const schema=`
             statut_reg_retirer:String
             domaine:String
             redac:String
+            MNTGT:String
+            MRGGT:String
             infoSurRgt:[InfosREG]
         }
         type Query{
@@ -55,7 +58,7 @@ const schema=`
             userSQL(nom:String,orderDesc:Boolean!):[UserSQL] 
             dataToExport(typeDate:String,startDate:String,endDate:String,domaine:String):[DisporegSQL]
             consultDispo(numpolice:Int,nomtotal:String,birthdate:String,offset:Int,limit:Int):[DisporegSQL]
-            listeDispo(typeDate:String,date:String,statut:String,domaine:String,numregl:Int,numpol:Int,nomtotal:String,offset:Int,limit:Int):[DisporegSQL]
+            listeDispo(typeDate:String,date:String,statut:String,domaine:String,numregl:Int,numpol:Int,nomtotal:String,numreglStart:Int,numreglEnd:Int,offset:Int,limit:Int):[DisporegSQL]
             voirInfoReg(wnrgt:Int,domaine:String):[InfosREG]
         }
         type Mutation{

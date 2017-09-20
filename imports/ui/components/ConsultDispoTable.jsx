@@ -170,10 +170,17 @@ console.dir(this.props);
                                             </TableRow>
                                            ):typeof consultDispo!=='undefined'?consultDispo.map((row,index)=>{
                                             let domaine='';
+                                            let statutClass='';
                                             if(row.domaine==="I")domaine="INDIVIDUEL";
                                             if(row.domaine==="G")domaine="GROUPE";
                                             if(row.domaine==="R")domaine="RENTE";
-                                            return(<TableRow key={index} className="animated bounceInRight" selected={this.state.selectedRows.indexOf(index)!==-1} ref={`user${index}`}>
+                                            if(row.statut_reg_retirer==="EN COURS")statutClass='animated bounceInRight ';
+                                            if(row.statut_reg_retirer==="A LA TRESO")statutClass='animated bounceInRight yellowBack';
+                                            if(row.statut_reg_retirer==="SORTIE DE TRESO")statutClass='animated bounceInRight orangeBack';
+                                            if(row.statut_reg_retirer==="A LA SIGNATURE")statutClass='animated bounceInRight roseBack';
+                                            if(row.statut_reg_retirer==="PRET")statutClass='animated bounceInRight greenBack';
+                                            if(row.statut_reg_retirer==="SORTIE")statutClass='animated bounceInRight redBack';
+                                            return(<TableRow key={index} className={statutClass} selected={this.state.selectedRows.indexOf(index)!==-1} ref={`user${index}`}>
                                                 <TableRowColumn>{row.wasrg}</TableRowColumn>
                                                 <TableRowColumn>{row.wnrgt}</TableRowColumn>
                                                 <TableRowColumn>{row.wnupo}</TableRowColumn>
@@ -205,7 +212,15 @@ console.dir(this.props);
                         {loading?"Chargement...":null}
                     </div>
                     <div className="helperDiv">
-                     Pour effectuer une recherche de règlement disponibles,veuillez entrez la date de naissance du bénéficiaire selon le format indiqué <b>AAAA-MM-JJ</b>, ou le numéro de police ou le nom complet du bénéficiaire.
+                     Pour effectuer une recherche de règlement disponibles,veuillez entrez la date de naissance du bénéficiaire selon le format indiqué <b>AAAA-MM-JJ</b>, ou le numéro de police ou le nom complet du bénéficiaire.<br/>
+                     Vous pouvez reconnaitre le statut qu'un règlement a dans le système en observant la couleur de fond de la ligne du tableau qu'il occupe<br/>
+                      Ces couleurs sont:<br/>
+                        -<span style={{color:"white"}}>BLANC</span> pour le statut <b>EN COURS</b><br/>
+                        -<span style={{color:"yellow"}}>JAUNE</span> pour le statut <b>A LA TRESO</b><br/>
+                        -<span style={{color:"orange"}}>ORANGE</span> pour le statut <b>SORTIE DE TRESO</b><br/> 
+                        -<span style={{color:"pink"}}>ROSE</span> pour le statut <b>A LA SIGNATURE</b><br/> 
+                        -<span style={{color:"green"}}>VERT</span> pour le statut <b>PRET</b><br/> 
+                        -<span style={{color:"red"}}>ROUGE</span> pour le statut <b>SORTIE</b><br/><br/>
                      <br/>Les recherches sont complémentaires et peuvent être combinés pour un résultat plus précis.<br/>
                      <b>NB:LES RECHERCHES SONT EXECUTEES DYNAMIQUEMENT.</b>
                      </div>

@@ -51,12 +51,12 @@ DBSQLSERVER.authenticate().then(()=>{
             let query="exec info_reg_dispo :numero_reg,:domaine ";
            // let chainer=new Sequelize.Utils.QueryChainer();
             //si on a la date,et pas de statut,de domaine,de num_regl et on ne veut pas afficher seulment ceux kon a edite et non ordoner par num_regl
-            if(args.typeDate && args.date && !args.statut && !args.domaine && !args.numregl && !args.numpol && !args.nomtotal ){
+            if(args.typeDate && args.date && !args.statut && !args.domaine && !args.numregl && !args.numpol && !args.nomtotal && !args.numreglStart && !args.numreglEnd ){
                 
                 switch(args.typeDate){
                     case "date_naiss":
                         
-                        return dispoSQL.findAll({attributes:{exclude:['id']},
+                        return dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],
                             where:{
                                 date_naiss:args.date,
                             },offset:args.offset,limit:args.limit
@@ -79,15 +79,25 @@ DBSQLSERVER.authenticate().then(()=>{
                                 return Promise.all(promises)
                                 
                             }).then((dispos)=>{
-                                //console.dir(dispos);
-                                return dispos;
+                                let nd=dispos.map((e,i,arr)=>{
+                                    if(e.infoSurRgt.length>1){
+                                        let goodelem=e.infoSurRgt[0];
+                                        //console.log("reglement "+e.wnrgt);
+                                        //console.dir(e);
+                                        e.infoSurRgt=[];
+                                        e.infoSurRgt.push(goodelem);
+                                    }
+                                    return e;
+                                });
+                                //console.dir(nd);
+                                 return nd;
                             });
                      
                 
                    
                     case "date_depot_treso":
                     
-                    return dispoSQL.findAll({attributes:{exclude:['id']},where:{
+                    return dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
                             date_depot_treso:args.date,
                             
                         },offset:args.offset,limit:args.limit}).then((res)=>{
@@ -108,12 +118,22 @@ DBSQLSERVER.authenticate().then(()=>{
                                 return Promise.all(promises)
                                 
                             }).then((dispos)=>{
-                                //console.dir(dispos);
-                                return dispos;
+                                let nd=dispos.map((e,i,arr)=>{
+                                    if(e.infoSurRgt.length>1){
+                                        let goodelem=e.infoSurRgt[0];
+                                        //console.log("reglement "+e.wnrgt);
+                                        //console.dir(e);
+                                        e.infoSurRgt=[];
+                                        e.infoSurRgt.push(goodelem);
+                                    }
+                                    return e;
+                                });
+                                //console.dir(nd);
+                                 return nd;
                             });
                    
                     case "date_sort_treso":
-                    return dispoSQL.findAll({attributes:{exclude:['id']},where:{
+                    return dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
                             date_sort_treso:args.date,
                             
                         },offset:args.offset,limit:args.limit}).then((res)=>{
@@ -134,12 +154,22 @@ DBSQLSERVER.authenticate().then(()=>{
                                 return Promise.all(promises)
                                 
                             }).then((dispos)=>{
-                                //console.dir(dispos);
-                                return dispos;
+                                let nd=dispos.map((e,i,arr)=>{
+                                    if(e.infoSurRgt.length>1){
+                                        let goodelem=e.infoSurRgt[0];
+                                        //console.log("reglement "+e.wnrgt);
+                                        //console.dir(e);
+                                        e.infoSurRgt=[];
+                                        e.infoSurRgt.push(goodelem);
+                                    }
+                                    return e;
+                                });
+                                //console.dir(nd);
+                                 return nd;
                             });
                     
                     case "date_depot_sign":
-                    return dispoSQL.findAll({attributes:{exclude:['id']},where:{
+                    return dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
                             date_depot_sign:args.date,
                            
                         },offset:args.offset,limit:args.limit}).then((res)=>{
@@ -160,12 +190,22 @@ DBSQLSERVER.authenticate().then(()=>{
                                 return Promise.all(promises)
                                 
                             }).then((dispos)=>{
-                               // console.dir(dispos);
-                                return dispos;
+                                let nd=dispos.map((e,i,arr)=>{
+                                    if(e.infoSurRgt.length>1){
+                                        let goodelem=e.infoSurRgt[0];
+                                        //console.log("reglement "+e.wnrgt);
+                                        //console.dir(e);
+                                        e.infoSurRgt=[];
+                                        e.infoSurRgt.push(goodelem);
+                                    }
+                                    return e;
+                                });
+                                //console.dir(nd);
+                                 return nd;
                             });
                     
                     case "date_recep_sign_reg":
-                    return dispoSQL.findAll({attributes:{exclude:['id']},where:{
+                    return dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
                             date_recep_sign_reg:args.date,
                             
                         },offset:args.offset,limit:args.limit}).then((res)=>{
@@ -186,12 +226,23 @@ DBSQLSERVER.authenticate().then(()=>{
                                 return Promise.all(promises)
                                 
                             }).then((dispos)=>{
-                               // console.dir(dispos);
-                                return dispos;
+                                let nd=dispos.map((e,i,arr)=>{
+                                    if(e.infoSurRgt.length>1){
+                                        let goodelem=e.infoSurRgt[0];
+                                        //console.log("reglement "+e.wnrgt);
+                                        //console.dir(e);
+                                        e.infoSurRgt=[];
+                                        e.infoSurRgt.push(goodelem);
+                                    }
+                                    return e;
+                                });
+                                //console.dir(nd);
+                                
+                                 return nd;
                             });
                     
                     case "date_retrait_reg":
-                    return dispoSQL.findAll({attributes:{exclude:['id']},where:{
+                    return dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
                             date_retrait_reg:args.date,
                             
                     },offset:args.offset,limit:args.limit}).then((res)=>{
@@ -212,16 +263,27 @@ DBSQLSERVER.authenticate().then(()=>{
                                 return Promise.all(promises)
                                 
                             }).then((dispos)=>{
-                                //console.dir(dispos);
-                                return dispos;
+                                let nd=dispos.map((e,i,arr)=>{
+                                    if(e.infoSurRgt.length>1){
+                                        let goodelem=e.infoSurRgt[0];
+                                        //console.log("reglement "+e.wnrgt);
+                                        //console.dir(e);
+                                        e.infoSurRgt=[];
+                                        e.infoSurRgt.push(goodelem);
+                                    }
+                                    return e;
+                                });
+                                //console.dir(nd);
+                                
+                                 return nd;
                             });
                     
                 }
                 
-            }else if(args.typeDate && args.date && args.statut && !args.domaine && !args.numregl && !args.numpol && !args.nomtotal ){
+            }else if(args.typeDate && args.date && args.statut && !args.domaine && !args.numregl && !args.numpol && !args.nomtotal && !args.numreglStart && !args.numreglEnd){
                 switch(args.typeDate){
                     case "date_naiss":
-                    return dispoSQL.findAll({attributes:{exclude:['id']},where:{
+                    return dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
                             date_naiss:args.date,
                             statut_reg_retirer:args.statut
                         },offset:args.offset,limit:args.limit}).then((res)=>{
@@ -242,12 +304,23 @@ DBSQLSERVER.authenticate().then(()=>{
                                 return Promise.all(promises)
                                 
                             }).then((dispos)=>{
-                              //  console.dir(dispos);
-                                return dispos;
+                                let nd=dispos.map((e,i,arr)=>{
+                                    if(e.infoSurRgt.length>1){
+                                        let goodelem=e.infoSurRgt[0];
+                                        //console.log("reglement "+e.wnrgt);
+                                        //console.dir(e);
+                                        e.infoSurRgt=[];
+                                        e.infoSurRgt.push(goodelem);
+                                    }
+                                    return e;
+                                });
+                                //console.dir(nd);
+                                
+                                 return nd;
                             });
 
                     case "date_depot_treso":
-                    return dispoSQL.findAll({attributes:{exclude:['id']},where:{
+                    return dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
                             date_depot_treso:args.date,
                             statut_reg_retirer:args.statut
                         },offset:args.offset,limit:args.limit}).then((res)=>{
@@ -268,12 +341,23 @@ DBSQLSERVER.authenticate().then(()=>{
                                 return Promise.all(promises)
                                 
                             }).then((dispos)=>{
-                               // console.dir(dispos);
-                                return dispos;
+                                let nd=dispos.map((e,i,arr)=>{
+                                    if(e.infoSurRgt.length>1){
+                                        let goodelem=e.infoSurRgt[0];
+                                        //console.log("reglement "+e.wnrgt);
+                                        //console.dir(e);
+                                        e.infoSurRgt=[];
+                                        e.infoSurRgt.push(goodelem);
+                                    }
+                                    return e;
+                                });
+                                //console.dir(nd);
+                                
+                                 return nd;
                             });
                    
                     case "date_sort_treso":
-                    return dispoSQL.findAll({attributes:{exclude:['id']},where:{
+                    return dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
                             date_sort_treso:args.date,
                              statut_reg_retirer:args.statut
                         },offset:args.offset,limit:args.limit}).then((res)=>{
@@ -294,12 +378,23 @@ DBSQLSERVER.authenticate().then(()=>{
                                 return Promise.all(promises)
                                 
                             }).then((dispos)=>{
-                               // console.dir(dispos);
-                                return dispos;
+                                let nd=dispos.map((e,i,arr)=>{
+                                    if(e.infoSurRgt.length>1){
+                                        let goodelem=e.infoSurRgt[0];
+                                        //console.log("reglement "+e.wnrgt);
+                                        //console.dir(e);
+                                        e.infoSurRgt=[];
+                                        e.infoSurRgt.push(goodelem);
+                                    }
+                                    return e;
+                                });
+                                //console.dir(nd);
+                                
+                                 return nd;
                             });
                     
                     case "date_depot_sign":
-                    return dispoSQL.findAll({attributes:{exclude:['id']},where:{
+                    return dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
                             date_depot_sign:args.date,
                            statut_reg_retirer:args.statut 
                         },offset:args.offset,limit:args.limit}).then((res)=>{
@@ -320,12 +415,23 @@ DBSQLSERVER.authenticate().then(()=>{
                                 return Promise.all(promises)
                                 
                             }).then((dispos)=>{
-                               // console.dir(dispos);
-                                return dispos;
+                                let nd=dispos.map((e,i,arr)=>{
+                                    if(e.infoSurRgt.length>1){
+                                        let goodelem=e.infoSurRgt[0];
+                                        //console.log("reglement "+e.wnrgt);
+                                        //console.dir(e);
+                                        e.infoSurRgt=[];
+                                        e.infoSurRgt.push(goodelem);
+                                    }
+                                    return e;
+                                });
+                                //console.dir(nd);
+                                
+                                 return nd;
                             });
                     
                     case "date_recep_sign_reg":
-                    return dispoSQL.findAll({attributes:{exclude:['id']},where:{
+                    return dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
                             date_recep_sign_reg:args.date,
                             statut_reg_retirer:args.statut 
                         },offset:args.offset,limit:args.limit}).then((res)=>{
@@ -346,12 +452,23 @@ DBSQLSERVER.authenticate().then(()=>{
                                 return Promise.all(promises)
                                 
                             }).then((dispos)=>{
-                                //console.dir(dispos);
-                                return dispos;
+                                let nd=dispos.map((e,i,arr)=>{
+                                    if(e.infoSurRgt.length>1){
+                                        let goodelem=e.infoSurRgt[0];
+                                        //console.log("reglement "+e.wnrgt);
+                                        //console.dir(e);
+                                        e.infoSurRgt=[];
+                                        e.infoSurRgt.push(goodelem);
+                                    }
+                                    return e;
+                                });
+                                //console.dir(nd);
+                                
+                                 return nd;
                             });
                     
                     case "date_retrait_reg":
-                    return dispoSQL.findAll({attributes:{exclude:['id']},where:{
+                    return dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
                             date_retrait_reg:args.date,
                              statut_reg_retirer:args.statut
                         },offset:args.offset,limit:args.limit}).then((res)=>{
@@ -372,16 +489,28 @@ DBSQLSERVER.authenticate().then(()=>{
                                 return Promise.all(promises)
                                 
                             }).then((dispos)=>{
-                               // console.dir(dispos);
-                                return dispos;
+                                let nd=dispos.map((e,i,arr)=>{
+                                    if(e.infoSurRgt.length>1){
+                                        let goodelem=e.infoSurRgt[0];
+                                        //console.log("reglement "+e.wnrgt);
+                                        //console.dir(e);
+                                        e.infoSurRgt=[];
+                                        e.infoSurRgt.push(goodelem);
+                                    }
+                                    return e;
+                                });
+                                //console.dir(nd);
+                                
+                                 return nd;
                             });
                     
                 }
                 
-            }else if(args.typeDate && args.date  && args.statut && args.domaine && !args.numregl && !args.numpol && !args.nomtotal ){
+            }else if(args.typeDate && args.date  && args.statut && args.domaine && !args.numregl && !args.numpol && !args.nomtotal && !args.numreglStart && !args.numreglEnd){
+                console.log(args.typeDate);
                 switch(args.typeDate){
                     case "date_naiss":
-                    return dispoSQL.findAll({attributes:{exclude:['id']},where:{
+                    return dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
                             date_naiss:args.date,
                             statut_reg_retirer:args.statut,
                             domaine:args.domaine
@@ -403,12 +532,22 @@ DBSQLSERVER.authenticate().then(()=>{
                                 return Promise.all(promises)
                                 
                             }).then((dispos)=>{
-                              //  console.dir(dispos);
-                                return dispos;
+                                let nd=dispos.map((e,i,arr)=>{
+                                    if(e.infoSurRgt.length>1){
+                                        let goodelem=e.infoSurRgt[0];
+                                        //console.log("reglement "+e.wnrgt);
+                                        //console.dir(e);
+                                        e.infoSurRgt=[];
+                                        e.infoSurRgt.push(goodelem);
+                                    }
+                                    return e;
+                                });
+                                //console.dir(nd);
+                                 return nd;
                             });
-
+                       
                     case "date_depot_treso":
-                    return dispoSQL.findAll({attributes:{exclude:['id']},where:{
+                    return dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
                             date_depot_treso:args.date,
                             statut_reg_retirer:args.statut,
                             domaine:args.domaine
@@ -430,12 +569,22 @@ DBSQLSERVER.authenticate().then(()=>{
                                 return Promise.all(promises)
                                 
                             }).then((dispos)=>{
-                               // console.dir(dispos);
-                                return dispos;
+                                let nd=dispos.map((e,i,arr)=>{
+                                    if(e.infoSurRgt.length>1){
+                                        let goodelem=e.infoSurRgt[0];
+                                        //console.log("reglement "+e.wnrgt);
+                                        //console.dir(e);
+                                        e.infoSurRgt=[];
+                                        e.infoSurRgt.push(goodelem);
+                                    }
+                                    return e;
+                                });
+                                //console.dir(nd);
+                                 return nd;
                             });
-                   
+                           
                     case "date_sort_treso":
-                    return dispoSQL.findAll({attributes:{exclude:['id']},where:{
+                   return dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
                             date_sort_treso:args.date,
                              statut_reg_retirer:args.statut,
                              domaine:args.domaine
@@ -457,12 +606,22 @@ DBSQLSERVER.authenticate().then(()=>{
                                 return Promise.all(promises)
                                 
                             }).then((dispos)=>{
-                                //console.dir(dispos);
-                                return dispos;
+                                let nd=dispos.map((e,i,arr)=>{
+                                    if(e.infoSurRgt.length>1){
+                                        let goodelem=e.infoSurRgt[0];
+                                        //console.log("reglement "+e.wnrgt);
+                                        //console.dir(e);
+                                        e.infoSurRgt=[];
+                                        e.infoSurRgt.push(goodelem);
+                                    }
+                                    return e;
+                                });
+                                //console.dir(nd);
+                                 return nd;
                             });
-                    
+                           
                     case "date_depot_sign":
-                    return dispoSQL.findAll({attributes:{exclude:['id']},where:{
+                    return dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
                             date_depot_sign:args.date,
                            statut_reg_retirer:args.statut ,
                            domaine:args.domaine
@@ -484,12 +643,22 @@ DBSQLSERVER.authenticate().then(()=>{
                                 return Promise.all(promises)
                                 
                             }).then((dispos)=>{
-                               // console.dir(dispos);
-                                return dispos;
+                                let nd=dispos.map((e,i,arr)=>{
+                                    if(e.infoSurRgt.length>1){
+                                        let goodelem=e.infoSurRgt[0];
+                                        //console.log("reglement "+e.wnrgt);
+                                        //console.dir(e);
+                                        e.infoSurRgt=[];
+                                        e.infoSurRgt.push(goodelem);
+                                    }
+                                    return e;
+                                });
+                                //console.dir(nd);
+                                 return nd;
                             });
-                    
+                           
                     case "date_recep_sign_reg":
-                    return dispoSQL.findAll({attributes:{exclude:['id']},where:{
+                    return dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
                             date_recep_sign_reg:args.date,
                             statut_reg_retirer:args.statut ,
                             domaine:args.domaine
@@ -511,12 +680,23 @@ DBSQLSERVER.authenticate().then(()=>{
                                 return Promise.all(promises)
                                 
                             }).then((dispos)=>{
-                               // console.dir(dispos);
-                                return dispos;
+                                let nd=dispos.map((e,i,arr)=>{
+                                    if(e.infoSurRgt.length>1){
+                                        let goodelem=e.infoSurRgt[0];
+                                        //console.log("reglement "+e.wnrgt);
+                                        //console.dir(e);
+                                        e.infoSurRgt=[];
+                                        e.infoSurRgt.push(goodelem);
+                                    }
+                                    return e;
+                                });
+                                //console.dir(nd);
+                                 return nd;
                             });
+                            
                     
                     case "date_retrait_reg":
-                    return dispoSQL.findAll({attributes:{exclude:['id']},where:{
+                    return dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
                             date_retrait_reg:args.date,
                              statut_reg_retirer:args.statut,
                              domaine:args.domaine
@@ -539,12 +719,23 @@ DBSQLSERVER.authenticate().then(()=>{
                                 
                             }).then((dispos)=>{
                                // console.dir(dispos);
-                                return dispos;
+                               let nd=dispos.map((e,i,arr)=>{
+                                if(e.infoSurRgt.length>1){
+                                    let goodelem=e.infoSurRgt[0];
+                                    //console.log("reglement "+e.wnrgt);
+                                    //console.dir(e);
+                                    e.infoSurRgt=[];
+                                    e.infoSurRgt.push(goodelem);
+                                }
+                                return e;
+                            });
+                            //console.dir(nd);
+                             return nd;
                             });
                     
                 }
                 
-            }else if(!args.typeDate && !args.date && !args.statut && !args.domaine && args.numregl && !args.numpol && !args.nomtotal ){
+            }else if(!args.typeDate && !args.date && !args.statut && !args.domaine && args.numregl && !args.numpol && !args.nomtotal && !args.numreglStart && !args.numreglEnd){
                  return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                              wnrgt:args.numregl
                         },offset:args.offset,limit:args.limit}).then((res)=>{
@@ -568,7 +759,7 @@ DBSQLSERVER.authenticate().then(()=>{
                                // console.dir(dispos);
                                 return dispos;
                             });
-            }else if(!args.typeDate && !args.date && !args.statut && !args.domaine && !args.numregl && args.numpol && !args.nomtotal ){
+            }else if(!args.typeDate && !args.date && !args.statut && !args.domaine && !args.numregl && args.numpol && !args.nomtotal && !args.numreglStart && !args.numreglEnd){
                  return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                              wnupo:args.numpol
                         },offset:args.offset,limit:args.limit}).then((res)=>{
@@ -592,7 +783,7 @@ DBSQLSERVER.authenticate().then(()=>{
                               //  console.dir(dispos);
                                 return dispos;
                             });
-            }else if(!args.typeDate && !args.date && !args.statut && !args.domaine && !args.numregl && !args.numpol && args.nomtotal ){
+            }else if(!args.typeDate && !args.date && !args.statut && !args.domaine && !args.numregl && !args.numpol && args.nomtotal && !args.numreglStart && !args.numreglEnd){
                  return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                              nom_beneficiaire:{
                                     $like:'%'+args.nomtotal+'%'
@@ -619,8 +810,158 @@ DBSQLSERVER.authenticate().then(()=>{
                                 return dispos;
                             });
             }
+            else if(!args.typeDate && !args.date && args.statut && !args.domaine && !args.numregl && !args.numpol && !args.nomtotal && !args.numreglStart && !args.numreglEnd){
+                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
+                             statut_reg_retirer:args.statut
+                        },offset:args.offset,limit:args.limit}).then((res)=>{
+                                let promises=[];
+                                let dispo;
+                                res.forEach((r)=>{
+                                    promises.push(
+                                        Promise.all([
+                                        DBSQLSERVER.query(query,{ replacements:{numero_reg:r.wnrgt,domaine:r.domaine},type:DBSQLSERVER.QueryTypes.SELECT})
+                                        ]).spread((infosurrgt)=>{
+                                            dispo=r.toJSON();
+                                            dispo.infoSurRgt=infosurrgt;
+                                        
+                                            return dispo;
+                                        })
+                                    );
+                                });
+                                return Promise.all(promises).catch(reason=>{console.log(reason)})
+                                
+                            }).then((dispos)=>{
+                                console.dir(dispos);
+                                return dispos;
+                            });
+            }
+            else if(!args.typeDate && !args.date && !args.statut && args.domaine && !args.numregl && !args.numpol && !args.nomtotal && !args.numreglStart && !args.numreglEnd){
+               return dispoSQL.findAll({
+                    attributes:{exclude:['id']},
+                    where:{domaine:args.domaine},
+                    order:[['wnrgt','DESC']],
+                    offset:args.offset,
+                    limit:args.limit}).then((res)=>{
+                    let promises=[];
+                    let dispo;
+                    res.forEach((r)=>{
+                        promises.push(
+                            Promise.all([
+                            DBSQLSERVER.query(query,{ replacements:{numero_reg:r.wnrgt,domaine:r.domaine},type:DBSQLSERVER.QueryTypes.SELECT})
+                            ]).spread((infosurrgt)=>{
+                                dispo=r.toJSON();
+                                dispo.infoSurRgt=infosurrgt;
+                            
+                                return dispo;
+                            })
+                        );
+                    });
+                    return Promise.all(promises)
+                    
+                }).then((dispos)=>{
+                // console.dir(dispos);
+                //on enleve les doublons dans l'array de inforeg dispo
+                let nd=dispos.map((e,i,arr)=>{
+                    if(e.infoSurRgt.length>1){
+                        let goodelem=e.infoSurRgt[0];
+                        //console.log("reglement "+e.wnrgt);
+                        //console.dir(e);
+                        e.infoSurRgt=[];
+                        e.infoSurRgt.push(goodelem);
+                    }
+                    return e;
+                });
+                //console.dir(nd);
+                
+                    return nd;
+                });
+            }
+            else if(!args.typeDate && !args.date && !args.statut && !args.domaine && !args.numregl && !args.numpol && !args.nomtotal && args.numreglStart && args.numreglEnd){
+                return  dispoSQL.findAll({
+                    attributes:{exclude:['id']},
+                    where:{
+                        wnrgt:{
+                            $between:[args.numreglStart,args.numreglEnd]
+                        }
+                    },
+                    order:[['wnrgt','DESC']],
+                    offset:args.offset,
+                    limit:args.limit}).then((res)=>{
+                    let promises=[];
+                    let dispo;
+                    res.forEach((r)=>{
+                        promises.push(
+                            Promise.all([
+                            DBSQLSERVER.query(query,{ replacements:{numero_reg:r.wnrgt,domaine:r.domaine},type:DBSQLSERVER.QueryTypes.SELECT})
+                            ]).spread((infosurrgt)=>{
+                                dispo=r.toJSON();
+                                dispo.infoSurRgt=infosurrgt;
+                            
+                                return dispo;
+                            })
+                        );
+                    });
+                    return Promise.all(promises)
+                    
+                }).then((dispos)=>{
+                // console.dir(dispos);
+                //on enleve les doublons dans l'array de inforeg dispo
+                let nd=dispos.map((e,i,arr)=>{
+                    if(e.infoSurRgt.length>1){
+                        let goodelem=e.infoSurRgt[0];
+                        //console.log("reglement "+e.wnrgt);
+                        //console.dir(e);
+                        e.infoSurRgt=[];
+                        e.infoSurRgt.push(goodelem);
+                    }
+                    return e;
+                });
+                //console.dir(nd);
+                
+                    return nd;
+                });
+            }
             else{
-                return [];
+                //on affiche tout et on ordonne par date de la demande
+               let l=  dispoSQL.findAll({
+                                        attributes:{exclude:['id']},
+                                        order:[['wnrgt','DESC']],
+                                        offset:args.offset,
+                                        limit:args.limit}).then((res)=>{
+                                let promises=[];
+                                let dispo;
+                                res.forEach((r)=>{
+                                    promises.push(
+                                        Promise.all([
+                                        DBSQLSERVER.query(query,{ replacements:{numero_reg:r.wnrgt,domaine:r.domaine},type:DBSQLSERVER.QueryTypes.SELECT})
+                                        ]).spread((infosurrgt)=>{
+                                            dispo=r.toJSON();
+                                            dispo.infoSurRgt=infosurrgt;
+                                        
+                                            return dispo;
+                                        })
+                                    );
+                                });
+                                return Promise.all(promises)
+                                
+                            }).then((dispos)=>{
+                               // console.dir(dispos);
+                               //on enleve les doublons dans l'array de inforeg dispo
+                               let nd=dispos.map((e,i,arr)=>{
+                                   if(e.infoSurRgt.length>1){
+                                       let goodelem=e.infoSurRgt[0];
+                                       //console.log("reglement "+e.wnrgt);
+                                       //console.dir(e);
+                                       e.infoSurRgt=[];
+                                       e.infoSurRgt.push(goodelem);
+                                   }
+                                   return e;
+                               });
+                               //console.dir(nd);
+                               
+                                return nd;
+                            });
+               return l;
             }
             
         },consultDispo(_,args){
@@ -628,14 +969,14 @@ DBSQLSERVER.authenticate().then(()=>{
                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                     wnupo:parseInt(args.numpolice),
                      //statut_reg_retirer:'PRET'
-            },offset:args.offset,limit:args.limit});
+            },order:[['wnrgt','DESC']],offset:args.offset,limit:args.limit});
  
             }else if(args.numpolice && args.birthdate && !args.nomtotal){
                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                     wnupo:parseInt(args.numpolice),
                     date_naiss:args.birthdate,
                     // statut_reg_retirer:'PRET'
-                },offset:args.offset,limit:args.limit});
+                },order:[['wnrgt','DESC']],offset:args.offset,limit:args.limit});
  
             }else if(args.numpolice && !args.birthdate && args.nomtotal){
                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
@@ -644,13 +985,13 @@ DBSQLSERVER.authenticate().then(()=>{
                                     $like:'%'+args.nomtotal+'%'
                                  },
                      //statut_reg_retirer:'PRET'
-                },offset:args.offset,limit:args.limit});
+                },order:[['wnrgt','DESC']],offset:args.offset,limit:args.limit});
  
             }else if(!args.numpolice && args.birthdate && !args.nomtotal){
                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                     date_naiss:args.birthdate,
                     // statut_reg_retirer:'PRET'
-            },offset:args.offset,limit:args.limit});
+            },order:[['wnrgt','DESC']],offset:args.offset,limit:args.limit});
  
             }else if(!args.numpolice && args.birthdate && args.nomtotal){
                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
@@ -659,7 +1000,7 @@ DBSQLSERVER.authenticate().then(()=>{
                                     $like:'%'+args.nomtotal+'%'
                                  },
                      //statut_reg_retirer:'PRET'
-                },offset:args.offset,limit:args.limit});
+                },order:[['wnrgt','DESC']],offset:args.offset,limit:args.limit});
  
             }else if(!args.numpolice && !args.birthdate && args.nomtotal){
                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
@@ -667,7 +1008,7 @@ DBSQLSERVER.authenticate().then(()=>{
                                     $like:'%'+args.nomtotal+'%'
                                  },
                     // statut_reg_retirer:'PRET'
-                },offset:args.offset,limit:args.limit});
+                },order:[['wnrgt','DESC']],offset:args.offset,limit:args.limit});
  
             }else if(args.numpolice && args.birthdate && args.nomtotal){
                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
@@ -677,12 +1018,12 @@ DBSQLSERVER.authenticate().then(()=>{
                                     $like:'%'+args.nomtotal+'%'
                                  },
                      //statut_reg_retirer:'PRET'
-                },offset:args.offset,limit:args.limit});
+                },order:[['wnrgt','DESC']],offset:args.offset,limit:args.limit});
  
             }else{
                  return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                     //statut_reg_retirer:'PRET'
-                },offset:args.offset,limit:args.limit});
+                },order:[['wnrgt','DESC']],offset:args.offset,limit:args.limit});
             }
         },
         dataToExport(_,args){
@@ -694,7 +1035,7 @@ DBSQLSERVER.authenticate().then(()=>{
                              date_depot_treso:{
                                     $between:[args.startDate,args.endDate]
                                  }
-                        }}).then((res)=>{
+                        },order:[['wnrgt','DESC']]}).then((res)=>{
                                 let promises=[];
                                 let dispo;
                                 res.forEach((r)=>{
@@ -712,15 +1053,26 @@ DBSQLSERVER.authenticate().then(()=>{
                                 return Promise.all(promises)
                                 
                             }).then((dispos)=>{
-                                console.dir(dispos);
-                                return dispos;
+                                let nd=dispos.map((e,i,arr)=>{
+                                    if(e.infoSurRgt.length>1){
+                                        let goodelem=e.infoSurRgt[0];
+                                        //console.log("reglement "+e.wnrgt);
+                                        //console.dir(e);
+                                        e.infoSurRgt=[];
+                                        e.infoSurRgt.push(goodelem);
+                                    }
+                                    return e;
+                                });
+                                //console.dir(nd);
+                                
+                                 return nd;
                             });
                     case "date_sort_treso":
                     return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                              date_sort_treso:{
                                     $between:[args.startDate,args.endDate]
                                  }
-                        }}).then((res)=>{
+                        },order:[['wnrgt','DESC']]}).then((res)=>{
                                 let promises=[];
                                 let dispo;
                                 res.forEach((r)=>{
@@ -738,15 +1090,26 @@ DBSQLSERVER.authenticate().then(()=>{
                                 return Promise.all(promises)
                                 
                             }).then((dispos)=>{
-                               // console.dir(dispos);
-                                return dispos;
+                                let nd=dispos.map((e,i,arr)=>{
+                                    if(e.infoSurRgt.length>1){
+                                        let goodelem=e.infoSurRgt[0];
+                                        //console.log("reglement "+e.wnrgt);
+                                        //console.dir(e);
+                                        e.infoSurRgt=[];
+                                        e.infoSurRgt.push(goodelem);
+                                    }
+                                    return e;
+                                });
+                                //console.dir(nd);
+                                
+                                 return nd;
                             });
                     case "date_depot_sign":
                     return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                              date_depot_sign:{
                                     $between:[args.startDate,args.endDate]
                                  }
-                        }}).then((res)=>{
+                        },order:[['wnrgt','DESC']]}).then((res)=>{
                                 let promises=[];
                                 let dispo;
                                 res.forEach((r)=>{
@@ -764,15 +1127,26 @@ DBSQLSERVER.authenticate().then(()=>{
                                 return Promise.all(promises)
                                 
                             }).then((dispos)=>{
-                                //console.dir(dispos);
-                                return dispos;
+                                let nd=dispos.map((e,i,arr)=>{
+                                    if(e.infoSurRgt.length>1){
+                                        let goodelem=e.infoSurRgt[0];
+                                        //console.log("reglement "+e.wnrgt);
+                                        //console.dir(e);
+                                        e.infoSurRgt=[];
+                                        e.infoSurRgt.push(goodelem);
+                                    }
+                                    return e;
+                                });
+                                //console.dir(nd);
+                                
+                                 return nd;
                             });
                     case "date_sort_sign":
                     return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                              date_sort_sign:{
                                     $between:[args.startDate,args.endDate]
                                  }
-                        }}).then((res)=>{
+                        },order:[['wnrgt','DESC']]}).then((res)=>{
                                 let promises=[];
                                 let dispo;
                                 res.forEach((r)=>{
@@ -790,15 +1164,26 @@ DBSQLSERVER.authenticate().then(()=>{
                                 return Promise.all(promises)
                                 
                             }).then((dispos)=>{
-                               // console.dir(dispos);
-                                return dispos;
+                                let nd=dispos.map((e,i,arr)=>{
+                                    if(e.infoSurRgt.length>1){
+                                        let goodelem=e.infoSurRgt[0];
+                                        //console.log("reglement "+e.wnrgt);
+                                        //console.dir(e);
+                                        e.infoSurRgt=[];
+                                        e.infoSurRgt.push(goodelem);
+                                    }
+                                    return e;
+                                });
+                                //console.dir(nd);
+                                
+                                 return nd;
                             });
                     case "date_recep_sign_reg":
                     return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                              date_recep_sign_reg:{
                                     $between:[args.startDate,args.endDate]
                                  }
-                        }}).then((res)=>{
+                        },order:[['wnrgt','DESC']]}).then((res)=>{
                                 let promises=[];
                                 let dispo;
                                 res.forEach((r)=>{
@@ -816,15 +1201,26 @@ DBSQLSERVER.authenticate().then(()=>{
                                 return Promise.all(promises)
                                 
                             }).then((dispos)=>{
-                              //  console.dir(dispos);
-                                return dispos;
+                                let nd=dispos.map((e,i,arr)=>{
+                                    if(e.infoSurRgt.length>1){
+                                        let goodelem=e.infoSurRgt[0];
+                                        //console.log("reglement "+e.wnrgt);
+                                        //console.dir(e);
+                                        e.infoSurRgt=[];
+                                        e.infoSurRgt.push(goodelem);
+                                    }
+                                    return e;
+                                });
+                                //console.dir(nd);
+                                
+                                 return nd;
                             });
                     case "date_retrait_reg":
                     return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                              date_retrait_reg:{
                                     $between:[args.startDate,args.endDate]
                                  }
-                        }}).then((res)=>{
+                        },order:[['wnrgt','DESC']]}).then((res)=>{
                                 let promises=[];
                                 let dispo;
                                 res.forEach((r)=>{
@@ -842,15 +1238,26 @@ DBSQLSERVER.authenticate().then(()=>{
                                 return Promise.all(promises)
                                 
                             }).then((dispos)=>{
-                              //  console.dir(dispos);
-                                return dispos;
+                                let nd=dispos.map((e,i,arr)=>{
+                                    if(e.infoSurRgt.length>1){
+                                        let goodelem=e.infoSurRgt[0];
+                                        //console.log("reglement "+e.wnrgt);
+                                        //console.dir(e);
+                                        e.infoSurRgt=[];
+                                        e.infoSurRgt.push(goodelem);
+                                    }
+                                    return e;
+                                });
+                                //console.dir(nd);
+                                
+                                 return nd;
                             });
                         case "date_naiss":
                     return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                              date_naiss:{
                                     $between:[args.startDate,args.endDate]
                                  }
-                        }}).then((res)=>{
+                        },order:[['wnrgt','DESC']]}).then((res)=>{
                                 let promises=[];
                                 let dispo;
                                 res.forEach((r)=>{
@@ -868,8 +1275,19 @@ DBSQLSERVER.authenticate().then(()=>{
                                 return Promise.all(promises)
                                 
                             }).then((dispos)=>{
-                               // console.dir(dispos);
-                                return dispos;
+                                let nd=dispos.map((e,i,arr)=>{
+                                    if(e.infoSurRgt.length>1){
+                                        let goodelem=e.infoSurRgt[0];
+                                        //console.log("reglement "+e.wnrgt);
+                                        //console.dir(e);
+                                        e.infoSurRgt=[];
+                                        e.infoSurRgt.push(goodelem);
+                                    }
+                                    return e;
+                                });
+                                //console.dir(nd);
+                                
+                                 return nd;
                             });
                 }
             }else if(args.typeDate && args.startDate && args.endDate && args.domaine && args.domaine!=="TOUS" ){
@@ -880,7 +1298,7 @@ DBSQLSERVER.authenticate().then(()=>{
                              date_depot_treso:{
                                     $between:[args.startDate,args.endDate]
                                  }
-                        }}).then((res)=>{
+                        },order:[['wnrgt','DESC']]}).then((res)=>{
                                 let promises=[];
                                 let dispo;
                                 res.forEach((r)=>{
@@ -898,8 +1316,19 @@ DBSQLSERVER.authenticate().then(()=>{
                                 return Promise.all(promises)
                                 
                             }).then((dispos)=>{
-                               // console.dir(dispos);
-                                return dispos;
+                                let nd=dispos.map((e,i,arr)=>{
+                                    if(e.infoSurRgt.length>1){
+                                        let goodelem=e.infoSurRgt[0];
+                                        //console.log("reglement "+e.wnrgt);
+                                        //console.dir(e);
+                                        e.infoSurRgt=[];
+                                        e.infoSurRgt.push(goodelem);
+                                    }
+                                    return e;
+                                });
+                                //console.dir(nd);
+                                
+                                 return nd;
                             });
                     case "date_sort_treso":
                     return dispoSQL.findAll({attributes:{exclude:['id']},where:{
@@ -907,7 +1336,7 @@ DBSQLSERVER.authenticate().then(()=>{
                              date_sort_treso:{
                                     $between:[args.startDate,args.endDate]
                                  }
-                        }}).then((res)=>{
+                        },order:[['wnrgt','DESC']]}).then((res)=>{
                                 let promises=[];
                                 let dispo;
                                 res.forEach((r)=>{
@@ -925,8 +1354,19 @@ DBSQLSERVER.authenticate().then(()=>{
                                 return Promise.all(promises)
                                 
                             }).then((dispos)=>{
-                              //  console.dir(dispos);
-                                return dispos;
+                                let nd=dispos.map((e,i,arr)=>{
+                                    if(e.infoSurRgt.length>1){
+                                        let goodelem=e.infoSurRgt[0];
+                                        //console.log("reglement "+e.wnrgt);
+                                        //console.dir(e);
+                                        e.infoSurRgt=[];
+                                        e.infoSurRgt.push(goodelem);
+                                    }
+                                    return e;
+                                });
+                                //console.dir(nd);
+                                
+                                 return nd;
                             });
                     case "date_depot_sign":
                     return dispoSQL.findAll({attributes:{exclude:['id']},where:{
@@ -934,7 +1374,7 @@ DBSQLSERVER.authenticate().then(()=>{
                              date_depot_sign:{
                                     $between:[args.startDate,args.endDate]
                                  }
-                        }}).then((res)=>{
+                        },order:[['wnrgt','DESC']]}).then((res)=>{
                                 let promises=[];
                                 let dispo;
                                 res.forEach((r)=>{
@@ -952,8 +1392,19 @@ DBSQLSERVER.authenticate().then(()=>{
                                 return Promise.all(promises)
                                 
                             }).then((dispos)=>{
-                               // console.dir(dispos);
-                                return dispos;
+                                let nd=dispos.map((e,i,arr)=>{
+                                    if(e.infoSurRgt.length>1){
+                                        let goodelem=e.infoSurRgt[0];
+                                        //console.log("reglement "+e.wnrgt);
+                                        //console.dir(e);
+                                        e.infoSurRgt=[];
+                                        e.infoSurRgt.push(goodelem);
+                                    }
+                                    return e;
+                                });
+                                //console.dir(nd);
+                                
+                                 return nd;
                             });
                     case "date_sort_sign":
                     return dispoSQL.findAll({attributes:{exclude:['id']},where:{
@@ -961,7 +1412,7 @@ DBSQLSERVER.authenticate().then(()=>{
                              date_sort_sign:{
                                     $between:[args.startDate,args.endDate]
                                  }
-                        }}).then((res)=>{
+                        },order:[['wnrgt','DESC']]}).then((res)=>{
                                 let promises=[];
                                 let dispo;
                                 res.forEach((r)=>{
@@ -979,8 +1430,19 @@ DBSQLSERVER.authenticate().then(()=>{
                                 return Promise.all(promises)
                                 
                             }).then((dispos)=>{
-                              //  console.dir(dispos);
-                                return dispos;
+                                let nd=dispos.map((e,i,arr)=>{
+                                    if(e.infoSurRgt.length>1){
+                                        let goodelem=e.infoSurRgt[0];
+                                        //console.log("reglement "+e.wnrgt);
+                                        //console.dir(e);
+                                        e.infoSurRgt=[];
+                                        e.infoSurRgt.push(goodelem);
+                                    }
+                                    return e;
+                                });
+                                //console.dir(nd);
+                                
+                                 return nd;
                             });
                     case "date_recep_sign_reg":
                     return dispoSQL.findAll({attributes:{exclude:['id']},where:{
@@ -988,7 +1450,7 @@ DBSQLSERVER.authenticate().then(()=>{
                              date_recep_sign_reg:{
                                     $between:[args.startDate,args.endDate]
                                  }
-                        }}).then((res)=>{
+                        },order:[['wnrgt','DESC']]}).then((res)=>{
                                 let promises=[];
                                 let dispo;
                                 res.forEach((r)=>{
@@ -1006,8 +1468,19 @@ DBSQLSERVER.authenticate().then(()=>{
                                 return Promise.all(promises)
                                 
                             }).then((dispos)=>{
-                              //  console.dir(dispos);
-                                return dispos;
+                                let nd=dispos.map((e,i,arr)=>{
+                                    if(e.infoSurRgt.length>1){
+                                        let goodelem=e.infoSurRgt[0];
+                                        //console.log("reglement "+e.wnrgt);
+                                        //console.dir(e);
+                                        e.infoSurRgt=[];
+                                        e.infoSurRgt.push(goodelem);
+                                    }
+                                    return e;
+                                });
+                                //console.dir(nd);
+                                
+                                 return nd;
                             });
                     case "date_retrait_reg":
                     return dispoSQL.findAll({attributes:{exclude:['id']},where:{
@@ -1015,7 +1488,7 @@ DBSQLSERVER.authenticate().then(()=>{
                              date_retrait_reg:{
                                     $between:[args.startDate,args.endDate]
                                  }
-                        }}).then((res)=>{
+                        },order:[['wnrgt','DESC']]}).then((res)=>{
                                 let promises=[];
                                 let dispo;
                                 res.forEach((r)=>{
@@ -1033,8 +1506,19 @@ DBSQLSERVER.authenticate().then(()=>{
                                 return Promise.all(promises)
                                 
                             }).then((dispos)=>{
-                                //console.dir(dispos);
-                                return dispos;
+                                let nd=dispos.map((e,i,arr)=>{
+                                    if(e.infoSurRgt.length>1){
+                                        let goodelem=e.infoSurRgt[0];
+                                        //console.log("reglement "+e.wnrgt);
+                                        //console.dir(e);
+                                        e.infoSurRgt=[];
+                                        e.infoSurRgt.push(goodelem);
+                                    }
+                                    return e;
+                                });
+                                //console.dir(nd);
+                                
+                                 return nd;
                             });
                             
                         case "date_naiss":
@@ -1042,7 +1526,7 @@ DBSQLSERVER.authenticate().then(()=>{
                              date_naiss:{
                                     $between:[args.startDate,args.endDate]
                                  }
-                        }}).then((res)=>{
+                        },order:[['wnrgt','DESC']]}).then((res)=>{
                                 let promises=[];
                                 let dispo;
                                 res.forEach((r)=>{
@@ -1060,8 +1544,19 @@ DBSQLSERVER.authenticate().then(()=>{
                                 return Promise.all(promises)
                                 
                             }).then((dispos)=>{
-                               // console.dir(dispos);
-                                return dispos;
+                                let nd=dispos.map((e,i,arr)=>{
+                                    if(e.infoSurRgt.length>1){
+                                        let goodelem=e.infoSurRgt[0];
+                                        //console.log("reglement "+e.wnrgt);
+                                        //console.dir(e);
+                                        e.infoSurRgt=[];
+                                        e.infoSurRgt.push(goodelem);
+                                    }
+                                    return e;
+                                });
+                                //console.dir(nd);
+                                
+                                 return nd;
                             });
                 }
             }else{
