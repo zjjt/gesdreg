@@ -5,6 +5,7 @@
     "DBSQLSERVER_PASSWORD":"",
     "DBSQLSERVER_DATABASE":"",
     "MAIL_SETTINGS":"",
-    "ADMINLOGMDP":"" 
+    "ADMINLOGMDP":"" ,
+    "ADMINMAIL":""
    
 }

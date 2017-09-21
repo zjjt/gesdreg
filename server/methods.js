@@ -15,7 +15,8 @@ const json2xls=require('json2xls');
 export default ()=>{
     Meteor.methods({
         sendEmail(to,from,subject,text){
-            check([to,subject,text],[String]);
+            check([to],[Array]);
+            check([from,subject,text],[String]);
             this.unblock();
             Email.send({to,from,subject,html:text});
         },
@@ -153,7 +154,7 @@ export default ()=>{
                             }
                         })){
                             //DBSQL.sync();
-                            let message="Ceci est un message automatique, veuillez ne pas y répondre.<br/><br/>Bonjour Monsieur/Madame,<br/><br/>Veuillez trouver ci dessous vos accès au module GESDREG en charge de la gestion des disponibilités de règlements. <br/><br/>Identifiant: <b>"+values.username+"</b><br/> Mot de passe: <b>"+values.passwordconf+"</b>. <br/><br/>Votre application est accèssible via le lien suivant: http://nvmob-srv:8082. <br/>Pour un fonctionnement optimal veuillez ouvrir l'application avec les navigateur <b>Google Chrome ou Mozilla Firefox.</b><br/><br/> Cordialement, <br/><br/><b>DSI NSIA VIE ASSURANCES</b>";
+                            let message="<em>Ceci est un message automatique, veuillez ne pas y répondre.</em><br/><br/>Bonjour Monsieur/Madame,<br/><br/>Veuillez trouver ci dessous vos accès au module GESDREG en charge de la gestion des disponibilités de règlements. <br/><br/>Identifiant: <b>"+values.username+"</b><br/> Mot de passe: <b>"+values.passwordconf+"</b>. <br/><br/>Votre application est accèssible via le lien suivant: http://nvmob-srv:8082. <br/>Pour un fonctionnement optimal veuillez ouvrir l'application avec les navigateurs <b>Google Chrome</b> ou <b>Mozilla Firefox.</b><br/><br/> Cordialement, <br/><br/><b>DSI NSIA VIE ASSURANCES</b>";
                             console.log("Valeur de la variable environment mail "+process.env.MAIL_URL);
                             Meteor.call("sendEmail",[values.email,Meteor.settings.ADMINMAIL],"info@nsiavieapplications.com","Vos identifiants sur le module GESDREG(Gestion des disponibilités de règlement)",message);
                               return userSQL.create({
