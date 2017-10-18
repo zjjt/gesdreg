@@ -50,7 +50,7 @@ class DispoTable extends Component{
                         selectable:true,
                         multiSelectable: true,
                         enableSelectAll:false,
-                        deselectOnClickaway:false,
+                        deselectOnClickaway:true,
                         showCheckboxes:true,
                         height:'450px'
                     }
@@ -70,7 +70,18 @@ class DispoTable extends Component{
         }
 
         _dialogTClose(){
-            this.setState({dialogTIsOpen: false});
+            console.dir(this.refs);
+            this.state.selectedRows.map((e,i,arr)=>{
+                this.refs[`ligne${i}`].props.selected=!this.refs[`ligne${i}`].props.selected;
+               // console.log(this.refs[`ligne${i}`].props.selected);
+            });
+            this.setState({
+                dialogTIsOpen: false,
+                selectedRows:[],
+                regSelected:[],
+            });
+            console.dir(this.refs);
+          this.forceUpdate(()=>{});
         }
 
        
@@ -220,7 +231,7 @@ class DispoTable extends Component{
                                             if(row.statut_reg_retirer==="PRET")statutClass='animated bounceInRight greenBack';
                                             if(row.statut_reg_retirer==="SORTIE")statutClass='animated bounceInRight redBack';
 
-                                            return(<TableRow key={index} className={ statutClass } selected={this.state.selectedRows.indexOf(index)!==-1} ref={`user${index}`}>
+                                            return(<TableRow key={index} className={ statutClass } selected={this.state.selectedRows.length?true:false} ref={`ligne${index}`}>
                                                 <TableRowColumn>{row.wasrg}</TableRowColumn>
                                                 <TableRowColumn>{row.wnrgt}</TableRowColumn>
                                                 <TableRowColumn>{row.infoSurRgt[0]?row.infoSurRgt[0].NUMERO_CHEQUE!=''?row.infoSurRgt[0].NUMERO_CHEQUE:'Aucun numero':'Aucun numero'}</TableRowColumn>
