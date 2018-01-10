@@ -61,7 +61,7 @@ class DispoTable extends Component{
           console.dir(this.props);
         }
         componentDidMount(){
-            $('.tableau').parent().css("width","5100px");
+            $('.tableau').parent().css("width","5250px");
         }
 
         _dialogTOpen(){
