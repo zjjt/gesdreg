@@ -8,7 +8,7 @@ import schema from './schema.js';
 import resolvers from './resolvers.js';
 
 
-const GRAPHQL_PORT=4000;
+const GRAPHQL_PORT=5000;
 
 let graphQLServer=express();
 

@@ -191,6 +191,7 @@ class DispoTable extends Component{
                                 <TableHeaderColumn tooltip="Cause du sinistre">Cause du sinistre</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Type du sinistre">Type du sinistre</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Date de réception de la demande">Date de réception de la demande</TableHeaderColumn>
+                                <TableHeaderColumn tooltip="Date du règlement">Date du règlement</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Date de naissance du bénéficiaire">Date de naissance du Bénéficiaire</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Date de dépot à la trésorerie">Dépot Tréso</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Date de sortie de la trésorerie">Sortie Tréso</TableHeaderColumn>
@@ -234,21 +235,22 @@ class DispoTable extends Component{
                                             return(<TableRow key={index} className={ statutClass } selected={this.state.selectedRows.length?true:false} ref={`ligne${index}`}>
                                                 <TableRowColumn>{row.wasrg}</TableRowColumn>
                                                 <TableRowColumn>{row.wnrgt}</TableRowColumn>
-                                                <TableRowColumn>{row.infoSurRgt[0]?row.infoSurRgt[0].NUMERO_CHEQUE!=''?row.infoSurRgt[0].NUMERO_CHEQUE:'Aucun numero':'Aucun numero'}</TableRowColumn>
+                                                <TableRowColumn>{row.infoSurRgt[0]?row.infoSurRgt[0].NUMERO_CHEQUE!=''?row.infoSurRgt[0].NUMERO_CHEQUE:'"NON DEFINI"':'"NON DEFINI"'}</TableRowColumn>
                                                 <TableRowColumn>{row.MNTGT}</TableRowColumn>
                                                 <TableRowColumn>{row.MRGGT}</TableRowColumn>
                                                 <TableRowColumn>{row.wnupo}</TableRowColumn>
                                                 <TableRowColumn>{row.nom_beneficiaire}</TableRowColumn>
-                                                <TableRowColumn>{row.infoSurRgt[0]?row.infoSurRgt[0].LIBELLE_SINISTRE:''}</TableRowColumn>
-                                                <TableRowColumn>{row.infoSurRgt[0]?row.infoSurRgt[0].CAUSE_SINISTRE:''}</TableRowColumn>
-                                                <TableRowColumn>{row.infoSurRgt[0]?row.infoSurRgt[0].TYPE_SINISTRE:''}</TableRowColumn>
-                                                <TableRowColumn>{row.infoSurRgt[0]?row.infoSurRgt[0].DATE_RECEPTION:''}</TableRowColumn>
-                                                <TableRowColumn>{row.date_naiss?moment(row.date_naiss).format("DD-MM-YYYY"):"NON DEFINIE"}</TableRowColumn>
-                                                <TableRowColumn>{row.date_depot_treso?moment(row.date_depot_treso).format("DD-MM-YYYY"):"NON DEFINIE"}</TableRowColumn>
-                                                <TableRowColumn >{row.date_sort_treso?moment(row.date_sort_treso).format("DD-MM-YYYY"):"NON DEFINIE"}</TableRowColumn> 
-                                                <TableRowColumn>{row.date_depot_sign?moment(row.date_depot_sign).format("DD-MM-YYYY"):"NON DEFINIE"}</TableRowColumn>
-                                                <TableRowColumn>{row.date_recep_sign_reg?moment(row.date_recep_sign_reg).format("DD-MM-YYYY"):"NON DEFINIE"}</TableRowColumn>
-                                                <TableRowColumn >{row.date_retrait_reg?moment(row.date_retrait_reg).format("DD-MM-YYYY"):"NON DEFINIE"}</TableRowColumn> 
+                                                <TableRowColumn>{row.infoSurRgt[0]?row.infoSurRgt[0].LIBELLE_SINISTRE:"NON DEFINI"}</TableRowColumn>
+                                                <TableRowColumn>{row.infoSurRgt[0]?row.infoSurRgt[0].CAUSE_SINISTRE:"NON DEFINI"}</TableRowColumn>
+                                                <TableRowColumn>{row.infoSurRgt[0]?row.infoSurRgt[0].TYPE_SINISTRE:"NON DEFINI"}</TableRowColumn>
+                                                <TableRowColumn>{row.infoSurRgt[0]?englishDateToFr(row.infoSurRgt[0].DATE_RECEPTION):"NON DEFINI"}</TableRowColumn>
+                                                <TableRowColumn>{row.infoSurRgt[0]?englishDateToFr(row.infoSurRgt[0].DATE_REGLEMENT):"NON DEFINI"}</TableRowColumn>
+                                                <TableRowColumn>{row.date_naiss?moment(row.date_naiss).format("DD-MM-YYYY"):"NON DEFINI"}</TableRowColumn>
+                                                <TableRowColumn>{row.date_depot_treso?moment(row.date_depot_treso).format("DD-MM-YYYY"):"NON DEFINI"}</TableRowColumn>
+                                                <TableRowColumn >{row.date_sort_treso?moment(row.date_sort_treso).format("DD-MM-YYYY"):"NON DEFINI"}</TableRowColumn> 
+                                                <TableRowColumn>{row.date_depot_sign?moment(row.date_depot_sign).format("DD-MM-YYYY"):"NON DEFINI"}</TableRowColumn>
+                                                <TableRowColumn>{row.date_recep_sign_reg?moment(row.date_recep_sign_reg).format("DD-MM-YYYY"):"NON DEFINI"}</TableRowColumn>
+                                                <TableRowColumn >{row.date_retrait_reg?moment(row.date_retrait_reg).format("DD-MM-YYYY"):"NON DEFINI"}</TableRowColumn> 
                                                 <TableRowColumn>{row.statut_reg_retirer}</TableRowColumn>
                                                 <TableRowColumn>{domaine}</TableRowColumn>
                                                 <TableRowColumn>{row.redac==="ADM"?"Administrateur":row.redac}</TableRowColumn>
@@ -373,6 +375,7 @@ const listeDisponibilities=gql`
                 CAUSE_SINISTRE
                 TYPE_SINISTRE
                 DATE_RECEPTION
+                DATE_REGLEMENT
                 NUMERO_CHEQUE
                 MONTANT_BRUT
                 MONTANT_NET_REGLEMENT
