@@ -212,7 +212,7 @@ export default ()=>{
         updateDispos(values,rgtArray){
             //mise a jour groupee des reglement
             let prom;
-            console.dir(values);
+            console.log(typeof values.date_sort_treso);
             let statut="EN COURS";
             if(values.date_depot_treso){
                 statut="A LA TRESO";
@@ -354,11 +354,11 @@ export default ()=>{
                                              wnrgt:e.wnrgt,
                                              wnupo:e.wnupo,
                                              d:e.domaine,
-                                             ddt:values.date_depot_treso?values.date_depot_treso:null,
-                                             dst:values.date_sort_treso?values.date_sort_treso:null,
-                                             dds:values.date_depot_sign?values.date_depot_sign:null,
-                                             drsr:values.date_recep_sign_reg?values.date_recep_sign_reg:null,
-                                             drr:values.date_retrait_reg?values.date_retrait_reg:null,
+                                             ddt:values.date_depot_treso?values.date_depot_treso:e.date_depot_treso?moment(e.date_depot_treso).format("YYYY-MM-DD"):null,
+                                             dst:values.date_sort_treso?values.date_sort_treso:e.date_sort_treso?moment(e.date_sort_treso).format("YYYY-MM-DD"):null,
+                                             dds:values.date_depot_sign?values.date_depot_sign:e.date_depot_sign?moment(e.date_depot_sign).format("YYYY-MM-DD"):null,
+                                             drsr:values.date_recep_sign_reg?values.date_recep_sign_reg:e.date_recep_sign_reg?moment(e.date_recep_sign_reg).format("YYYY-MM-DD"):null,
+                                             drr:values.date_retrait_reg?values.date_retrait_reg:e.date_retrait_reg?moment(e.date_retrait_reg).format("YYYY-MM-DD"):null,
                                              r:redac.codeRedac,
                                              srr:statut
                                          },
