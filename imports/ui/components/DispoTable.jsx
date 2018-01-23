@@ -41,6 +41,7 @@ class DispoTable extends Component{
                 errorMsg:'',
                 selectedRows:[],
                 regSelected:[],
+                listeDispo:[],
                 loaderVisible:false,
                 table:{
                         fixedHeader:true,
@@ -58,7 +59,13 @@ class DispoTable extends Component{
         }
 
         componentDidUpdate(){
-          console.dir(this.props);
+          //console.dir(this.props);
+          if(this.props.listeDispo!=this.state.listeDispo && typeof this.props.listeDispo!="undefined"){
+            this.setState({listeDispo:this.props.listeDispo})
+             }
+        }
+        componentWillUpdate(){
+            
         }
         componentDidMount(){
             $('.tableau').parent().css("width","5250px");
@@ -81,7 +88,7 @@ class DispoTable extends Component{
                 regSelected:[],
             });
             console.dir(this.refs);
-          this.forceUpdate(()=>{});
+         // this.forceUpdate(()=>{});
         }
 
        
@@ -117,6 +124,7 @@ class DispoTable extends Component{
         render(){
             const {handleSubmit,pristine,submitting,dispatch,data,error,listeDispo,loadMoreEntries,loading}=this.props;
             let statutClass='animated bounceInRight ';
+            let liste=listeDispo;
             console.log(JSON.stringify(error));
             console.dir(this.state.regSelected);
             const mettreAjour=()=>{
@@ -128,7 +136,7 @@ class DispoTable extends Component{
                                 this.setState({
                                     loaderVisible:false
                                 });
-                                this.forceUpdate(); 
+                                //this.forceUpdate(); 
                             }else if(err){
                                 this.setState({
                                     errorMsg:"La mise à jour a échoué."
@@ -151,6 +159,7 @@ class DispoTable extends Component{
                 />,
                 ];
                 //alert(JSON.stringify(data))
+                console.dir(this.state);
             return(
                 <div >
                     <Dialog
@@ -220,7 +229,7 @@ class DispoTable extends Component{
                                                     </div>
                                                </TableRowColumn>
                                             </TableRow>
-                                           ):typeof listeDispo!=='undefined'?listeDispo.map((row,index)=>{
+                                           ): typeof this.state.listeDispo!=="undefined" && this.state.listeDispo.length?this.state.listeDispo.map((row,index)=>{
                                             let domaine='';
                                             if(row.domaine==="I")domaine="INDIVIDUEL";
                                             if(row.domaine==="G")domaine="GROUPE";
@@ -393,7 +402,7 @@ export default graphql(listeDisponibilities,{
             date,
             statut,
             domaine,
-            numregl,
+            numregl:parseInt(numregl,10),
             numpol,
             nomtotal,
             numreglStart,
@@ -403,6 +412,7 @@ export default graphql(listeDisponibilities,{
     },forceFetch:true }),
         props:({data:{loading,error,listeDispo,fetchMore}})=>{
             //alert(JSON.stringify(error));
+            
             return{
                 loading,
                 error,

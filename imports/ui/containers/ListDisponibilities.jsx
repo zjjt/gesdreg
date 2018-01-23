@@ -205,11 +205,11 @@ ListDisponibilities=connect(
       date,
       statut,
       domaine,
-      numregl,
-      numpol,
+      numregl:parseInt(numregl,10),
+      numpol:parseInt(numpol,10),
       nomtotal,
-      numreglStart,
-      numreglEnd
+      numreglStart:parseInt(numreglStart,10),
+      numreglEnd:parseInt(numreglEnd,10)
     }
   }
 )(ListDisponibilities);

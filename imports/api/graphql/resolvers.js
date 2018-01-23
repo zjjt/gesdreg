@@ -1,5 +1,6 @@
 import {Meteor} from 'meteor/meteor';
 import {DBSQL,DBSQLSERVER,userSQL,dispoSQL} from './connectors.js';
+import Future from 'fibers/future';
 import Sequelize from 'sequelize';
 const Promise=require('bluebird');
 
@@ -49,6 +50,7 @@ DBSQLSERVER.authenticate().then(()=>{
         },
         listeDispo(_,args){
             let query="exec info_reg_dispo :numero_reg,:domaine ";
+            
            // let chainer=new Sequelize.Utils.QueryChainer();
             //si on a la date,et pas de statut,de domaine,de num_regl et on ne veut pas afficher seulment ceux kon a edite et non ordoner par num_regl
             if(args.typeDate && args.date && !args.statut && !args.domaine && !args.numregl && !args.numpol && !args.nomtotal && !args.numreglStart && !args.numreglEnd ){
@@ -736,8 +738,9 @@ DBSQLSERVER.authenticate().then(()=>{
                 }
                 
             }else if(!args.typeDate && !args.date && !args.statut && !args.domaine && args.numregl && !args.numpol && !args.nomtotal && !args.numreglStart && !args.numreglEnd){
-                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
-                             wnrgt:args.numregl
+                console.log("son type est "+typeof args.numregl);
+                return dispoSQL.findAll({attributes:{exclude:['id']},where:{
+                             wnrgt:parseInt(args.numregl,10)
                         },offset:args.offset,limit:args.limit}).then((res)=>{
                                 let promises=[];
                                 let dispo;
@@ -756,7 +759,7 @@ DBSQLSERVER.authenticate().then(()=>{
                                 return Promise.all(promises)
                                 
                             }).then((dispos)=>{
-                               // console.dir(dispos);
+                                console.dir(dispos);
                                 return dispos;
                             });
             }else if(!args.typeDate && !args.date && !args.statut && !args.domaine && !args.numregl && args.numpol && !args.nomtotal && !args.numreglStart && !args.numreglEnd){
