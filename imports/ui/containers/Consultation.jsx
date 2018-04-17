@@ -14,9 +14,13 @@ import Divider from 'material-ui/Divider';
 import {Tabs, Tab} from 'material-ui/Tabs';
 import FontIcon from 'material-ui/FontIcon';
 import ConsultDispoTable from '../components/ConsultDispoTable.jsx';
+import ConsultDispoTableBank from '../components/ConsultDispoTableBank.jsx';
+
 import {moment} from 'meteor/momentjs:moment';
 import { createContainer } from 'meteor/react-meteor-data';
 import {Meteor} from 'meteor/meteor';
+import {Session} from 'meteor/session';
+
 
 
 
@@ -49,6 +53,38 @@ class ConsultDispo extends Component {
 
     render(){
         console.dir(this.props);
+        let content=this.props.userRole==="B"?(
+            <ConsultDispoTableBank 
+            startDate={this.props.startDate}
+            endDate={this.props.endDate}
+            nomtotal={this.props.nomtotal}
+            numrgt={this.props.numrgt}
+            birthdate={this.props.birthdate?moment(this.props.birthdate).format("YYYY-MM-DD"):null} 
+            />
+        ):(
+            <ConsultDispoTable 
+            startDate={this.props.startDate}
+            endDate={this.props.endDate}
+            nomtotal={this.props.nomtotal}
+            numpol={this.props.numpolice}
+            birthdate={this.props.birthdate?moment(this.props.birthdate).format("YYYY-MM-DD"):null} 
+            />
+        );
+        let champ=this.props.userRole==="B"?(
+            <Field
+                name="numrgt" 
+                component={TextField}
+                hintText="Entrez le numéro de règlement"
+                floatingLabelFixed={true}
+             />
+        ):(
+            <Field
+                name="numpolice" 
+                component={TextField}
+                hintText="Entrez le numéro de police"
+                floatingLabelFixed={true}
+             />
+        );
         return(
             <div className="centeredContentSingle">
                 <div className="contentWrapper fadeInUp animated">
@@ -63,7 +99,7 @@ class ConsultDispo extends Component {
                             />
                         </ToolbarGroup>
                         <ToolbarGroup>
-                            <ToolbarTitle text="Liste des règlements disponibles" className="toolbarTitle"/>
+                            <ToolbarTitle text={this.props.userRole==="B"?"Liste des règlements Nsia Vie Assurances disponibles":"Liste des règlements disponibles"} className="toolbarTitle"/>
                         </ToolbarGroup>
                     </Toolbar>
                     <Divider/>
@@ -71,14 +107,20 @@ class ConsultDispo extends Component {
                         <div className="topaligned">
                                 
                                     <Field
-                                    name="numpolice" 
-                                    component={TextField}
-                                    hintText="Entrez le numéro de police"
-                                    floatingLabelFixed={true}
-                                   
-                                     />
-                                
-                                
+                                        name="debutdate" 
+                                        component={TextField}
+                                        hintText="Date de début EX:1900-01-01"
+                                        floatingLabelFixed={true}    
+                                    />
+                                    <Field
+                                        name="findate" 
+                                        component={TextField}
+                                        hintText="Date de fin EX:1900-01-01"
+                                        floatingLabelFixed={true}    
+                                    />
+                                    {
+                                        ...champ
+                                    }
                                     <Field
                                         name="nomtotal" 
                                         component={TextField}
@@ -101,11 +143,8 @@ class ConsultDispo extends Component {
                             </div>
                         </form>
                         <Divider/>
-                    <ConsultDispoTable 
-                        nomtotal={this.props.nomtotal}
-                        numpol={this.props.numpolice}
-                        birthdate={this.props.birthdate?moment(this.props.birthdate).format("YYYY-MM-DD"):null} 
-                        />
+                        {...content}
+                    
                      
                 </div>
             </div>
@@ -123,11 +162,14 @@ const selector = formValueSelector('searchConsultDispo');
 ConsultDispo=connect(
     state => {
     // or together as a group
-    const { nomtotal,numpolice,birthdate } = selector(state, 'nomtotal', 'numpolice','birthdate');
+    const { debutDate,finDate,nomtotal,numpolice,numrgt,birthdate } = selector(state, 'debutDate','finDate', 'nomtotal', 'numpolice','numrgt','birthdate');
    
     return {
+        startDate:debutDate,
+        endDate:finDate,
       nomtotal,
       numpolice,
+      numrgt,
       birthdate
     }
   }

@@ -12,3 +12,10 @@ export const frenchDateToEn=(date)=>{
     let dd=date.substring(8);
     return dd+"-"+mm+"-"+yy;
 } 
+
+export let formatNumberInMoney=(x)=>{
+    console.log(x);
+    let parts=x.toString().split(".");
+    parts[0]=parts[0].replace(/\B(?=(\d{3})+(?!\d))/g,",");
+    return parts.join(".");
+}

@@ -1,9 +1,10 @@
 import {Meteor} from 'meteor/meteor';
 import{Promise} from 'meteor/promise';
+const PromiseB=require('bluebird');
 import {Accounts} from 'meteor/accounts-base';
 import Sequelize from 'sequelize';
 import {userSQL,dispoSQL,DBSQL,DBSQLSERVER} from '../imports/api/graphql/connectors.js';
-import {WhatsNew} from '../imports/api/collections.js';
+import {WhatsNew,RegUpdated} from '../imports/api/collections.js';
 import {moment} from 'meteor/momentjs:moment';
 import {Email} from 'meteor/email';
 
@@ -450,11 +451,132 @@ export default ()=>{
         },
         maj_database(){
             let query="exec chargement_reg_module ";
-                let res=DBSQLSERVER.query(query,{
+            
+            //ca charge les reglements dans la base
+               let r= DBSQLSERVER.query(query,{
                                 type:DBSQLSERVER.QueryTypes.INSERT
-                            });
-                            return res;
+                            })
+                    return r;
+           
+                           // return res;
         },
+       /* maj_dateRDV(toffset){
+            let inforegQ="exec info_reg_dispo :numero_reg,:domaine ";
+            let upQ="update exp.regdispo set dateRDV=:drdv where wnupo=:wnupo and wnrgt=:wnrgt and dateRDV IS NULL ";
+             //On fait des modifs sur les champs dans la base comme le calcul de la date de RDV
+            let r=Promise.await(dispoSQL.findAll({attributes:{exclude:['id']},where:{
+                dateRDV:{
+                    $eq:null
+                },
+                $or:[
+                    {
+                        MRGGT:'C'
+                    },
+                    {
+                        MRGGT:'E'
+                    }
+                ]
+           },order:[['wnrgt','DESC']],offset:toffset,limit:25000}).then((res)=>{
+               if(!res.length)return;
+                   let promises=[];
+                   let dispo;
+                   console.log("longueur de res "+res.length);
+                   res.forEach((r)=>{
+                       promises.push(
+                           PromiseB.all([
+                           DBSQLSERVER.query(inforegQ,{ replacements:{numero_reg:r.wnrgt,domaine:r.domaine},type:DBSQLSERVER.QueryTypes.SELECT})
+                           ]).spread((infosurrgt)=>{
+                               dispo=r.toJSON();
+                               dispo.infoSurRgt=infosurrgt;
+                           
+                               return dispo;
+                           })
+                       );
+                   });
+                   return PromiseB.all(promises)
+                   
+               }).then((dispos)=>{
+                   console.log("Les dispos completes sont: "+dispos.length)
+                   let nd=dispos.map((e,i,arr)=>{
+                       if(e.infoSurRgt.length>1){
+                           let goodelem=e.infoSurRgt[0];
+                           //console.log("reglement "+e.wnrgt);
+                           //console.dir(e);
+                           e.infoSurRgt=[];
+                           e.infoSurRgt.push(goodelem);
+                       }
+                       return e;
+                   });
+                   console.log("longueur de nd "+nd.length);
+                   //On check et on calcule la date de RDV pour chaque reglement dont la dateRDV n'est pas a jour
+                   nd.map((e,i,arr)=>{
+                       //console.log("type de Type sINISTRE: "+typeof e.infoSurRgt[0].TYPE_SINISTRE);
+                    let rdvDate;
+                    if(typeof e.infoSurRgt[0]!="undefined"||typeof e.infoSurRgt[0].TYPE_SINISTRE!="undefined" || e.infoSurRgt[0].TYPE_SINISTRE!= null ){
+                        switch(e.infoSurRgt[0].TYPE_SINISTRE){
+                            case "RACHAT TOTAL":
+                            let get4numbers=parseInt(e.wnupo.toString().substring(0,4),10);//juste pour avoir les 4 premier chiffres fuck
+                                //la il ya deux cas celui des polices individuelles et des polices bancassurances
+                                //INDIVIDUEL
+                                if((get4numbers>1000 && get4numbers<4000)||(get4numbers>7900 &&get4numbers<8000)){
+                                     rdvDate=moment(e.infoSurRgt[0].DATE_RECEPTION).add(60,'days');
+                                     console.log("date reception: "+e.infoSurRgt[0].DATE_RECEPTION+" date RDV: "+moment(rdvDate).format("YYYY-MM-DD"));
+                                }
+                                //BANCASSURANCE
+                                else if(get4numbers>7000 && get4numbers<7900){
+                                    rdvDate=moment(e.infoSurRgt[0].DATE_RECEPTION).add(45,'days');
+                                    console.log("date reception: "+e.infoSurRgt[0].DATE_RECEPTION+" date RDV: "+moment(rdvDate).format("YYYY-MM-DD"));
+    
+                                }
+                            break;
+                            case "RACHAT PARTIEL":
+                            case "AVANCE":
+                            rdvDate=moment(e.infoSurRgt[0].DATE_RECEPTION).add(21,'days');
+                            console.log("date reception: "+e.infoSurRgt[0].DATE_RECEPTION+" date RDV: "+moment(rdvDate).format("YYYY-MM-DD"));
+                            break;
+                            default:
+                             rdvDate=null;
+                            break;
+                           }
+                          /* RegUpdated.insert({
+                               wasrg:e.wasrg,
+                               wnrgt:e.wnrgt,
+                               wnupo:e.wnupo
+                           });
+                        let promises=[];
+                        let dispo;
+                        console.log("valeur de la daterdv: "+rdvDate);
+                        let rD=moment(rdvDate,"YYYY-MM-DD",true);
+                        console.log(rD);
+                        if(rD.isValid()){
+                            promises.push(
+                                PromiseB.all([
+                                DBSQLSERVER.query(upQ,{ replacements:{drdv:rD.isValid()?rD.format("YYYY-MM-DD"):null,wnupo:e.wnupo,wnrgt:e.wnrgt},type:DBSQLSERVER.QueryTypes.UPDATE}).catch((err)=>{
+                                    console.log(err);
+                                    return err.reason;
+                                })
+                                ])
+                            );
+                        }else{
+                            console.log("date rdv not valid erreur");
+                        }
+                    }else{
+                        console.log("erreur d'infomations infoSurRgt n'est pas fourni loop again");
+                    }
+                       
+                    
+                   });
+                    //return nd;
+               }));
+               console.log("next round-------");
+                     let o =toffset+25000;
+                     console.log("valeur de o:"+o);
+               
+                     
+                    Meteor.call("maj_dateRDV",o);
+                 
+               
+        },*/
         
     });
 };

@@ -147,7 +147,27 @@ const regDispoModel=DBSQLSERVER.define('regdispo',{
       type: Sequelize.STRING,
       allowNull: true,
       field: 'MRGGT'
-    }        
+    },
+    dateRDV: {
+      type: Sequelize.DATE,
+      allowNull: true,
+      field: 'dateRDV'
+    },
+    ValBank: {
+      type: Sequelize.STRING,
+      allowNull: true,
+      field: 'ValBank'
+    },
+    Comments: {
+      type: Sequelize.STRING,
+      allowNull: true,
+      field: 'Comments'
+    },
+    CommentsBank: {
+      type: Sequelize.STRING,
+      allowNull: true,
+      field: 'CommentsBank'
+    },        
 },{
     schema:'exp',
     timestamps:false,

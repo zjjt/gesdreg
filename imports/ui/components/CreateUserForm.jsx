@@ -233,6 +233,7 @@ import _ from 'lodash';
                 >
                     <MenuItem value="C" primaryText="CONSULTANT"/>
                     <MenuItem value="G" primaryText="GESTIONNAIRE"/>
+                    <MenuItem value="B" primaryText="GESTIONNAIRE BANQUAIRE"/>
                 </Field>
 
                 <div className="inAppBtnDiv">

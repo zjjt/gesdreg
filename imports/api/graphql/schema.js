@@ -51,14 +51,19 @@ const schema=`
             redac:String
             MNTGT:String
             MRGGT:String
+            dateRDV:String
+            ValBank:String
+            Comments:String
+            CommentsBank:String
             infoSurRgt:[InfosREG]
         }
         type Query{
             user(username:String):[User]
             userSQL(nom:String,orderDesc:Boolean!):[UserSQL] 
             dataToExport(typeDate:String,startDate:String,endDate:String,domaine:String):[DisporegSQL]
-            consultDispo(numpolice:Int,nomtotal:String,birthdate:String,offset:Int,limit:Int):[DisporegSQL]
+            consultDispo(startDate:String,endDate:String,numpolice:Int,nomtotal:String,birthdate:String,offset:Int,limit:Int):[DisporegSQL]
             listeDispo(typeDate:String,date:String,statut:String,domaine:String,numregl:Int,numpol:Int,nomtotal:String,numreglStart:Int,numreglEnd:Int,offset:Int,limit:Int):[DisporegSQL]
+            consultDispoBank(startDate:String,endDate:String,numrgt:Int,nomtotal:String,birthdate:String,offset:Int,limit:Int):[DisporegSQL]
             voirInfoReg(wnrgt:Int,domaine:String):[InfosREG]
         }
         type Mutation{

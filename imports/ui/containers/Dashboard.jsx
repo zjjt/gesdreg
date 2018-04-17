@@ -46,8 +46,25 @@ import {Session} from 'meteor/session';
                     onTouchTap={this._dialogClose.bind(this)}
                 />,
                 ];
-                
-            if(typeof user!=="undefined" && user==="C"){
+                if(typeof user!=="undefined" && user==="B"){//GESTIONNAIRE BANQUAIRE
+                    return(<div className="centeredContent">
+                          
+                                <div className="cardMenu " >
+                                    <div className="cardContainer fadeInRight animated">
+                                        <Card className="cards " onClick={()=>FlowRouter.go('dispo')}>
+                                            <CardHeader 
+                                                title="Règlements disponibles chez Nsia Vie Assurances"
+                                                className="cardsHeader" 
+                                            />
+                                            <CardMedia className="cardsMedia">
+                                                <img src="../img/disporeg.png"/>
+                                            </CardMedia>
+                                        </Card>
+                                    </div>
+                                </div>
+                            </div>);
+                }    
+            else if(typeof user!=="undefined" && user==="C"){//NSIA CONSULTANT
                 return(<div className="centeredContent">
                       
                             <div className="cardMenu " >

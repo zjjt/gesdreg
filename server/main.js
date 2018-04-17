@@ -20,9 +20,9 @@ Meteor.startup(()=>{
 function turnAround(){
     if(Meteor.isServer){
         
-         Meteor.setInterval(()=>{
+        /* Meteor.setInterval(()=>{
                 checkSQLandDoMAJ();
-            }, 13000);
+            }, 13000);*/
     }
 }
 function checkSQLandDoMAJ(){

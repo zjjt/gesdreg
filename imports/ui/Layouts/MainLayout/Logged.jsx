@@ -58,7 +58,28 @@ import {Session} from 'meteor/session';
                     Session.set("userRole",data.user[0].role);
                     Session.set("canshow",true);
                     console.dir(data);
-                     if(data.user[0].role==="C"){
+
+                    if(data.user[0].role==="B"){
+                        return(
+                        <IconMenu 
+                        {...this.props}
+                        iconButtonElement={<IconButton><MoreVertIcon/></IconButton>}
+                        targetOrigin={{horizontal:'right',vertical:'top'}}
+                        anchorOrigin={{horizontal:'right',vertical:'top'}}
+                        iconStyle={{color:'white'}}	
+                        >
+                            <MenuItem primaryText="Liste des règlements disponibles" onClick={()=>{FlowRouter.go('dispo')}}/>
+                            <MenuItem primaryText="Déconnection" onClick={()=>{
+                                Meteor.logout(()=>{
+                                Session.keys={};
+                                FlowRouter.go('home');
+                            });
+                            }}/>
+                        </IconMenu>
+                    
+                        );
+                    }
+                     else if(data.user[0].role==="C"){
                     return(
                     <IconMenu 
                     {...this.props}
