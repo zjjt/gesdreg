@@ -53,7 +53,7 @@ import {Session} from 'meteor/session';
                                     <div className="cardContainer fadeInRight animated">
                                         <Card className="cards " onClick={()=>FlowRouter.go('dispo')}>
                                             <CardHeader 
-                                                title="Règlements disponibles chez Nsia Vie Assurances"
+                                                title="Règlements disponibles pour retrait chez Nsia Vie Assurances"
                                                 className="cardsHeader" 
                                             />
                                             <CardMedia className="cardsMedia">

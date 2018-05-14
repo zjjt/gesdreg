@@ -133,13 +133,9 @@ class DispoTable extends Component{
                 });
                     Meteor.call('maj_database',(err,res)=>{
                             if(res){
-                                alert("part2 mise a jour des dates");
-                                Meteor.call('maj_dateRDV',0,(err,res)=>{
-                                    this.setState({
-                                        loaderVisible:false
-                                    });
-                                });              
-                                //this.forceUpdate(); 
+                                this.setState({
+                                    loaderVisible:false
+                                });
                             }else if(err){
                                 this.setState({
                                     errorMsg:"La mise à jour a échoué."

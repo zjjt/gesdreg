@@ -1,7 +1,8 @@
 import {moment} from 'meteor/momentjs:moment';
 import React,{PropTypes,Component} from 'react';
-import {Field,reduxForm,formValueSelector} from 'redux-form';
-import {TextField,DatePicker,SelectField} from 'redux-form-material-ui';
+import {Field,reduxForm,formValueSelector,submit} from 'redux-form';
+import {TextField,DatePicker,SelectField,RadioButtonGroup} from 'redux-form-material-ui';
+import { RadioButton } from 'material-ui/RadioButton';
 import areIntlLocalesSupported from 'intl-locales-supported';
 import MenuItem from 'material-ui/MenuItem';
 import Divider from 'material-ui/Divider';
@@ -13,8 +14,9 @@ import gql from 'graphql-tag';
 import CircularProgress from 'material-ui/CircularProgress';
 import Dialog from 'material-ui/Dialog';
 import Snackbar from 'material-ui/Snackbar';
-import {miseajourDispo} from '../../redux/actions/user-actions.js';
+import {miseajourDispoBank} from '../../redux/actions/user-actions.js';
 import {$} from 'meteor/jquery';
+import {submitBankForm} from '../../ui/components/submits';
 import { RaisedButton } from 'material-ui';
 
 let DateTimeFormat;
@@ -22,7 +24,7 @@ if(areIntlLocalesSupported(['fr'])){
     DateTimeFormat=global.Intl.DateTimeFormat;
 }
 
-class ServRegBank extends Component{
+class ServRegBankForm extends Component{
     constructor(props){
         super(props);
         this.state={
@@ -30,6 +32,7 @@ class ServRegBank extends Component{
             dialogWIsOpen:false,
             dispinfo:"none",
             errorMsg:'',
+            textAreaDisabled:true,
             warning:'Vous vous appretez à lancer une mise à jour. Avez vous terminer vos modifications ?',
             snackOpen:false,
             snackMsg:'',
@@ -38,8 +41,11 @@ class ServRegBank extends Component{
 
 
    componentDidUpdate(){
-       
-     
+      // console.dir(this.props);
+       if(this.props.shouldMAJ){
+           //alert("submiting bankform");
+        this.props.dispatch(submit('bankForm'));
+       } 
    }
    componentDidMount(){
        console.log(this.props);
@@ -49,7 +55,9 @@ class ServRegBank extends Component{
        
       
          const {handleSubmit,pristine,submitting,dispatch,reset}=this.props;
-            
+         const maxLength = max => value =>(value && value.length > max)||(value && value.length < max) ? `ce champs doit être de ${max} caractères` : undefined;
+         const required = value => value ? undefined : 'Requis';
+        
          
 
          
@@ -58,20 +66,24 @@ class ServRegBank extends Component{
                 
             
                 {this.props.data.loading?<div style={{textAlign:"center"}}><CircularProgress /></div>:this.props.data.voirInfoReg.map((row,index)=>{
-                       return (<div style={{display:"flex",justifyContent:"center"}}>
+                       return (<div style={{display:"flex",justifyContent:"center",flexDirection:"column"}}>
                             <RaisedButton
                             label="Voir les informations du règlement"
                             labelColor="white"
                             backgroundColor="#cd9a2e"
                             onClick={(e)=>{
                                 if(this.state.dispinfo=="none"){
+                                    setTimeout(() => { window.dispatchEvent(new Event('resize')); }, 0);
                                     this.setState({
                                         dispinfo:"flex"
                                     });
+                                    
                                 }else{
+                                    setTimeout(() => { window.dispatchEvent(new Event('resize')); }, 0);
                                     this.setState({
                                         dispinfo:"none"
                                     }); 
+                                    
                                 }
                             }}
                         />
@@ -145,15 +157,51 @@ class ServRegBank extends Component{
                         </div>
                         </div>)
                 })}
-                    
-                    <TextField
-                        floatingLabelText="STATUT ACTUEL DU REGLEMENT"
-                        floatingLabelFixed={true}
-                        value={this.props.regSelected.statut_reg_retirer}
-                        fullWidth={true}
-                        disabled={true}
-                    />
-                   
+                    <Divider/>
+                        <div style={{textAlign:"center",color:"1e2c67"}}>COCHEZ L'UNE DES OPTIONS CI-DESSOUS</div>
+                    <Divider/>
+                    <form onSubmit={handleSubmit} >
+                        <Field component={RadioButtonGroup} name="choixbank" defaultSelected="OUI" 
+                            onChange={(e,v)=>{
+                                if(v=="OUI"){
+                                    this.setState({
+                                        textAreaDisabled:true  
+                                    });
+                                }else if(v=="NON"){
+                                    this.setState({
+                                        textAreaDisabled:false  
+                                    });
+                                }
+                            }}
+                        >
+                            <RadioButton value="OUI" label="OUI"/>
+                            <RadioButton value="NON" label="NON" />
+                        </Field>
+                        <Field
+                            value={20}
+                            component={TextField} 
+                            name="police"
+                        />
+                        <Field
+                            component={TextField}
+                            value={this.state.textAreaDisabled?"OUI":"NON"} 
+                            name="textAreaDisabled"
+                        />
+                        {/*Ok ici la strategie est que lorsque le banquier invalide un paiement une case de commentaire apparait
+                            dans le code il faut alors verifier que la case est invisible et en fonction du flag la rendre requise pour le formulaire ou non
+                        */}
+                        <Field
+                            name="comment" 
+                            component={TextField}
+                            hintText="votre commentaire"
+                            floatingLabelText="Pourquoi ?"
+                            fullWidth={true}
+                            style={this.state.textAreaDisabled?{"diaplay":"none"}:{"display":"block"}}
+                            floatingLabelFixed={true}
+                            disabled={this.state.textAreaDisabled}
+                            required={this.state.textAreaDisabled?[]:[required,maxLength(255)]}
+                        />
+                   </form>
                     
             </div>
         );
@@ -161,8 +209,13 @@ class ServRegBank extends Component{
 }
 
 
+ServRegBankForm=reduxForm({
+    form:"bankForm",
+    onSubmit:submitBankForm
+    //fields:['date_depot_treso','date_sort_treso','date_depot_sign','date_recep_sign_reg','date_retrait_reg','statut']
+})(ServRegBankForm);
 
-ServRegBank.propTypes={
+ServRegBankForm.propTypes={
     data:PropTypes.shape({
         loading:PropTypes.bool,
        voirInfoReg:PropTypes.array
@@ -171,7 +224,13 @@ ServRegBank.propTypes={
      //date:PropTypes.instanceOf(date),  
 };
 
-
+ServRegBankForm=connect(state=>{
+    console.dir(state);
+    const shouldMAJ=state.userActions.mettreAjourBank;
+    return {
+        shouldMAJ
+    };
+})(ServRegBankForm);
 
 const voirInfoDispo=gql`
     query voirInfoDispo($wnrgt:Int,$domaine:String){
@@ -195,4 +254,4 @@ const voirInfoDispo=gql`
     
 export default graphql(voirInfoDispo,{
     options:({ wnrgt,domaine }) => ({ variables: {wnrgt,domaine},forceFetch:true }),
-})(ServRegBank);
+})(ServRegBankForm);

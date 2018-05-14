@@ -17,6 +17,7 @@ import {Meteor} from 'meteor/meteor';
 import {deconnection} from '../../../redux/actions/admin-actions.js';
 import { createContainer } from 'meteor/react-meteor-data';
 import Logged from './Logged.jsx';
+import {$} from 'meteor/jquery';
 
 
 //pour desactiver METEOR_OFFLINE_CATALOG=1 meteor
@@ -67,6 +68,7 @@ export default class MainLayout extends Component{
 	componentDidUpdate(){
 		if((store.getState().administrateurAction.adminConnected||Meteor.user()) && !this.state.loggedIn)
 		{
+			$('.appbar h1').attr("title","Gestion des disponibilités de règlements Nsia Vie Assurances");
 			this.setState({
 				loggedIn:true
 			});
@@ -89,13 +91,17 @@ export default class MainLayout extends Component{
 				<MuiThemeProvider muiTheme={muiTheme}>
 					<div className="masterContainer">
 						<header>
-						<AppBar
-							title="Gestion des disponibilités de règlement"
-							style={{backgroundColor:'#cd9a2e' }}
-							onTitleTouchTap={()=>{FlowRouter.go('home')}}
-							iconClassNameLeft="none"
-							iconElementRight={store.getState().administrateurAction.adminConnected||Meteor.user()?<Logged/>:<Bienvenue/>}
-						/>
+							{store.getState().administrateurAction.adminConnected||Meteor.user()?(
+								<AppBar
+										title="G.E.S.D.R.E.G Nsia Vie Assurances"
+										className="appbar"
+										style={{backgroundColor:'#cd9a2e' }}
+										onTitleTouchTap={()=>{FlowRouter.go('home')}}
+										iconClassNameLeft="none"
+										iconElementRight={store.getState().administrateurAction.adminConnected||Meteor.user()?<Logged/>:<Bienvenue/>}
+								/>
+							):""}
+						
 						</header>
 						<section className="generalSection">
 						{content()}

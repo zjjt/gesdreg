@@ -438,6 +438,9 @@ export default ()=>{
             });*/
             ///////////////////////////            
         },
+        updateDisposBank(values,initialValues){
+            
+        },
         voirInfoReg(args){
                  let query="exec info_reg_dispo :numero_reg,:domaine ";
                 let res=DBSQLSERVER.query(query,{

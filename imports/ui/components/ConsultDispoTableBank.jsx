@@ -15,10 +15,10 @@ import {graphql} from 'react-apollo';
 import gql from 'graphql-tag';
 import areIntlLocalesSupported from 'intl-locales-supported';
 import MenuItem from 'material-ui/MenuItem';
-import ServRegBank from './ServRegBank';
+import ServRegBankForm from './ServRegBankForm';
 import {$} from 'meteor/jquery';
 import {englishDateToFr,formatNumberInMoney} from '../../utils/utilitaires.js';
-import {miseajourDispo} from '../../redux/actions/user-actions.js'
+import {miseajourDispoBank} from '../../redux/actions/user-actions.js'
 
 
 //Quand on click sur les checkbox on compte le nombre de lignes selectionnes et on dispacth une action sur store avec side effects de modification dans la database
@@ -121,7 +121,11 @@ class ConsultDispoTableBank extends Component{
                     primary={true}
                     onTouchTap={this._dialogTClose.bind(this)}
                 />,
-               
+                <FlatButton
+                    label="METTRE A JOUR"
+                    primary={true}
+                    onTouchTap={()=>dispatch(miseajourDispoBank())}
+                />
                 ];
 console.dir(this.props);
 console.dir(this.state);
@@ -133,12 +137,13 @@ console.dir(this.state);
                     actions={dialogTActions}
                     modal={false}
                     open={this.state.dialogTIsOpen}
+                    autoDetectWindowHeight={true}
                     onRequestClose={this._dialogTClose}
                     titleStyle={{backgroundColor:'#1f2d67',color:'white'}}
                     contentStyle={{width:'60%',maxWidth:'none'}}
                     autoScrollBodyContent={true}
                     >
-                        <ServRegBank dispatch={dispatch} regSelected={this.state.regSelected.length?this.state.regSelected[0]:null} wnrgt={this.state.regSelected.length?this.state.regSelected[0].wnrgt:null} domaine={this.state.regSelected.length?this.state.regSelected[0].domaine:null}/>
+                        <ServRegBankForm dispatch={dispatch} regSelected={this.state.regSelected.length?this.state.regSelected[0]:null} wnrgt={this.state.regSelected.length?this.state.regSelected[0].wnrgt:null} domaine={this.state.regSelected.length?this.state.regSelected[0].domaine:null}/>
                     </Dialog>
                     <Table
                         height={this.state.table.height}
@@ -259,7 +264,7 @@ console.dir(this.state);
 
 
 ConsultDispoTableBank=reduxForm({
-    form:'modifForm',
+    form:'modifFormBank',
    //fields:['nom','prenom','username','password','passwordconf','codeRedac']
 })(ConsultDispoTableBank);
 function mapDispatchToProps(dispatch){
