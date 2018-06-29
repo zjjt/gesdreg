@@ -19,8 +19,8 @@ import {deconnection} from '../../../redux/actions/admin-actions.js';
 import {createContainer} from 'meteor/react-meteor-data';
 import {Mongo} from 'meteor/mongo';
 import TrackerReact from 'meteor/ultimatejs:tracker-react';
-import {graphql} from 'react-apollo';
-import gql from 'graphql-tag';
+import {gql,graphql} from 'react-apollo';
+import { client} from '../../../redux/rootReducer';
 import {Session} from 'meteor/session';
 
  class Logged extends Component{
@@ -94,6 +94,7 @@ import {Session} from 'meteor/session';
                             Meteor.logout(()=>{
                             Session.keys={};
                             FlowRouter.go('home');
+                            return client.resetStore();
                         });
                         }}/>
                     </IconMenu>

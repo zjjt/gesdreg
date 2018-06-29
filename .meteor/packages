@@ -23,7 +23,7 @@ shell-server@0.2.4            # Server-side component of the `meteor shell` comm
 kadira:flow-router
 stolinski:stylus-multi
 check@1.2.5
-meteortoys:allthings
+#meteortoys:allthings
 random@1.0.10
 momentjs:moment
 react-meteor-data
@@ -38,3 +38,4 @@ session@1.1.7
 dynamic-import
 email@1.1.18
 meteorhacks:ssr
+apollo

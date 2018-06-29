@@ -5,6 +5,7 @@ import {Accounts} from 'meteor/accounts-base';
 import Sequelize from 'sequelize';
 import {userSQL,dispoSQL,DBSQL,DBSQLSERVER} from '../imports/api/graphql/connectors.js';
 import {WhatsNew,RegUpdated} from '../imports/api/collections.js';
+import {pubsub} from '../imports/api/graphql/resolvers';
 import {moment} from 'meteor/momentjs:moment';
 import {Email} from 'meteor/email';
 
@@ -439,7 +440,27 @@ export default ()=>{
             ///////////////////////////            
         },
         updateDisposBank(values,initialValues){
-            
+            if(initialValues.statut_reg_retirer=="SORTIE"){
+                const redac=Meteor.users.findOne({_id:Meteor.user()._id});
+                let query="update exp.regdispo set ValBank=:v, CommentsBank=:c where wnupo=:wnupo and wnrgt=:wnrgt and domaine=:d ";
+                let res=DBSQLSERVER.query(query,{
+                                replacements:{
+                                    wnrgt:initialValues.wnrgt,
+                                    wnupo:initialValues.wnupo,
+                                    d:initialValues.domaine,
+                                    v:values.choixbank,
+                                    c:values.comment
+                                },
+                                type:DBSQLSERVER.QueryTypes.UPDATE
+                            }).catch((err)=>{
+                    console.log(err);
+                    return err.reason;
+                });
+                pubsub.publish('rgtUpdated', { reg: initialValues, wnrgt:initialValues.wnrgt })
+            }else{
+                throw new Meteor.Error("access-error","Vous ne pouvez pas modifier ce reglement. Veuillez contacter un administrateur");
+            }
+            console.dir(initialValues);
         },
         voirInfoReg(args){
                  let query="exec info_reg_dispo :numero_reg,:domaine ";

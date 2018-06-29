@@ -93,7 +93,7 @@ export default class MainLayout extends Component{
 						<header>
 							{store.getState().administrateurAction.adminConnected||Meteor.user()?(
 								<AppBar
-										title="G.E.S.D.R.E.G Nsia Vie Assurances"
+										title="GESDREG Nsia Vie Assurances"
 										className="appbar"
 										style={{backgroundColor:'#cd9a2e' }}
 										onTitleTouchTap={()=>{FlowRouter.go('home')}}

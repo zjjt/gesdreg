@@ -16,7 +16,7 @@ import gql from 'graphql-tag';
 import areIntlLocalesSupported from 'intl-locales-supported';
 import MenuItem from 'material-ui/MenuItem';
 import ModRegForm from './ModRegForm.jsx';
-import {miseajourDispo} from '../../redux/actions/user-actions.js'
+import {miseajourDispo,openBigDialog} from '../../redux/actions/user-actions.js'
 import {englishDateToFr} from '../../utils/utilitaires.js';
 import LinearProgress from 'material-ui/LinearProgress';
 import {$} from 'meteor/jquery';
@@ -74,6 +74,7 @@ class DispoTable extends Component{
         _dialogTOpen(){
             if(this.state.regSelected.length)
             this.setState({dialogTIsOpen: true});
+            this.props.dispatch(openBigDialog("MOD"));
         }
 
         _dialogTClose(){
@@ -118,6 +119,7 @@ class DispoTable extends Component{
                 regSelected:regarray,
                 //dialogTIsOpen:true
             });
+            //this.props.dispatch(openBigDialog("MOD"));
             console.dir(regarray);
             
         }

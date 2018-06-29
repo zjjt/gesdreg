@@ -13,7 +13,7 @@ import gql from 'graphql-tag';
 import CircularProgress from 'material-ui/CircularProgress';
 import Dialog from 'material-ui/Dialog';
 import Snackbar from 'material-ui/Snackbar';
-import {miseajourDispo} from '../../redux/actions/user-actions.js';
+import {miseajourDispo,closeBigDialog} from '../../redux/actions/user-actions.js';
 import {$} from 'meteor/jquery';
 
 let DateTimeFormat;
@@ -129,7 +129,7 @@ class ModRegForm extends Component{
                         snackOpen:true
                         });
                         //dispatch(miseajourDispo());
-                        this.props.closeBigDialog();
+                        dispatch(closeBigDialog("MOD"));
                     }
                 });
             }

@@ -1,32 +1,42 @@
-import { SubmissionError } from 'redux-form'
-import {miseajourDispoBank} from '../../redux/actions/user-actions.js'
+import { SubmissionError } from 'redux-form';
+import {miseajourDispoBank} from '../../redux/actions/user-actions.js';
+import {isEmptyObject,isEmptyObjectProps} from '../../utils/utilitaires';
 import store from '../../redux/store';
 
 
 
 export const submitBankForm=(values)=>{
-       if(values.choixbank===''){  
-       throw new SubmissionError({choixbank:"Veuillez faire un choix pour valider le règlement",_error:"MAJ bank failed"});    
-       return false;   
-
-   }else if(values.police==""){
-    throw new SubmissionError({choixbank:"Une erreur systeme a été constatée, Veuillez contacter un administrateur pour ovus venir en aide",_error:"MAJ bank failed"});    
-
-   }
-   else{
+    alert(JSON.stringify(values));
+    const{log}=console;
     let comment="";
-    if(values.textAreaDisabled=="OUI"){
-        comment="R.A.S";
+    console.dir(values);
+    if(isEmptyObject(values)){
+        log(isEmptyObject(values))
+        alert("Veuillez faire un choix pour valider le retrait du règlement 1");
+        //throw new SubmissionError({choixbank:"Veuillez faire un choix pour valider le règlement",_error:"submit_failed"});    
+        return  
     }else{
-        comment=values.comment==""?"refuser par la banque":values.comment;
-    }
-       //console.log(this.props.data.voirInfoReg[0].DATE_SURVENANCE_SINISTRE);
-       values.comment=comment;    
-     // alert( );
-     alert(JSON.stringify(values));
-       console.dir(values);
-       store.dispatch(miseajourDispoBank());
-      /* Meteor.call('updateDispos',values,this.props.regSelected,(err)=>{
+        log("here in submit function");
+        if(isEmptyObjectProps(values,"choixbank")){
+            alert("Veuillez faire un choix pour valider le retrait du règlement 2");
+            
+           // throw new SubmissionError({choixbank:"Veuillez faire un choix pour valider le règlement",_error:"submit_failed"});    
+            //return false;   
+        }
+        if(!isEmptyObjectProps(values,"choixbank") && values.choixbank=="OUI"){
+            comment="R.A.S";
+        }
+        else if(!isEmptyObjectProps(values,"choixbank") && values.choixbank=="NON"){
+            comment=isEmptyObjectProps(values,"comment") ?"refuser par la banque":values.comment;
+        }
+        values.comment=comment;
+        alert(JSON.stringify(values));
+        console.dir(values);
+        store.dispatch(miseajourDispoBank());
+        return;
+        //
+
+        /* Meteor.call('updateDispos',values,this.props.regSelected,(err)=>{
            if(err){
                
                if(err.error==="bad-date"){
@@ -47,5 +57,7 @@ export const submitBankForm=(values)=>{
                this.props.closeBigDialog();
            }
        });*/
-   }
+    }
+       
+   
 };  

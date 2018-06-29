@@ -1,6 +1,7 @@
 import {Meteor} from 'meteor/meteor';
 import {DBSQL,DBSQLSERVER,userSQL,dispoSQL} from './connectors.js';
 import {formatNumberInMoney} from '../../utils/utilitaires';
+import { PubSub, withFilter } from 'graphql-subscriptions';
 import Sequelize from 'sequelize';
 const Promise=require('bluebird');
 
@@ -23,7 +24,7 @@ DBSQLSERVER.authenticate().then(()=>{
     console.log('Impossible de se connecter a MsSql,veuillez reverifier');
 });
 
-
+export const pubsub = new PubSub();
  const resolvers={
     Query:{
         user(_,args){
@@ -1483,14 +1484,15 @@ DBSQLSERVER.authenticate().then(()=>{
                            $between:[args.startDate,args.endDate]
                         },
                         MRGGT:'C',
-                        $or:[
+                        statut_reg_retirer:'SORTIE'
+                        /*$or:[
                             {
                                 statut_reg_retirer:'SORTIE'
                             },
                             {
                                 statut_reg_retirer:'REFUSER'
                             }
-                        ]
+                        ]*/
                         
                },order:[['wnrgt','DESC']]}).then((res)=>{
                        let promises=[];
@@ -1534,14 +1536,15 @@ DBSQLSERVER.authenticate().then(()=>{
                            $between:[args.startDate,args.endDate]
                         },
                         MRGGT:'C',
-                        $or:[
+                        statut_reg_retirer:'SORTIE'
+                       /* $or:[
                             {
                                 statut_reg_retirer:'SORTIE'
                             },
                             {
                                 statut_reg_retirer:'REFUSER'
                             }
-                        ]
+                        ]*/
                },order:[['wnrgt','DESC']]}).then((res)=>{
                        let promises=[];
                        let dispo;
@@ -1583,14 +1586,15 @@ DBSQLSERVER.authenticate().then(()=>{
                     wnrgt:parseInt(args.numrgt),
                     MRGGT:'C',
                     date_naiss:args.birthdate,
-                    $or:[
+                    statut_reg_retirer:'SORTIE',
+                   /* $or:[
                         {
                             statut_reg_retirer:'SORTIE'
                         },
                         {
                             statut_reg_retirer:'REFUSER'
                         }
-                    ],
+                    ],*/
                     date_depot_treso:{
                            $between:[args.startDate,args.endDate]
                         }
@@ -1639,14 +1643,15 @@ DBSQLSERVER.authenticate().then(()=>{
                     date_depot_treso:{
                            $between:[args.startDate,args.endDate]
                         },
-                        $or:[
+                        statut_reg_retirer:'SORTIE',
+                        /*$or:[
                             {
                                 statut_reg_retirer:'SORTIE'
                             },
                             {
                                 statut_reg_retirer:'REFUSER'
                             }
-                        ]
+                        ]*/
                },order:[['wnrgt','DESC']]}).then((res)=>{
                        let promises=[];
                        let dispo;
@@ -1688,14 +1693,15 @@ DBSQLSERVER.authenticate().then(()=>{
                     wnrgt:parseInt(args.numrgt),
                     MRGGT:'C',
                     date_naiss:args.birthdate,
-                    $or:[
+                    statut_reg_retirer:'SORTIE',
+                    /*$or:[
                         {
                             statut_reg_retirer:'SORTIE'
                         },
                         {
                             statut_reg_retirer:'REFUSER'
                         }
-                    ]
+                    ]*/
                     // statut_reg_retirer:'PRET'
                 },order:[['wnrgt','DESC']],offset:args.offset,limit:args.limit}).then((res)=>{
                     let promises=[];
@@ -1736,17 +1742,18 @@ DBSQLSERVER.authenticate().then(()=>{
                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                     wnrgt:parseInt(args.numrgt),
                     MRGGT:'C',
+                    statut_reg_retirer:'SORTIE',
                     nom_beneficiaire:{
                                     $like:'%'+args.nomtotal+'%'
                                  },
-                    $or:[
+                   /* $or:[
                             {
                                 statut_reg_retirer:'SORTIE'
                             },
                             {
                                 statut_reg_retirer:'REFUSER'
                             }
-                    ]
+                    ]*/
                      //statut_reg_retirer:'PRET'
                 },order:[['wnrgt','DESC']],offset:args.offset,limit:args.limit}).then((res)=>{
                     let promises=[];
@@ -1787,14 +1794,15 @@ DBSQLSERVER.authenticate().then(()=>{
                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                     wnrgt:parseInt(args.numrgt),
                     MRGGT:'C',
-                    $or:[
+                    statut_reg_retirer:'SORTIE',
+                   /* $or:[
                             {
                                 statut_reg_retirer:'SORTIE'
                             },
                             {
                                 statut_reg_retirer:'REFUSER'
                             }
-                    ]
+                    ]*/
                      //statut_reg_retirer:'PRET'
                 },order:[['wnrgt','DESC']],offset:args.offset,limit:args.limit}).then((res)=>{
                     let promises=[];
@@ -1835,14 +1843,15 @@ DBSQLSERVER.authenticate().then(()=>{
                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                     date_naiss:args.birthdate,
                     MRGGT:'C',
-                    $or:[
+                    statut_reg_retirer:'SORTIE',
+                    /*$or:[
                         {
                             statut_reg_retirer:'SORTIE'
                         },
                         {
                             statut_reg_retirer:'REFUSER'
                         }
-                    ]
+                    ]*/
                     // statut_reg_retirer:'PRET'
             },order:[['wnrgt','DESC']],offset:args.offset,limit:args.limit}).then((res)=>{
                 let promises=[];
@@ -1883,17 +1892,18 @@ DBSQLSERVER.authenticate().then(()=>{
                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                     date_naiss:args.birthdate,
                     MRGGT:'C',
+                    statut_reg_retirer:'SORTIE',
                     nom_beneficiaire:{
                                     $like:'%'+args.nomtotal+'%'
                                  },
-                                 $or:[
+                                 /*$or:[
                                     {
                                         statut_reg_retirer:'SORTIE'
                                     },
                                     {
                                         statut_reg_retirer:'REFUSER'
                                     }
-                                ]
+                                 ]*/
                      //statut_reg_retirer:'PRET'
                 },order:[['wnrgt','DESC']],offset:args.offset,limit:args.limit}).then((res)=>{
                     let promises=[];
@@ -1936,14 +1946,15 @@ DBSQLSERVER.authenticate().then(()=>{
                                     $like:'%'+args.nomtotal+'%'
                                  },
                                  MRGGT:'C',
-                                 $or:[
+                                 statut_reg_retirer:'SORTIE',
+                                 /*$or:[
                                     {
                                         statut_reg_retirer:'SORTIE'
                                     },
                                     {
                                         statut_reg_retirer:'REFUSER'
                                     }
-                                 ]
+                                 ]*/
                     // statut_reg_retirer:'PRET'
                 },order:[['wnrgt','DESC']],offset:args.offset,limit:args.limit}).then((res)=>{
                     let promises=[];
@@ -1985,17 +1996,18 @@ DBSQLSERVER.authenticate().then(()=>{
                     wnrgt:parseInt(args.numrgt),
                     date_naiss:args.birthdate,
                     MRGGT:'C',
+                    statut_reg_retirer:'SORTIE',
                     nom_beneficiaire:{
                                     $like:'%'+args.nomtotal+'%'
                                  },
-                                 $or:[
+                                /* $or:[
                                     {
                                         statut_reg_retirer:'SORTIE'
                                     },
                                     {
                                         statut_reg_retirer:'REFUSER'
                                     }
-                                 ]
+                                 ]*/
                      //statut_reg_retirer:'PRET'
                 },order:[['wnrgt','DESC']],offset:args.offset,limit:args.limit}).then((res)=>{
                     let promises=[];
@@ -2036,14 +2048,15 @@ DBSQLSERVER.authenticate().then(()=>{
                  return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                     //statut_reg_retirer:'PRET'
                     MRGGT:'C',
-                    $or:[
+                    statut_reg_retirer:'SORTIE',
+                    /*$or:[
                         {
                             statut_reg_retirer:'SORTIE'
                         },
                         {
                             statut_reg_retirer:'REFUSER'
                         }
-                    ]
+                    ]*/
                 },order:[['wnrgt','DESC']],offset:args.offset,limit:args.limit}).then((res)=>{
                     let promises=[];
                     let dispo;
@@ -2650,56 +2663,19 @@ DBSQLSERVER.authenticate().then(()=>{
                 }});
              return userSQL.findAll({attributes:{exclude:['id']},order:[['Nom','DESC']]});
         }
-    }
-};
- /*
- const resolvers={
-    Query:{
-        user(_,args){
-            if(args.username){
-                return Meteor.users.find({username:args.username}).fetch();
-            }else{
-                return Meteor.users.find({}).fetch();
-            }
-        },
-        userSQL(_,args){
-            if(args.nom &&(args.orderDesc||!args.orderDesc)){
-                return reguser.findAll({where:{
-                    Nom:args.nom
-                }});
-            }else if(args.orderDesc){
-                return reguser.findAll({order:[['Nom','DESC']]});
-            }else{
-                return reguser.findAll({order:[['Nom','ASC']]});
-            }
-        },
-         dispolistSQL(_,args){
-            if(args.wnrgt &&(args.orderDate||!args.orderDate)){
-                return regdispo.findAll({where:{
-                    wnrgt:args.wnrgt
-                }});
-            }else if(args.orderDate){
-                return regdispo.findAll({order:[['date_depot_sign','DESC']]});
-            }else{
-                return regdispo.findAll({order:[['date_recep_sign_reg','ASC']]});
-            }
-        }
     },
-    Mutation:{
-        deleteUsers(_,args){
-             const codeArr=args.usercodes;
-            Meteor.users.remove({codeRedac:{
-                $in:codeArr
-            }});
-            reguser.destroy({where:{
-                    Redac:codeArr
-                }});
-             return reguser.findAll({order:[['Nom','DESC']]});
+    Subscription: {
+        rgtUpdated: {
+          subscribe: withFilter(() => pubsub.asyncIterator('rgtUpdated'), (payload, variables) => {
+            // The `messageAdded` channel includes events for all channels, so we filter to only
+            // pass through events for the channel specified in the query
+            console.log("ici");
+            return payload.wnrgt === variables.wnrgt;
+          }),
         }
-    }
+      }
 };
 
- */ 
  
 
 export default resolvers;

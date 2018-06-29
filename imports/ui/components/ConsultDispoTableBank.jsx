@@ -11,14 +11,14 @@ import Home from 'material-ui/svg-icons/action/home';
 import Divider from 'material-ui/Divider';
 import CircularProgress from 'material-ui/CircularProgress';
 import {Table, TableBody, TableFooter, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
-import {graphql} from 'react-apollo';
-import gql from 'graphql-tag';
+import {graphql,gql} from 'react-apollo';
+import {GRAPHQL_PORT} from "../../api/graphql/server";
 import areIntlLocalesSupported from 'intl-locales-supported';
 import MenuItem from 'material-ui/MenuItem';
 import ServRegBankForm from './ServRegBankForm';
 import {$} from 'meteor/jquery';
 import {englishDateToFr,formatNumberInMoney} from '../../utils/utilitaires.js';
-import {miseajourDispoBank} from '../../redux/actions/user-actions.js'
+import {miseajourDispoBank,openBigDialog} from '../../redux/actions/user-actions.js'
 
 
 //Quand on click sur les checkbox on compte le nombre de lignes selectionnes et on dispacth une action sur store avec side effects de modification dans la database
@@ -28,6 +28,7 @@ if(areIntlLocalesSupported(['fr'])){
 }
 
 
+  
 const ITEMS_PER_PAGE=10;
 
 class ConsultDispoTableBank extends Component{
@@ -59,6 +60,9 @@ class ConsultDispoTableBank extends Component{
         }
 
         componentDidUpdate(){
+            if(!this.props.shouldCloseDialog && this.state.dialogTIsOpen){
+                this._dialogTClose();
+            }
          /* if(typeof this.props.consultDispoBank !="undefined" && !this.state.setBankDispo){
               this.setState({
                   bankdispo:this.props.consultDispoBank
@@ -76,7 +80,9 @@ class ConsultDispoTableBank extends Component{
         }
 
         _dialogTOpen(){
+            this.props.dispatch(openBigDialog("BANK"));
             this.setState({dialogTIsOpen: true});
+            
         }
 
         _dialogTClose(){
@@ -108,6 +114,7 @@ class ConsultDispoTableBank extends Component{
                 regSelected:regarray,
                 dialogTIsOpen:true
             });
+            this.props.dispatch(openBigDialog("BANK"));
             console.dir(regarray);
             
         }
@@ -143,7 +150,7 @@ console.dir(this.state);
                     contentStyle={{width:'60%',maxWidth:'none'}}
                     autoScrollBodyContent={true}
                     >
-                        <ServRegBankForm dispatch={dispatch} regSelected={this.state.regSelected.length?this.state.regSelected[0]:null} wnrgt={this.state.regSelected.length?this.state.regSelected[0].wnrgt:null} domaine={this.state.regSelected.length?this.state.regSelected[0].domaine:null}/>
+                        <ServRegBankForm dispatch={dispatch} initialvalues={{ wnrgt:this.state.regSelected.length?this.state.regSelected[0].wnrgt:null,police:this.state.regSelected.length?this.state.regSelected[0].police:null}} regSelected={this.state.regSelected.length?this.state.regSelected[0]:null} wnrgt={this.state.regSelected.length?this.state.regSelected[0].wnrgt:null} domaine={this.state.regSelected.length?this.state.regSelected[0].domaine:null}/>
                     </Dialog>
                     <Table
                         height={this.state.table.height}
@@ -267,9 +274,12 @@ ConsultDispoTableBank=reduxForm({
     form:'modifFormBank',
    //fields:['nom','prenom','username','password','passwordconf','codeRedac']
 })(ConsultDispoTableBank);
-function mapDispatchToProps(dispatch){
+
+function mapDispatchToProps(state,dispatch){
+    const shouldCloseDialog=state.userActions.isBigDialogUp;
     return{
-        dispatch
+        dispatch,
+        shouldCloseDialog
     }
 }
 ConsultDispoTableBank=connect(mapDispatchToProps)(ConsultDispoTableBank);

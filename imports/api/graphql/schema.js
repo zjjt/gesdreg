@@ -66,12 +66,16 @@ const schema=`
             consultDispoBank(startDate:String,endDate:String,numrgt:Int,nomtotal:String,birthdate:String,offset:Int,limit:Int):[DisporegSQL]
             voirInfoReg(wnrgt:Int,domaine:String):[InfosREG]
         }
+        type Subscription{
+            rgtUpdated(wnrgt:Int):DisporegSQL
+        }
         type Mutation{
             deleteUsers(usercodes:[String]!):[UserSQL]
         }
         schema{
             query:Query
             mutation:Mutation
+            subscription:Subscription
         }
 
 `;
