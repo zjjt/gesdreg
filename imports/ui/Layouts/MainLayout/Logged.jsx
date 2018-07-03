@@ -1,6 +1,5 @@
 import React,{PropTypes,Component} from 'react';
 import store from '../../../redux/store';
-import {client} from '../../../redux/rootReducer.js';
 import {userconnected} from '../../../redux/actions/user-actions.js';
 import {ApolloProvider} from 'react-apollo';
 import {FlowRouter} from 'meteor/kadira:flow-router';

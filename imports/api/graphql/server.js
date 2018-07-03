@@ -1,18 +1,17 @@
 import express from 'express';
 import bodyParser from 'body-parser';
 import {Meteor} from 'meteor/meteor';
-import { createApolloServer } from 'meteor/apollo';
 import {graphqlExpress,graphiqlExpress} from 'apollo-server-express';
-import {makeExecutableSchema,addMockFunctionsToSchema} from 'graphql-tools';
 import proxyMiddleware from 'http-proxy-middleware';
 import schema from './schema.js';
 import resolvers from './resolvers.js';
 import cors from 'cors';
+import { PubSub } from 'graphql-subscriptions';
+import { WebApp } from 'meteor/webapp'; // Meteor-specific
 import { execute, subscribe } from 'graphql';
-import { createServer } from 'http';
 import { SubscriptionServer } from 'subscriptions-transport-ws';
-
-
+import { createApolloServer, addCurrentUserToContext } from 'meteor/apollo'; // specific to Meteor, but you can always check out the Express implementation
+import { makeExecutableSchema } from 'graphql-tools';
 //export const GRAPHQL_PORT=5000;
 
 //let graphQLServer=express();
@@ -24,9 +23,41 @@ const executableSchema=makeExecutableSchema({
   printErrors:true
 });
 
+export const pubsub = new PubSub();
+const context={}; 
+const subscriptionsPath = '/subscriptions';
+
 createApolloServer({
-  schema:executableSchema
-})
+  schema:executableSchema,
+  context
+},{
+  configServer: expressServer => expressServer.use(cors())
+});
+
+// create the subscription manager thanks to the schema & the pubsub mechanism
+
+new SubscriptionServer(
+  {
+    schema:executableSchema,
+    execute,
+    subscribe,
+    // on connect subscription lifecycle event
+    /*onConnect: async (connectionParams, webSocket) => {
+      // if a meteor login token is passed to the connection params from the client,
+      // add the current user to the subscription context
+      const subscriptionContext = connectionParams.meteorLoginToken
+        ? await addCurrentUserToContext(context, connectionParams.meteorLoginToken)
+        : context;
+
+      return subscriptionContext;
+    },*/
+  },
+  {
+    // bind the subscription server to Meteor WebApp
+    server: WebApp.httpServer,
+    path: subscriptionsPath,
+  }
+);
 /*graphQLServer.use('*', cors({ origin: 'http://localhost:3000' }));
 graphQLServer.use('/graphql',bodyParser.json(),graphqlExpress({
     schema:executableSchema,

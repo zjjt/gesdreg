@@ -1,10 +1,10 @@
 import {Meteor} from 'meteor/meteor';
 import {DBSQL,DBSQLSERVER,userSQL,dispoSQL} from './connectors.js';
 import {formatNumberInMoney} from '../../utils/utilitaires';
-import { PubSub, withFilter } from 'graphql-subscriptions';
+import {withFilter } from 'graphql-subscriptions';
 import Sequelize from 'sequelize';
 const Promise=require('bluebird');
-
+import {pubsub} from './server';
 /*sqlServconn.run((err)=>{
     if(err)
         throw err;
@@ -24,7 +24,6 @@ DBSQLSERVER.authenticate().then(()=>{
     console.log('Impossible de se connecter a MsSql,veuillez reverifier');
 });
 
-export const pubsub = new PubSub();
  const resolvers={
     Query:{
         user(_,args){

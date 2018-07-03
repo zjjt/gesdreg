@@ -5,7 +5,7 @@ import {Accounts} from 'meteor/accounts-base';
 import Sequelize from 'sequelize';
 import {userSQL,dispoSQL,DBSQL,DBSQLSERVER} from '../imports/api/graphql/connectors.js';
 import {WhatsNew,RegUpdated} from '../imports/api/collections.js';
-import {pubsub} from '../imports/api/graphql/resolvers';
+import {pubsub} from '../imports/api/graphql/server';
 import {moment} from 'meteor/momentjs:moment';
 import {Email} from 'meteor/email';
 
