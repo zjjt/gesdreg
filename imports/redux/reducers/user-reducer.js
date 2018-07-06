@@ -4,7 +4,8 @@ const initialState={
     mettreAjour:false,
     mettreAjourBank:false,
     isUserConnected:false,
-    isBigDialogUp:false,
+    selectedWnrgt:0,
+    isBigDialogUp:true,
     user:null
 };
 
@@ -27,6 +28,12 @@ export default function userReducer(state=initialState,action){
         return{
             ...state,
             mettreAjourBank:false
+        };
+        case actions.SELECTREG:
+        //alert("in resolver majbank")
+        return{
+            ...state,
+            selectedWnrgt:action.wnrgt
         };
         case actions.OPENBIGDIALOG:
         case actions.OPENBIGDIALOGBANK:

@@ -59,6 +59,7 @@ class ConsultDispo extends Component {
             endDate={this.props.endDate}
             nomtotal={this.props.nomtotal}
             numrgt={this.props.numrgt}
+            selectedRgt={this.props.selectedReg}
             birthdate={this.props.birthdate?moment(this.props.birthdate).format("YYYY-MM-DD"):null} 
             />
         ):(
@@ -170,7 +171,8 @@ ConsultDispo=connect(
       nomtotal,
       numpolice,
       numrgt,
-      birthdate
+      birthdate,
+      selectedReg:state.userActions.selectedWnrgt
     }
   }
 )(ConsultDispo);

@@ -8,13 +8,7 @@
     "start": "meteor run"
   },
   "dependencies": {
-    "apollo-cache-inmemory": "^1.3.0-beta.3",
-    "apollo-client": "^2.0.0-beta.8",
-    "apollo-engine": "^1.1.2",
-    "apollo-link": "^0.7.0",
-    "apollo-link-http": "^0.7.0",
-    "apollo-link-ws": "^0.5.0",
-    "apollo-server-express": "^1.3.6",
+    "apollo-client": "^1.1.1",
     "babel-runtime": "^6.18.0",
     "babyparse": "^0.4.6",
     "bcrypt": "^2.0.1",
@@ -56,7 +50,7 @@
     "redux-logger": "^2.7.4",
     "redux-persist": "^4.0.1",
     "redux-thunk": "^2.2.0",
-    "sequelize": "^3.24.3",
+    "sequelize": "^3.33.0",
     "sequelize-auto": "^0.4.18",
     "sqlite": "^2.2.0",
     "subscriptions-transport-ws": "^0.7.3",

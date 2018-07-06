@@ -410,7 +410,7 @@ export default graphql(listeDisponibilities,{
             numreglEnd,
             offset:0,
             limit:ITEMS_PER_PAGE          
-    },forceFetch:true }),
+    },fetchPolicy: 'cache-and-network' }),
         props:({data:{loading,error,listeDispo,fetchMore}})=>{
             //alert(JSON.stringify(error));
             

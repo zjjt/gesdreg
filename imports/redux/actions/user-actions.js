@@ -5,6 +5,7 @@ export const CLOSEBIGDIALOG='CLOSEBIGDIALOG';
 export const CLOSEBIGDIALOGBANK='CLOSEBIGDIALOGBANK';
 export const OPENBIGDIALOG='OPENBIGDIALOG';
 export const OPENBIGDIALOGBANK='OPENBIGDIALOGBANK';
+export const SELECTREG='SELECTREG';
 
 export const USERCONNECTED='USERCONNECTED';
 
@@ -33,6 +34,14 @@ export function openBigDialog(who){
 		return{
 			type:OPENBIGDIALOG
 		}
+	}
+	
+}
+export function selectedReg(wnrgt){
+	alert(wnrgt);
+	return{
+		type:SELECTREG,
+		wnrgt
 	}
 	
 }

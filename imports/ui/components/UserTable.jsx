@@ -173,7 +173,7 @@ export default graphql(deleteUsersBoth,{
         props:({mutate})=>({
             deleteUsers:(usercodes)=>mutate({variables:{usercodes}})
         }),
-        forceFetch:true,
+        fetchPolicy: 'cache-and-network',
         pollInterval:4000,
         updateQueries:{
             listeUtilisateur:(prev,{queryVariables})=>{
@@ -187,6 +187,6 @@ export default graphql(deleteUsersBoth,{
         }
     }
 })(graphql(listeUtilisateur,{
-    options:({ nom,orderDesc }) => ({ variables: { nom,orderDesc },forceFetch:true,pollInterval:4000 }),
+    options:({ nom,orderDesc }) => ({ variables: { nom,orderDesc },fetchPolicy: 'cache-and-network',pollInterval:4000 }),
 })(UserTable));
 

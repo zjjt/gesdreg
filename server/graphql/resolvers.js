@@ -1,10 +1,10 @@
 import {Meteor} from 'meteor/meteor';
 import {DBSQL,DBSQLSERVER,userSQL,dispoSQL} from './connectors.js';
-import {formatNumberInMoney} from '../../utils/utilitaires';
+import {formatNumberInMoney} from '../../imports/utils/utilitaires';
 import {withFilter } from 'graphql-subscriptions';
 import Sequelize from 'sequelize';
 const Promise=require('bluebird');
-import {pubsub} from './server';
+import { PubSub } from 'graphql-subscriptions';
 /*sqlServconn.run((err)=>{
     if(err)
         throw err;
@@ -24,6 +24,7 @@ DBSQLSERVER.authenticate().then(()=>{
     console.log('Impossible de se connecter a MsSql,veuillez reverifier');
 });
 
+export const pubsub = new PubSub();
  const resolvers={
     Query:{
         user(_,args){
@@ -1028,6 +1029,7 @@ DBSQLSERVER.authenticate().then(()=>{
                        let promises=[];
                        let dispo;
                        res.forEach((r)=>{
+                        
                            promises.push(
                                Promise.all([
                                DBSQLSERVER.query(query,{ replacements:{numero_reg:r.wnrgt,domaine:r.domaine},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -1436,12 +1438,25 @@ DBSQLSERVER.authenticate().then(()=>{
                 });
  
             }else{
+                let uquery="select * from exp.reguser where redac like :red";
                  return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                     //statut_reg_retirer:'PRET'
+                    redac:{
+                        $not:"ADM"
+                    }
                 },order:[['wnrgt','DESC']],offset:args.offset,limit:args.limit}).then((res)=>{
                     let promises=[];
                     let dispo;
                     res.forEach((r)=>{
+                        promises.push(
+                            Promise.all([
+                            DBSQLSERVER.query(uquery,{ replacements:{red:r.redac},type:DBSQLSERVER.QueryTypes.SELECT})
+                            ]).spread((redac)=>{
+                                dispo=r.toJSON();
+                                dispo.infosRedac=redac;
+                                return dispo;
+                            })
+                        );
                         promises.push(
                             Promise.all([
                             DBSQLSERVER.query(query,{ replacements:{numero_reg:r.wnrgt,domaine:r.domaine},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -2665,12 +2680,9 @@ DBSQLSERVER.authenticate().then(()=>{
     },
     Subscription: {
         rgtUpdated: {
-          subscribe: withFilter(() => pubsub.asyncIterator('rgtUpdated'), (payload, variables) => {
-            // The `messageAdded` channel includes events for all channels, so we filter to only
-            // pass through events for the channel specified in the query
-            console.log("ici");
-            return payload.wnrgt === variables.wnrgt;
-          }),
+          subscribe: pubsub.asyncIterator('rgtUpdated'),
+          resolve: (payload) => payload,
+          
         }
       }
 };

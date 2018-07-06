@@ -381,5 +381,5 @@ const voirInfoDispo=gql`
 
     
 export default graphql(voirInfoDispo,{
-    options:({ wnrgt,domaine }) => ({ variables: {wnrgt,domaine},forceFetch:true }),
+    options:({ wnrgt,domaine }) => ({ variables: {wnrgt,domaine},fetchPolicy: 'cache-and-network' }),
 })(ServRegBankForm);

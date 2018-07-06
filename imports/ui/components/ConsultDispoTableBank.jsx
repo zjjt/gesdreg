@@ -12,13 +12,12 @@ import Divider from 'material-ui/Divider';
 import CircularProgress from 'material-ui/CircularProgress';
 import {Table, TableBody, TableFooter, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import {graphql,gql} from 'react-apollo';
-import {GRAPHQL_PORT} from "../../api/graphql/server";
 import areIntlLocalesSupported from 'intl-locales-supported';
 import MenuItem from 'material-ui/MenuItem';
 import ServRegBankForm from './ServRegBankForm';
 import {$} from 'meteor/jquery';
 import {englishDateToFr,formatNumberInMoney} from '../../utils/utilitaires.js';
-import {miseajourDispoBank,openBigDialog} from '../../redux/actions/user-actions.js'
+import {miseajourDispoBank,openBigDialog,selectedReg} from '../../redux/actions/user-actions.js'
 
 
 //Quand on click sur les checkbox on compte le nombre de lignes selectionnes et on dispacth une action sur store avec side effects de modification dans la database
@@ -59,21 +58,21 @@ class ConsultDispoTableBank extends Component{
             };
         }
 
+        componentWillMount(){
+           
+        }
+        componentWillUpdate(){
+            //Ici on gere la subscription 
+            console.log(this.props);
+            
+        }
         componentDidUpdate(){
+            console.log(this.props.shouldCloseDialog+"  "+this.state.dialogTIsOpen);
             if(!this.props.shouldCloseDialog && this.state.dialogTIsOpen){
+                this.props.subscribeToRegUpdate({wnrgt:this.props.selectedRgt});
                 this._dialogTClose();
+                this.props.refetch();
             }
-         /* if(typeof this.props.consultDispoBank !="undefined" && !this.state.setBankDispo){
-              this.setState({
-                  bankdispo:this.props.consultDispoBank
-              })
-          }else{
-              if(this.state.setBankDispo){
-                this.setState({
-                    setBankDispo:false
-                })
-              }  
-          }*/
         }
         componentDidMount(){
             $('.tableau').parent().css("width","3786px");
@@ -97,25 +96,30 @@ class ConsultDispoTableBank extends Component{
                 //console.dir(this.props.data.userSQL[r])
              });
             }
-            switch(regarray[0].domaine){
-                case "I":
-                regarray[0].domainefull="INDIVIDUEL";
-                break;
-                 case "G":
-                regarray[0].domainefull="GROUPE";
-                break;
-                 case "R":
-                regarray[0].domainefull="RENTE";
-                break;
-                
+            if(regarray.length){
+                switch(regarray[0].domaine){
+                    case "I":
+                    regarray[0].domainefull="INDIVIDUEL";
+                    break;
+                     case "G":
+                    regarray[0].domainefull="GROUPE";
+                    break;
+                     case "R":
+                    regarray[0].domainefull="RENTE";
+                    break;
+                    
+                }
+                this.setState({
+                    selectedRows:rowsarr,
+                    regSelected:regarray,
+                    dialogTIsOpen:true
+                });
+                this.props.dispatch(openBigDialog("BANK"));
+                this.props.dispatch(selectedReg(regarray[0].wnrgt));
+                //console.dir(regarray);
             }
-            this.setState({
-                selectedRows:rowsarr,
-                regSelected:regarray,
-                dialogTIsOpen:true
-            });
-            this.props.dispatch(openBigDialog("BANK"));
-            console.dir(regarray);
+            
+            
             
         }
         
@@ -204,13 +208,9 @@ console.dir(this.state);
                                             </TableRow>
                                            ):typeof consultDispoBank!=='undefined'?consultDispoBank.map((row,index)=>{
                                             let statutClass='';
-                                            if(row.statut_reg_retirer==="EN COURS")statutClass='animated bounceInRight ';
-                                            if(row.statut_reg_retirer==="A LA TRESO")statutClass='animated bounceInRight yellowBack';
-                                            if(row.statut_reg_retirer==="SORTIE DE TRESO")statutClass='animated bounceInRight orangeBack';
-                                            if(row.statut_reg_retirer==="A LA SIGNATURE")statutClass='animated bounceInRight roseBack';
-                                            if(row.statut_reg_retirer==="PRET")statutClass='animated bounceInRight greenBack';
-                                            if(row.statut_reg_retirer==="SORTIE")statutClass='animated bounceInRight';
-                                            if(row.statut_reg_retirer==="REFUSER")statutClass='animated bounceInRight redBack';
+                                            if(row.ValBank=="")statutClass='animated bounceInRight ';
+                                            if(row.ValBank==="OUI")statutClass='animated bounceInLeft greenBack';
+                                            if(row.ValBank==="NON")statutClass='animated bounceInLeft redBack';
                                             return(<TableRow key={index} className={statutClass} selected={this.state.selectedRows.indexOf(index)!==-1} ref={`user${index}`}>
                                                 <TableRowColumn>{row.wnrgt}</TableRowColumn>
                                                 <TableRowColumn>{row.nom_beneficiaire}</TableRowColumn>
@@ -227,7 +227,7 @@ console.dir(this.state);
                                                <TableRowColumn>{row.ValBank==null||row.ValBank==""?"A DEFINIR":row.ValBank}</TableRowColumn>
                                                <TableRowColumn>{row.Comments==""?"R.A.S":row.Comments}</TableRowColumn>
                                                <TableRowColumn>{row.CommentsBank==""?"R.A.S":row.CommentsBank}</TableRowColumn>
-                                             
+                                               <TableRowColumn>{row.redac=="ADM"?"Nsia Vie Assurances":row.CommentsBank}</TableRowColumn>
                                             </TableRow>);
                                         }):<TableRow>
                                                <TableRowColumn colSpan="14">
@@ -303,11 +303,20 @@ const checkDisponibleBank=gql`
             wasrg
             wnrgt
             wnupo
-            domaine
             nom_beneficiaire
             date_naiss
+            date_depot_treso
+            date_sort_treso
+            date_depot_sign
+            date_recep_sign_reg
             date_retrait_reg
             statut_reg_retirer
+            domaine
+            redac
+            MNTGT
+            MRGGT
+            dateRDV
+            ValBank
             Comments
             CommentsBank
             infoSurRgt{
@@ -326,7 +335,14 @@ const checkDisponibleBank=gql`
         
     }`;
 
-
+const regUpdatedSub=gql`
+    subscription regUpdated($wnrgt:Int){
+        rgtUpdated(wnrgt:$wnrgt){
+            wnrgt
+            domaine   
+        }
+    }
+`;
 export default graphql(checkDisponibleBank,{
     options:({startDate,endDate,birthdate,numrgt,nomtotal}) => ({ 
         
@@ -338,20 +354,51 @@ export default graphql(checkDisponibleBank,{
             nomtotal,
             offset:0,
             limit:ITEMS_PER_PAGE          
-    },forceFetch:true }),
-        props:({data:{loading,consultDispoBank,fetchMore}})=>{
+    },fetchPolicy: 'cache-and-network' }),
+        props:({data:{loading,consultDispoBank,fetchMore,subscribeToMore,refetch},selectedRgt})=>{
             return{
                 loading,
+                refetch,
                 consultDispoBank,
+                subscribeToRegUpdate:params=>{
+                    return subscribeToMore({
+                        document: regUpdatedSub,
+                        variables: {
+                          wnrgt: params.wnrgt,
+                        },
+                        updateQuery: (prev, {subscriptionData}) => {
+                            alert(JSON.stringify(subscriptionData));
+                          if (!subscriptionData.data) {
+                            return prev;
+                          }
+                  
+                          const regModified = subscriptionData.data.regUpdated;
+                          alert(regModified);
+                          return Object.assign({}, prev, {
+                            consultDispoBank:[...prev.consultDispoBank, regModified]
+                          
+                        });
+                          // don't double add the message
+                          /*if (!prev.consultDispoBank.find((msg) => msg.ValBank && msg.CommentsBank === regModified.ValBank && regModified.CommentsBank)) {
+                            return Object.assign({}, prev, {
+                                consultDispoBank:[...prev.consultDispoBank, regModified]
+                              
+                            });
+                          } else {
+                            return prev;
+                          }*/
+                        }
+                      });
+                },
                 loadMoreEntries(){
                     return fetchMore({
                         variables:{
                             offset:consultDispoBank.length
                         },
                         updateQuery:(previousResult,{fetchMoreResult})=>{
-                            if(!fetchMoreResult.data){return previousResult;}
+                            if(!fetchMoreResult){return previousResult;}
                             return Object.assign({},previousResult,{
-                                consultDispoBank:[...previousResult.consultDispoBank,...fetchMoreResult.data.consultDispoBank],
+                                consultDispoBank:[...previousResult.consultDispoBank,...fetchMoreResult.consultDispoBank],
                             });
                         }
                     });

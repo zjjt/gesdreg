@@ -34,5 +34,4 @@ session@1.1.7
 dynamic-import
 email@1.1.18
 meteorhacks:ssr
-apollo
 webapp

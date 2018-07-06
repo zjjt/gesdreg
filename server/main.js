@@ -1,8 +1,8 @@
 import { Meteor } from 'meteor/meteor';
-import '../imports/startup/server/index';
+import './graphql/graphqlServer';
 import publications from './publications/User.js';
 import WhatsNewPub from './publications/WhatsNew.js';
-import {userSQL,dispoSQL,DBSQL,DBSQLSERVER} from '../imports/api/graphql/connectors.js';
+import {userSQL,dispoSQL,DBSQL,DBSQLSERVER} from './graphql/connectors.js';
 import methods from './methods';
 
 Meteor.startup(()=>{

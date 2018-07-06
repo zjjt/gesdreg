@@ -285,7 +285,7 @@ export default graphql(checkDisponible,{
             nomtotal,
             offset:0,
             limit:ITEMS_PER_PAGE          
-    },forceFetch:true }),
+    },fetchPolicy: 'cache-and-network' }),
         props:({data:{loading,consultDispo,fetchMore}})=>{
             return{
                 loading,

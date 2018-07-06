@@ -161,6 +161,6 @@ const currentUser=gql`
 
 
 export default graphql(currentUser,{
-    options:() => ({ variables: {username:Meteor.userId()?Meteor.user().username:null},forceFetch:true,pollInterval:4000 }),
+    options:() => ({ variables: {username:Meteor.userId()?Meteor.user().username:null},fetchPolicy: 'cache-first',}),
 })(Logged);
 

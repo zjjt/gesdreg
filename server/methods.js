@@ -3,9 +3,9 @@ import{Promise} from 'meteor/promise';
 const PromiseB=require('bluebird');
 import {Accounts} from 'meteor/accounts-base';
 import Sequelize from 'sequelize';
-import {userSQL,dispoSQL,DBSQL,DBSQLSERVER} from '../imports/api/graphql/connectors.js';
+import {userSQL,dispoSQL,DBSQL,DBSQLSERVER} from './graphql/connectors.js';
 import {WhatsNew,RegUpdated} from '../imports/api/collections.js';
-import {pubsub} from '../imports/api/graphql/server';
+import {pubsub} from './graphql/resolvers';
 import {moment} from 'meteor/momentjs:moment';
 import {Email} from 'meteor/email';
 

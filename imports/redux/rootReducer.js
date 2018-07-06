@@ -3,41 +3,42 @@ import {combineReducers} from 'redux';
 import {reducer as formReducer} from 'redux-form';
 import adminReducer from './reducers/admin-reducer';
 import userReducer from './reducers/user-reducer';
-import { ApolloClient } from 'apollo-client';
-import { ApolloLink } from 'apollo-link';
-import { HttpLink } from 'apollo-link-http';
-import WebSocketLink from 'apollo-link-ws';
-import { InMemoryCache } from 'apollo-cache-inmemory';
-import { getOperationAST } from 'graphql';
-import { GRAPHQL_PORT} from '../api/graphql/server';
+import {createNetworkInterface,toIdValue} from 'react-apollo';
+import ApolloClient from 'apollo-client';
+import { SubscriptionClient, addGraphQLSubscriptions } from 'subscriptions-transport-ws';
 
 
-const httpUri = 'http://localhost:3000/graphql';
-const wsUri = 'ws://localhost:3000/subscriptions';
+const wsLink=window.location.origin.slice(0,-5);
+//alert(wsLink);
+const networkInterface=createNetworkInterface({ uri:
+	wsLink+':5000/graphql' });
 
-const link = ApolloLink.split(
-  operation => {
-    const operationAST = getOperationAST(operation.query, operation.operationName);
-    return !!operationAST && operationAST.operation === 'subscription';
-  },
-  new WebSocketLink({
-    uri: wsUri,
-    options: {
-      reconnect: true, //auto-reconnect
-      // // carry login state (should use secure websockets (wss) when using this)
-      // connectionParams: {
-      //   authToken: localStorage.getItem("Meteor.loginToken")
-      // }
-    }
-  }),
-  new HttpLink({ uri: httpUri })
-);
+	networkInterface.use([{
+		applyMiddleware(req, next) {
+			setTimeout(next, 500);
+		},
+	}]);
 
-const cache = new InMemoryCache(window.__APOLLO_STATE);
 
-const client = new ApolloClient({
-  link,
-  cache
+// create a websocket client
+const wsClient = new SubscriptionClient(wsLink.replace('http','ws')+`:5000/subscriptions`, {
+  reconnect: true,
+  // pass some extra information to the subscription, like the current user:
+  /*connectionParams: {
+    // getMeteorLoginToken = get the Meteor current user login token from local storage
+    meteorLoginToken: getMeteorLoginToken(),
+	},*/
+});
+
+const networkInterfaceWithSubscriptions = addGraphQLSubscriptions(
+	networkInterface,
+	wsClient
+  );
+
+ 
+
+const client= new ApolloClient({
+	networkInterface: networkInterfaceWithSubscriptions,
 });
 
 const reducers={

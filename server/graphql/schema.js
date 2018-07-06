@@ -55,6 +55,7 @@ const schema=`
             ValBank:String
             Comments:String
             CommentsBank:String
+            infosRedac:[UserSQL]
             infoSurRgt:[InfosREG]
         }
         type Query{
