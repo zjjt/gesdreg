@@ -15,7 +15,7 @@ import CircularProgress from 'material-ui/CircularProgress';
 import Dialog from 'material-ui/Dialog';
 import Snackbar from 'material-ui/Snackbar';
 import {dontmiseajourDispoBank,closeBigDialog} from '../../redux/actions/user-actions.js';
-import {isEmptyObject,isEmptyObjectProps} from '../../utils/utilitaires';
+import {isEmptyObject,isEmptyObjectProps,uniq} from '../../utils/utilitaires';
 import {$} from 'meteor/jquery';
 //import {submitBankForm} from './submits';
 import { RaisedButton } from 'material-ui';
@@ -182,7 +182,8 @@ class ServRegBankForm extends Component{
                     onRequestClose={this._snackClose.bind(this)}
                     style={{width:'auto !important'}}
                 />
-                {this.props.data.loading?<div style={{textAlign:"center"}}><CircularProgress /></div>:this.props.data.voirInfoReg.map((row,index)=>{
+                {this.props.data.loading?<div style={{textAlign:"center"}}><CircularProgress /></div>:uniq(this.props.data.voirInfoReg).map((row,index)=>{
+                    if(index<1)//hack pour sundb_rci
                        return (<div key={index} style={{display:"flex",justifyContent:"center",flexDirection:"column"}}>
                             <RaisedButton
                             label="Voir les informations du règlement"

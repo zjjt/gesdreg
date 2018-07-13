@@ -15,7 +15,7 @@ import {Tabs, Tab} from 'material-ui/Tabs';
 import FontIcon from 'material-ui/FontIcon';
 import ConsultDispoTable from '../components/ConsultDispoTable.jsx';
 import ConsultDispoTableBank from '../components/ConsultDispoTableBank.jsx';
-
+import {convertInTextFromFrenchDate} from '../../utils/utilitaires';
 import {moment} from 'meteor/momentjs:moment';
 import { createContainer } from 'meteor/react-meteor-data';
 import {Meteor} from 'meteor/meteor';
@@ -55,20 +55,20 @@ class ConsultDispo extends Component {
         console.dir(this.props);
         let content=this.props.userRole==="B"?(
             <ConsultDispoTableBank 
-            startDate={this.props.startDate}
-            endDate={this.props.endDate}
+            startDate={this.props.startDate?moment(convertInTextFromFrenchDate(this.props.startDate)).format("YYYY-MM-DD"):null}
+            endDate={this.props.endDate?moment(convertInTextFromFrenchDate(this.props.endDate)).format("YYYY-MM-DD"):null}
             nomtotal={this.props.nomtotal}
             numrgt={this.props.numrgt}
             selectedRgt={this.props.selectedReg}
-            birthdate={this.props.birthdate?moment(this.props.birthdate).format("YYYY-MM-DD"):null} 
+            birthdate={this.props.birthdate?moment(convertInTextFromFrenchDate(this.props.birthdate)).format("YYYY-MM-DD"):null} 
             />
         ):(
             <ConsultDispoTable 
-            startDate={this.props.startDate}
-            endDate={this.props.endDate}
+            startDate={this.props.startDate?moment(convertInTextFromFrenchDate(this.props.startDate)).format("YYYY-MM-DD"):null}
+            endDate={this.props.endDate?moment(convertInTextFromFrenchDate(this.props.endDate)).format("YYYY-MM-DD"):null}
             nomtotal={this.props.nomtotal}
             numpol={this.props.numpolice}
-            birthdate={this.props.birthdate?moment(this.props.birthdate).format("YYYY-MM-DD"):null} 
+            birthdate={this.props.birthdate?moment(convertInTextFromFrenchDate(this.props.birthdate)).format("YYYY-MM-DD"):null} 
             />
         );
         let champ=this.props.userRole==="B"?(
@@ -110,13 +110,13 @@ class ConsultDispo extends Component {
                                     <Field
                                         name="debutdate" 
                                         component={TextField}
-                                        hintText="Date de début EX:1900-01-01"
+                                        hintText="Date de début EX:01/01/1900"
                                         floatingLabelFixed={true}    
                                     />
                                     <Field
                                         name="findate" 
                                         component={TextField}
-                                        hintText="Date de fin EX:1900-01-01"
+                                        hintText="Date de fin EX:01/01/1900"
                                         floatingLabelFixed={true}    
                                     />
                                     {
@@ -134,7 +134,7 @@ class ConsultDispo extends Component {
                                     <Field
                                         name="birthdate" 
                                         component={TextField}
-                                        hintText="Date de naissance du bénéficiaire"
+                                        hintText="Date de naissance  01/01/1900"
                                         floatingLabelFixed={true}
                                         
                                     />
@@ -163,11 +163,11 @@ const selector = formValueSelector('searchConsultDispo');
 ConsultDispo=connect(
     state => {
     // or together as a group
-    const { debutDate,finDate,nomtotal,numpolice,numrgt,birthdate } = selector(state, 'debutDate','finDate', 'nomtotal', 'numpolice','numrgt','birthdate');
+    const { debutdate,findate,nomtotal,numpolice,numrgt,birthdate } = selector(state, 'debutdate','findate', 'nomtotal', 'numpolice','numrgt','birthdate');
    
     return {
-        startDate:debutDate,
-        endDate:finDate,
+        startDate:debutdate,
+        endDate:findate,
       nomtotal,
       numpolice,
       numrgt,

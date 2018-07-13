@@ -38,7 +38,7 @@ export function openBigDialog(who){
 	
 }
 export function selectedReg(wnrgt){
-	alert(wnrgt);
+	//alert(wnrgt);
 	return{
 		type:SELECTREG,
 		wnrgt

@@ -20,6 +20,12 @@ import {miseajourDispo,openBigDialog} from '../../redux/actions/user-actions.js'
 import {englishDateToFr} from '../../utils/utilitaires.js';
 import LinearProgress from 'material-ui/LinearProgress';
 import {$} from 'meteor/jquery';
+import Icon from 'react-icons-kit';
+import {neutral} from 'react-icons-kit/icomoon/neutral'//quand letat est null
+import {smile2} from 'react-icons-kit/icomoon/smile2'// normal pour RAS
+import {tongue2} from 'react-icons-kit/icomoon/tongue2'// pour les OPUS ou avant 2017
+import {sad2} from 'react-icons-kit/icomoon/sad2'//quand le delai se rapproche
+import {confused2} from 'react-icons-kit/icomoon/confused2'//quand c'est chaud 
 
 //Quand on click sur les checkbox on compte le nombre de lignes selectionnes et on dispacth une action sur store avec side effects de modification dans la database
 let DateTimeFormat;
@@ -190,19 +196,20 @@ class DispoTable extends Component{
                             enableSelectAll={this.state.table.enableSelectAll}
                         >
                             <TableRow>
-                                <TableHeaderColumn tooltip="Numéro de l'assuré">No Assuré</TableHeaderColumn>
-                                <TableHeaderColumn tooltip="Numéro de règlement">No Règlement</TableHeaderColumn>
-                                <TableHeaderColumn tooltip="Numéro de chèque">No Chèque</TableHeaderColumn>
-                                <TableHeaderColumn tooltip="Montant du règlement">Montant Règlement</TableHeaderColumn>
-                                <TableHeaderColumn tooltip="Mode de règlement">Mode de règlement</TableHeaderColumn>
-                                <TableHeaderColumn tooltip="Numéro de police">No Police</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Nom du bénéficiaire">Bénéficiaire</TableHeaderColumn>
+                                <TableHeaderColumn tooltip="Date de naissance du bénéficiaire">Date de naissance du Bénéficiaire</TableHeaderColumn>
+                                <TableHeaderColumn tooltip="Numéro de l'assuré">No Assuré</TableHeaderColumn>
+                                <TableHeaderColumn tooltip="Numéro de police">No Police</TableHeaderColumn>
+                                <TableHeaderColumn tooltip="Numéro de décompte">No Décompte</TableHeaderColumn>
+                                <TableHeaderColumn tooltip="Numéro de règlement">No Règlement</TableHeaderColumn>
+                                <TableHeaderColumn tooltip="Mode de règlement">Mode de règlement</TableHeaderColumn>
+                                <TableHeaderColumn tooltip="Type du sinistre">Type du sinistre</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="libellé du sinistre">Libellé du sinistre</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Cause du sinistre">Cause du sinistre</TableHeaderColumn>
-                                <TableHeaderColumn tooltip="Type du sinistre">Type du sinistre</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Date de réception de la demande">Date de réception de la demande</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Date du règlement">Date du règlement</TableHeaderColumn>
-                                <TableHeaderColumn tooltip="Date de naissance du bénéficiaire">Date de naissance du Bénéficiaire</TableHeaderColumn>
+                                <TableHeaderColumn tooltip="Montant net du règlement">Montant Net Règlement</TableHeaderColumn>
+                                <TableHeaderColumn tooltip="Numéro de chèque">No Chèque</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Date de dépot à la trésorerie">Dépot Tréso</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Date de sortie de la trésorerie">Sortie Tréso</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Date de dépot pour la signature">Dépot Signature</TableHeaderColumn>
@@ -211,6 +218,9 @@ class DispoTable extends Component{
                                 <TableHeaderColumn tooltip="Statut du règlement dans le système">Statut règlement</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Domaine du règlement">Domaine</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Code rédacteur">Rédacteur</TableHeaderColumn>
+                                <TableHeaderColumn tooltip="Validation de la banque">Accord Banque</TableHeaderColumn>
+                                <TableHeaderColumn tooltip="Commentaires de Nsia Vie Assurances">Commentaires Nsia Vie</TableHeaderColumn>
+                                <TableHeaderColumn tooltip="Commentaires de la banque">Commentaires Banque</TableHeaderColumn>
                             </TableRow>
                         </TableHeader>
                         <TableBody
@@ -232,6 +242,7 @@ class DispoTable extends Component{
                                             </TableRow>
                                            ): typeof this.state.listeDispo!=="undefined" && this.state.listeDispo.length?this.state.listeDispo.map((row,index)=>{
                                             let domaine='';
+                                            let etat=row.etat?row.etat.alerte==="TERMINER"?(<Icon icon={tongue2} title={`Niveau d'alerte: ${row.etat.alerte}`} style={{color:"gray"}}/>):row.etat.alerte==="RAS"?(<Icon icon={smile2} title={`Niveau d'alerte: ${row.etat.alerte}`} style={{color:"lightgreen"}}/>):row.etat.alerte==="NORMAL"?(<Icon icon={sad2} title={`Niveau d'alerte: ${row.etat.alerte}`} style={{color:"orange"}}/>):(<Icon icon={confused2} title={`Niveau d'alerte: ${row.etat.alerte}`} style={{color:"purple"}}/>):(<Icon icon={neutral} title={`Voir le service prestations en charge des saisies dans le système`}/>);
                                             if(row.domaine==="I")domaine="INDIVIDUEL";
                                             if(row.domaine==="G")domaine="GROUPE";
                                             if(row.domaine==="R")domaine="RENTE";
@@ -243,19 +254,20 @@ class DispoTable extends Component{
                                             if(row.statut_reg_retirer==="SORTIE")statutClass='animated bounceInRight redBack';
 
                                             return(<TableRow key={index} className={ statutClass } selected={this.state.selectedRows.length?true:false} ref={`ligne${index}`}>
-                                                <TableRowColumn>{row.wasrg}</TableRowColumn>
-                                                <TableRowColumn>{row.wnrgt}</TableRowColumn>
-                                                <TableRowColumn>{row.infoSurRgt[0]?row.infoSurRgt[0].NUMERO_CHEQUE!=''?row.infoSurRgt[0].NUMERO_CHEQUE:'"NON DEFINI"':'"NON DEFINI"'}</TableRowColumn>
-                                                <TableRowColumn>{row.MNTGT}</TableRowColumn>
-                                                <TableRowColumn>{row.MRGGT}</TableRowColumn>
-                                                <TableRowColumn>{row.wnupo}</TableRowColumn>
                                                 <TableRowColumn>{row.nom_beneficiaire}</TableRowColumn>
+                                                <TableRowColumn>{row.date_naiss?moment(row.date_naiss).format("DD-MM-YYYY"):"NON DEFINI"}</TableRowColumn>
+                                                <TableRowColumn>{row.wasrg}</TableRowColumn>
+                                                <TableRowColumn>{row.wnupo}</TableRowColumn>
+                                                <TableRowColumn>{row.infoSurRgt[0]?row.infoSurRgt[0].DECOMPTE:"NON DEFINI"}</TableRowColumn>
+                                                <TableRowColumn>{row.wnrgt}</TableRowColumn>
+                                                <TableRowColumn>{row.MRGGT}</TableRowColumn>
+                                                <TableRowColumn>{row.infoSurRgt[0]?row.infoSurRgt[0].TYPE_SINISTRE:"NON DEFINI"}</TableRowColumn>
                                                 <TableRowColumn>{row.infoSurRgt[0]?row.infoSurRgt[0].LIBELLE_SINISTRE:"NON DEFINI"}</TableRowColumn>
                                                 <TableRowColumn>{row.infoSurRgt[0]?row.infoSurRgt[0].CAUSE_SINISTRE:"NON DEFINI"}</TableRowColumn>
-                                                <TableRowColumn>{row.infoSurRgt[0]?row.infoSurRgt[0].TYPE_SINISTRE:"NON DEFINI"}</TableRowColumn>
                                                 <TableRowColumn>{row.infoSurRgt[0]?englishDateToFr(row.infoSurRgt[0].DATE_RECEPTION):"NON DEFINI"}</TableRowColumn>
                                                 <TableRowColumn>{row.infoSurRgt[0]?englishDateToFr(row.infoSurRgt[0].DATE_REGLEMENT):"NON DEFINI"}</TableRowColumn>
-                                                <TableRowColumn>{row.date_naiss?moment(row.date_naiss).format("DD-MM-YYYY"):"NON DEFINI"}</TableRowColumn>
+                                                <TableRowColumn>{row.infoSurRgt[0]?row.infoSurRgt[0].MONTANT_NET_REGLEMENT:"NON DEFINI"}</TableRowColumn>
+                                                <TableRowColumn>{row.infoSurRgt[0]?row.infoSurRgt[0].NUMERO_CHEQUE!=''?row.infoSurRgt[0].NUMERO_CHEQUE:'"NON DEFINI"':'"NON DEFINI"'}</TableRowColumn>
                                                 <TableRowColumn>{row.date_depot_treso?moment(row.date_depot_treso).format("DD-MM-YYYY"):"NON DEFINI"}</TableRowColumn>
                                                 <TableRowColumn >{row.date_sort_treso?moment(row.date_sort_treso).format("DD-MM-YYYY"):"NON DEFINI"}</TableRowColumn> 
                                                 <TableRowColumn>{row.date_depot_sign?moment(row.date_depot_sign).format("DD-MM-YYYY"):"NON DEFINI"}</TableRowColumn>
@@ -264,6 +276,7 @@ class DispoTable extends Component{
                                                 <TableRowColumn>{row.statut_reg_retirer}</TableRowColumn>
                                                 <TableRowColumn>{domaine}</TableRowColumn>
                                                 <TableRowColumn>{row.redac==="ADM"?"Administrateur":row.redac}</TableRowColumn>
+                                                <TableRowColumn></TableRowColumn>
                                             </TableRow>);
                                         }):<TableRow>
                                                <TableRowColumn colSpan="8">
@@ -380,12 +393,17 @@ const listeDisponibilities=gql`
             redac
             MNTGT
             MRGGT
+            etat{
+                nbj
+                alerte
+            }
             infoSurRgt{
                 LIBELLE_SINISTRE
                 CAUSE_SINISTRE
                 TYPE_SINISTRE
                 DATE_RECEPTION
                 DATE_REGLEMENT
+                DECOMPTE
                 NUMERO_CHEQUE
                 MONTANT_BRUT
                 MONTANT_NET_REGLEMENT

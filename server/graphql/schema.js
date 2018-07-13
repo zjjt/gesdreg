@@ -35,6 +35,10 @@ const schema=`
             MONTANT_BRUT:String
             MONTANT_NET_REGLEMENT:String
         }
+        type Alert{
+            nbj:Int
+            alerte:String
+        }
         type DisporegSQL{
             wasrg:String
             wnrgt:Int
@@ -55,6 +59,7 @@ const schema=`
             ValBank:String
             Comments:String
             CommentsBank:String
+            etat:Alert
             infosRedac:[UserSQL]
             infoSurRgt:[InfosREG]
         }

@@ -75,7 +75,7 @@ class ConsultDispoTableBank extends Component{
             }
         }
         componentDidMount(){
-            $('.tableau').parent().css("width","3786px");
+            $('.tableau').parent().css("width","4037px");
         }
 
         _dialogTOpen(){
@@ -186,6 +186,7 @@ console.dir(this.state);
                                 <TableHeaderColumn tooltip="Validation de la banque">Accord Banque</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Commentaires de Nsia Vie Assurances">Commentaires Nsia Vie</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Commentaires de la banque">Commentaires</TableHeaderColumn>
+                                <TableHeaderColumn tooltip="Caissier">Traité par</TableHeaderColumn>
                           
                             </TableRow>
                         </TableHeader>
@@ -211,6 +212,7 @@ console.dir(this.state);
                                             if(row.ValBank=="")statutClass='animated bounceInRight ';
                                             if(row.ValBank==="OUI")statutClass='animated bounceInLeft greenBack';
                                             if(row.ValBank==="NON")statutClass='animated bounceInLeft redBack';
+                                            //console.dir(row);
                                             return(<TableRow key={index} className={statutClass} selected={this.state.selectedRows.indexOf(index)!==-1} ref={`user${index}`}>
                                                 <TableRowColumn>{row.wnrgt}</TableRowColumn>
                                                 <TableRowColumn>{row.nom_beneficiaire}</TableRowColumn>
@@ -221,13 +223,13 @@ console.dir(this.state);
                                                 <TableRowColumn>{row.infoSurRgt[0]?row.infoSurRgt[0].TYPE_SINISTRE:"NON DEFINI"}</TableRowColumn>
                                                 <TableRowColumn>{row.infoSurRgt[0]?englishDateToFr(row.infoSurRgt[0].DATE_RECEPTION):"NON DEFINI"}</TableRowColumn>
                                                 <TableRowColumn>{row.infoSurRgt[0]?englishDateToFr(row.infoSurRgt[0].DATE_REGLEMENT):"NON DEFINI"}</TableRowColumn>
-                                                <TableRowColumn>{row.infoSurRgt[0].MONTANT_BRUT!=""?row.infoSurRgt[0].MONTANT_BRUT:"NON DISPONIBLE"}</TableRowColumn>
-                                                <TableRowColumn>{row.infoSurRgt[0].MONTANT_NET_REGLEMENT!=""?formatNumberInMoney(row.infoSurRgt[0].MONTANT_NET_REGLEMENT):"NON DISPONIBLE"}</TableRowColumn>
+                                                <TableRowColumn>{row.infoSurRgt[0]?formatNumberInMoney(row.infoSurRgt[0].MONTANT_BRUT):"NON DISPONIBLE"}</TableRowColumn>
+                                                <TableRowColumn>{row.infoSurRgt[0]?formatNumberInMoney(row.infoSurRgt[0].MONTANT_NET_REGLEMENT):"NON DISPONIBLE"}</TableRowColumn>
                                                <TableRowColumn>{row.statut_reg_retirer==="SORTIE"?"DISPONIBLE":"NON DISPONIBLE"}</TableRowColumn>
                                                <TableRowColumn>{row.ValBank==null||row.ValBank==""?"A DEFINIR":row.ValBank}</TableRowColumn>
-                                               <TableRowColumn>{row.Comments==""?"R.A.S":row.Comments}</TableRowColumn>
-                                               <TableRowColumn>{row.CommentsBank==""?"R.A.S":row.CommentsBank}</TableRowColumn>
-                                               <TableRowColumn>{row.redac=="ADM"?"Nsia Vie Assurances":row.CommentsBank}</TableRowColumn>
+                                               <TableRowColumn>{row.Comments?row.Comments:"R.A.S"}</TableRowColumn>
+                                               <TableRowColumn>{row.CommentsBank?row.CommentsBank:"RIEN"}</TableRowColumn>
+                                               <TableRowColumn>{row.infosRedac[0].nom+' '+row.infosRedac[0].prenom}</TableRowColumn>
                                             </TableRow>);
                                         }):<TableRow>
                                                <TableRowColumn colSpan="14">
@@ -251,15 +253,12 @@ console.dir(this.state);
                         {loading?"Chargement...":null}
                     </div>
                     <div className="helperDiv">
-                     Pour effectuer une recherche de règlement disponibles,veuillez entrez la date de naissance du bénéficiaire selon le format indiqué <b>AAAA-MM-JJ</b>, ou le numéro de police ou le nom complet du bénéficiaire.<br/>
-                     Vous pouvez reconnaitre le statut qu'un règlement a dans le système en observant la couleur de fond de la ligne du tableau qu'il occupe<br/>
+                     Pour effectuer une recherche de règlement disponibles pour retrait:<br/>- Veuillez entrez la date de naissance du bénéficiaire selon le format indiqué <b>JJ/MM/AAAA</b>, ou le numéro de règlement figurant sur le chèque ou encore le nom complet du bénéficiaire.<br/>
+                     Vous pouvez savoir si un règlement a été servi ou non en observant la couleur de fond de la ligne du tableau qu'il occupe<br/>
                       Ces couleurs sont:<br/>
-                        -<span style={{color:"white"}}>BLANC</span> pour le statut <b>EN COURS</b><br/>
-                        -<span style={{color:"yellow"}}>JAUNE</span> pour le statut <b>A LA TRESO</b><br/>
-                        -<span style={{color:"orange"}}>ORANGE</span> pour le statut <b>SORTIE DE TRESO</b><br/> 
-                        -<span style={{color:"pink"}}>ROSE</span> pour le statut <b>A LA SIGNATURE</b><br/> 
-                        -<span style={{color:"green"}}>VERT</span> pour le statut <b>PRET</b><br/> 
-                        -<span style={{color:"red"}}>ROUGE</span> pour le statut <b>SORTIE</b><br/><br/>
+                        -<span style={{color:"white"}}>BLANC</span> pour un règlement disponible pour traitement<br/>
+                        -<span style={{color:"green"}}>VERT</span> pour un règlement qui a été servi <b>PRET</b><br/> 
+                        -<span style={{color:"red"}}>ROUGE</span> pour un règlement dont l'encaissement a été refusé<br/><br/>
                      <br/>Les recherches sont complémentaires et peuvent être combinés pour un résultat plus précis.<br/>
                      <b>NB:LES RECHERCHES SONT EXECUTEES DYNAMIQUEMENT.</b>
                      </div>
@@ -319,6 +318,12 @@ const checkDisponibleBank=gql`
             ValBank
             Comments
             CommentsBank
+            infosRedac {
+                nom
+                prenom
+                role
+                redac
+            }
             infoSurRgt{
                 LIBELLE_SINISTRE
                 CAUSE_SINISTRE
@@ -367,13 +372,13 @@ export default graphql(checkDisponibleBank,{
                           wnrgt: params.wnrgt,
                         },
                         updateQuery: (prev, {subscriptionData}) => {
-                            alert(JSON.stringify(subscriptionData));
+//alert(JSON.stringify(subscriptionData));
                           if (!subscriptionData.data) {
                             return prev;
                           }
                   
                           const regModified = subscriptionData.data.regUpdated;
-                          alert(regModified);
+                          //alert(regModified);
                           return Object.assign({}, prev, {
                             consultDispoBank:[...prev.consultDispoBank, regModified]
                           
