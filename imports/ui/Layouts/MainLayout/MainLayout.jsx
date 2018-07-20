@@ -18,6 +18,7 @@ import {deconnection} from '../../../redux/actions/admin-actions.js';
 import { createContainer } from 'meteor/react-meteor-data';
 import Logged from './Logged.jsx';
 import {$} from 'meteor/jquery';
+import {Bert} from 'meteor/themeteorchef:bert'
 
 
 //pour desactiver METEOR_OFFLINE_CATALOG=1 meteor
@@ -26,7 +27,9 @@ const muiTheme= getMuiTheme({
 		backgroundColor: blue900
 	}
 });
-
+Bert.defaults = {
+	hideDelay: 10000,
+}
 class Bienvenue extends Component{
 	//static muiName='FlatButton';
 	constructor(){
@@ -52,7 +55,7 @@ export default class MainLayout extends Component{
 	constructor(){
 		super();
 		this.state={
-			loggedIn:false
+			loggedIn:false,
 		};
 	}
 	componentWillMount() {
@@ -66,12 +69,14 @@ export default class MainLayout extends Component{
 		//setInterval(createDiv,1000);
 	}
 	componentDidUpdate(){
+		
 		if((store.getState().administrateurAction.adminConnected||Meteor.user()) && !this.state.loggedIn)
 		{
 			$('.appbar h1').attr("title","Gestion des disponibilités de règlements Nsia Vie Assurances");
 			this.setState({
 				loggedIn:true
 			});
+			
 		}
 	}
 	componentDidMount(){
@@ -79,12 +84,105 @@ export default class MainLayout extends Component{
 			this.setState({
 				loggedIn:false
 			});
+
 		}
+		if(Meteor.user()){
+			setTimeout(()=>{
+				if(Session.get("userRole")==="G"){
+					setInterval(async ()=>{
+						Meteor.call("checkDelaiParRapportAuClient",(res,err)=>{
+							if(err){
+								//alert(err);
+								let nbRTB=err.rachatTotbancass;
+								let nbRTI=err.rachatTotIndiv;
+								let nbARP=err.avanceRachatP;
+								let nbTerm=err.terme;
+								let nbIfc=err.ifc;
+								let nbCarec=err.carec
+			
+								Bert.alert({
+								   title: 'Votre attention s\'il vous plait',
+								   message: `Il y a actuellement:<br/><ul>
+									   <li><b>${nbRTB} rachat totaux bancassurances</b> dont le délai de traitement est presque expiré</li>
+									   <li><b>${nbRTI} rachat totaux individuel</b> dont le délai de traitement est presque expiré</li>
+									   <li><b>${nbARP} rachat partiels / avances</b> dont le délai de traitement est presque expiré</li>
+									   <li><b>${nbTerm} contrats à termes</b> dont le délai de traitement est presque expiré</li>
+									   <li><b>${nbIfc} IFC</b> dont le délai de traitement est presque expiré</li>
+									   <li><b>${nbCarec} CAREC</b> dont le délai de traitement est presque expiré</li>
+								   </ul>`,
+								   type: 'danger',
+								   style: 'growl-bottom-right',
+								   icon: 'fa-danger'
+								 });
+								// console.dir(err);
+								
+							}
+						});
+					},500000)
+					setInterval( async ()=>{
+						 Meteor.call("checkDelai",(res,err)=>{
+							 if(err){
+								 let nbHorsDelaiS=err.horsDelaiS.length;
+								 let nbHorsDelaiT=err.horsDelaiT.length;
+								 let nbRegAlaTreso=err.regTreso.length;
+								 let nbRegAlaSign=err.regSign.length;
+			
+								 Bert.alert({
+									title: 'Votre attention s\'il vous plait',
+									message: `Il y a actuellement:<br/><ul>
+										<li><b>${nbHorsDelaiT} hors du délai</b> de la <b>trésorerie</b></li>
+										<li><b>${nbHorsDelaiS} hors de délai</b> pour la <b>signature</b></li>
+										<li><b>${nbRegAlaTreso}</b> entrée à la <b>trésorerie</b></li>
+										<li><b>${nbRegAlaSign}</b> entrée à la <b>signature</b></li>
+									</ul>`,
+									type: 'attention',
+									style: 'growl-bottom-right',
+									icon: 'fa-bell'
+								  });
+								 // console.dir(err);
+							 }
+						 });
+						
+					},200000);
+				}else if(Session.get("userRole")==="C"){
+					setInterval(async ()=>{
+						Meteor.call("checkDelaiParRapportAuClient",(res,err)=>{
+							if(err){
+								//alert(err);
+								let nbRTB=err.rachatTotbancass;
+								let nbRTI=err.rachatTotIndiv;
+								let nbARP=err.avanceRachatP;
+								let nbTerm=err.terme;
+								let nbIfc=err.ifc;
+								let nbCarec=err.carec
+			
+								Bert.alert({
+								   title: 'Votre attention s\'il vous plait',
+								   message: `Il y a actuellement:<br/><ul>
+									   <li><b>${nbRTB} rachat totaux bancassurances</b> dont le délai de traitement est presque expiré</li>
+									   <li><b>${nbRTI} rachat totaux individuel</b> dont le délai de traitement est presque expiré</li>
+									   <li><b>${nbARP} rachat partiels / avances</b> dont le délai de traitement est presque expiré</li>
+									   <li><b>${nbTerm} contrats à termes</b> dont le délai de traitement est presque expiré</li>
+									   <li><b>${nbIfc} IFC</b> dont le délai de traitement est presque expiré</li>
+									   <li><b>${nbCarec} CAREC</b> dont le délai de traitement est presque expiré</li>
+								   </ul>`,
+								   type: 'danger',
+								   style: 'growl-bottom-right',
+								   icon: 'fa-danger'
+								 });
+								// console.dir(err);
+							}
+						});
+					},500000)
+				}
+			},10000);
+		}	
 	}
 	render(){
 		
 		const {content}=this.props;
 		//{content()}
+		//alert(Session.get("userRole"));
 		
 			return(
 			<ApolloProvider store={store} client={client}>

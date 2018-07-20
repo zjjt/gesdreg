@@ -8,9 +8,9 @@ import {WhatsNew,RegUpdated} from '../imports/api/collections.js';
 import {pubsub} from './graphql/resolvers';
 import {moment} from 'meteor/momentjs:moment';
 import {Email} from 'meteor/email';
+import {checkRdvDateMD} from '../imports/utils/utilitaires'
 
 const json2xls=require('json2xls');
-
 
 
 
@@ -90,6 +90,178 @@ export default ()=>{
             return true;
             else
             return false;
+        },
+        async checkDelai(){
+            //check tous les reglement dont la date de depot treso est renseignee et pas la date de sortie
+            let d={
+                regTreso:[],
+                horsDelaiT:[],
+                regSign:[],
+                horsDelaiS:[],
+            };
+                await dispoSQL.findAll({attributes:{exclude:['id']},where:{
+                    statut_reg_retirer:'A LA TRESO',
+            },order:[['wnrgt','DESC']]}).then((res)=>{
+                res.map((e,i,arr)=>{
+                   // console.dir(e.dataValues);
+                    let delai=moment(e.dataValues.date_depot_treso).add(3,'d');
+                    if(moment(e.dataValues.date_depot_treso).isBefore(moment(delai))){
+                        d.regTreso.push(e.dataValues);
+                    }else if(moment(e.dataValuesdate_depot_treso).isAfter(moment(delai))){
+                        d.horsDelaiT.push(e.dataValues);
+                    }
+                })
+            });
+            await dispoSQL.findAll({attributes:{exclude:['id']},where:{
+                statut_reg_retirer:'A LA SIGNATURE',
+                },order:[['wnrgt','DESC']]}).then((res)=>{
+                    res.map((e,i,arr)=>{
+                        //console.dir(e.dataValues);
+                        let delai=moment(e.dataValues.date_depot_sign).add(1,'d');
+                        if(moment(e.dataValues.date_depot_sign).isBefore(moment(delai))){
+                            d.regSign.push(e.dataValues);
+                        }else if(moment(e.dataValues.date_depot_sign).isAfter(moment(delai))){
+                            d.horsDelaiS.push(e.dataValues);
+                        }
+                    })
+                });
+                //console.dir(d);
+            return d;
+        },
+        async checkDelaiParRapportAuClient(){
+            //check tous les reglement dont la date de depot treso est renseignee et pas la date de sortie
+            let d={
+                rachatTotbancass:0,
+                rachatTotIndiv:0,
+                avanceRachatP:0,
+                terme:0,
+                carec:0,
+                ifc:0
+
+            };
+            let query="exec info_reg_dispo :numero_reg,:domaine ";
+            let req="select * from exp.regdispo where dateRDV between 2018-07-01 and 2018-07-31";
+                await dispoSQL.findAll({attributes:{exclude:['id']},where:{
+                    dateRDV:{
+                        $between:[moment('2018-07-16').format("YYYY-MM-DD"),moment('2018-07-20').format("YYYY-MM-DD")]
+                    },
+        
+            },order:[['wnrgt','DESC']]})
+                        .then((res)=>{
+                let promises=[];
+                let dispo;
+                res.forEach((r)=>{
+                    promises.push(
+                        Promise.all([
+                        DBSQLSERVER.query(query,{ replacements:{numero_reg:r.wnrgt,domaine:r.domaine},type:DBSQLSERVER.QueryTypes.SELECT})
+                        ]).then((infosurrgt)=>{
+                            //ici on a un tableau multidimensionnel i dont know why and i dont want to bother looking for an answer to that
+                            dispo=r.toJSON();
+                            dispo.infoSurRgt=infosurrgt;
+                            //console.log(dispo.infoSurRgt[0][0])
+                            let data=checkRdvDateMD(dispo);
+                            let sinistre=typeof dispo.infoSurRgt!="undefined" || typeof dispo.infoSurRgt[0][0].TYPE_SINISTRE!="undefined" ||dispo.infoSurRgt[0][0].TYPE_SINISTRE!=""?dispo.infoSurRgt[0][0].TYPE_SINISTRE:'' 
+                            //console.log("le sinistre est :"+dispo.infoSurRgt[0][0].TYPE_SINISTRE);
+                            //console.log("le type de data est "+typeof data);
+                            //console.log(data);
+                            if(sinistre!='' && data){
+                                console.log("le sinistre est :"+sinistre);
+                                if(sinistre=="AVANCE" ||sinistre=="RACHAT PARTIEL"){
+                                    if(data.alerte==="HAUTE")
+                                    d.avanceRachatP++;
+                                }else if(sinistre=="RACHAT TOTAL"){
+                                    let codeProduit=dispo.wnupo.toString().substring(0,3);
+                                    switch(codeProduit){
+                                    case "110":
+                                    case "112":
+                                    case "116":
+                                    case "120":
+                                    case "122":
+                                    case "130":
+                                    case "140":
+                                    case "162":
+                                    case "166":
+                                    case "168":
+                                    case "210":
+                                    case "212":
+                                    case "216":
+                                    case "218":
+                                    case "220":
+                                    case "224":
+                                    case "230":
+                                    case "234":
+                                    case "241":
+                                    case "242":
+                                    case "243":
+                                    case "246":
+                                    case "247":
+                                    case "248":
+                                    case "260":
+                                    case "310":
+                                    case "312":
+                                    case "330":
+                                    case "331":
+                                    case "332":
+                                    case "333":
+                                    case "334":
+                                    case "360":
+                                    case "791":
+                                    case "793":
+                                        if(data.alerte==="HAUTE")
+                                        d.rachatTotIndiv++;
+                                    break;
+                                    case "710":
+                                    case "713":
+                                    case "715":
+                                    case "717":
+                                    case "720":
+                                    case "722":
+                                    case "724":
+                                    case "726":
+                                    case "731":
+                                    case "732":
+                                    case "742":
+                                    case "745":
+                                    case "752":
+                                    case "755":
+                                    case "760":
+                                    case "766":
+                                    case "770":
+                                    case "772":
+                                    case "773":
+                                    case "774":
+                                    case "776":
+                                    case "777":
+                                    case "778":
+                                    case "782":
+                                    case "784":
+                                    case "786":
+                                        if(data.alerte==="HAUTE")
+                                        d.rachatTotbancass++;
+                                    break;
+                                    }
+                                }else if(sinistre=="TERME"){
+                                    if(data.alerte==="HAUTE")
+                                    d.terme++;
+                                }else if(sinistre=="CAREC"){
+                                    if(data.alerte==="HAUTE")
+                                    d.carec++;
+                                }else if(sinistre=="IFC"){
+                                    if(data.alerte==="HAUTE")
+                                    d.ifc++;
+                                }  
+                            }
+                            
+                            return dispo;
+                        })
+                    );
+                })
+                return Promise.all(promises);
+               
+            });
+            
+            console.dir(d);
+            return d;
         },
         exportToExcel(EXL){
 

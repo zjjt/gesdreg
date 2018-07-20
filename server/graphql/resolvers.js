@@ -292,7 +292,45 @@ export const pubsub = new PubSub();
                                 
                                  return nd;
                             });
-                    
+
+                            case "dateRDV":
+                            return dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
+                                    dateRDV:args.date,
+                                    
+                            },offset:args.offset,limit:args.limit}).then((res)=>{
+                                        let promises=[];
+                                        let dispo;
+                                        res.forEach((r)=>{
+                                            promises.push(
+                                                Promise.all([
+                                                DBSQLSERVER.query(query,{ replacements:{numero_reg:r.wnrgt,domaine:r.domaine},type:DBSQLSERVER.QueryTypes.SELECT})
+                                                ]).spread((infosurrgt)=>{
+                                                    dispo=r.toJSON();
+                                                    infosurrgt.MONTANT_BRUT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_BRUT,10));
+                                        infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
+                                                    dispo.infoSurRgt=infosurrgt;
+                                                    dispo.etat=checkRdvDate(dispo);
+                                                    return dispo;
+                                                })
+                                            );
+                                        });
+                                        return Promise.all(promises)
+                                        
+                                    }).then((dispos)=>{
+                                        let nd=dispos.map((e,i,arr)=>{
+                                            if(e.infoSurRgt.length>1){
+                                                let goodelem=e.infoSurRgt[0];
+                                                //console.log("reglement "+e.wnrgt);
+                                                //console.dir(e);
+                                                e.infoSurRgt=[];
+                                                e.infoSurRgt.push(goodelem);
+                                            }
+                                            return e;
+                                        });
+                                        //console.dir(nd);
+                                        
+                                         return nd;
+                                    });  
                 }
                 
             }else if(args.typeDate && args.date && args.statut && !args.domaine && !args.numregl && !args.numpol && !args.nomtotal && !args.numreglStart && !args.numreglEnd){
@@ -530,6 +568,45 @@ export const pubsub = new PubSub();
                                 
                                  return nd;
                             });
+
+                            case "dateRDV":
+                            return dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
+                                     dateRDV:args.date,
+                                     statut_reg_retirer:args.statut
+                                },offset:args.offset,limit:args.limit}).then((res)=>{
+                                        let promises=[];
+                                        let dispo;
+                                        res.forEach((r)=>{
+                                            promises.push(
+                                                Promise.all([
+                                                DBSQLSERVER.query(query,{ replacements:{numero_reg:r.wnrgt,domaine:r.domaine},type:DBSQLSERVER.QueryTypes.SELECT})
+                                                ]).spread((infosurrgt)=>{
+                                                    dispo=r.toJSON();
+                                                    infosurrgt.MONTANT_BRUT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_BRUT,10));
+                                        infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
+                                                    dispo.infoSurRgt=infosurrgt;
+                                                    dispo.etat=checkRdvDate(dispo);
+                                                    return dispo;
+                                                })
+                                            );
+                                        });
+                                        return Promise.all(promises)
+                                        
+                                    }).then((dispos)=>{
+                                        let nd=dispos.map((e,i,arr)=>{
+                                            if(e.infoSurRgt.length>1){
+                                                let goodelem=e.infoSurRgt[0];
+                                                //console.log("reglement "+e.wnrgt);
+                                                //console.dir(e);
+                                                e.infoSurRgt=[];
+                                                e.infoSurRgt.push(goodelem);
+                                            }
+                                            return e;
+                                        });
+                                        //console.dir(nd);
+                                        
+                                         return nd;
+                                    });
                     
                 }
                 
@@ -771,6 +848,46 @@ export const pubsub = new PubSub();
                             //console.dir(nd);
                              return nd;
                             });
+
+                            case "dateRDV":
+                            return dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
+                                     dateRDV:args.date,
+                                     statut_reg_retirer:args.statut,
+                                     domaine:args.domaine
+                                },offset:args.offset,limit:args.limit}).then((res)=>{
+                                        let promises=[];
+                                        let dispo;
+                                        res.forEach((r)=>{
+                                            promises.push(
+                                                Promise.all([
+                                                DBSQLSERVER.query(query,{ replacements:{numero_reg:r.wnrgt,domaine:r.domaine},type:DBSQLSERVER.QueryTypes.SELECT})
+                                                ]).spread((infosurrgt)=>{
+                                                    dispo=r.toJSON();
+                                                    infosurrgt.MONTANT_BRUT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_BRUT,10));
+                                        infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
+                                                    dispo.infoSurRgt=infosurrgt;
+                                                    dispo.etat=checkRdvDate(dispo);
+                                                    return dispo;
+                                                })
+                                            );
+                                        });
+                                        return Promise.all(promises)
+                                        
+                                    }).then((dispos)=>{
+                                       // console.dir(dispos);
+                                       let nd=dispos.map((e,i,arr)=>{
+                                        if(e.infoSurRgt.length>1){
+                                            let goodelem=e.infoSurRgt[0];
+                                            //console.log("reglement "+e.wnrgt);
+                                            //console.dir(e);
+                                            e.infoSurRgt=[];
+                                            e.infoSurRgt.push(goodelem);
+                                        }
+                                        return e;
+                                    });
+                                    //console.dir(nd);
+                                     return nd;
+                                    });
                     
                 }
                 

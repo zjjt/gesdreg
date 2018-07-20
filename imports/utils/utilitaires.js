@@ -115,11 +115,11 @@ export let checkRdvDate=(e)=>{
     let data;
     let res;
     typeSinistre=typeSinistre?typeSinistre.trim():null;
-    console.log("dateRDV= "+moment(dateRDV).format("DD-MM-YYYY")+" todayIs= "+moment(today).format("DD-MM-YYYY"));
-    if(isValidDate(dateReceptionY,dateReceptionM,dateReceptionD)){
+    //console.log("dateRDV= "+moment(dateRDV).format("DD-MM-YYYY")+" todayIs= "+moment(today).format("DD-MM-YYYY"));
+    if(isValidDate(dateReceptionY,dateReceptionM,dateReceptionD) && dateRDV && (e.statut_reg_retirer!=="PRET"||e.statut_reg_retirer!=="SORTIE"||e.statut_reg_retirer!=="REFUSER")){
         //on check le type de prestation
-        console.log("in the func");
-        console.log("typeSinistre: "+typeSinistre);
+        console.log("le statut est "+e.statut_reg_retirer);
+       // console.log("typeSinistre: "+typeSinistre);
         switch(typeSinistre){
             case "RACHAT PARTIEL":
             case "AVANCE":
@@ -137,8 +137,8 @@ export let checkRdvDate=(e)=>{
                         nbj:res,
                         alerte:res<=7 && res>=5?"NORMAL":"HAUTE"
                     }
-                    console.log("in util funct rachat partiel")
-                    console.dir(res);
+                    //console.log("in util funct rachat partiel")
+                    //console.dir(res);
                     return data;
                 }else{
                     data={
@@ -166,7 +166,7 @@ export let checkRdvDate=(e)=>{
                             nbj:res,
                             alerte:res<=7 && res>=5?"NORMAL":"HAUTE"
                         }
-                        console.log("in util funct ifc")
+                        //console.log("in util funct ifc")
                         console.log(res);
                         return data;
                     }else{
@@ -181,7 +181,7 @@ export let checkRdvDate=(e)=>{
             break;
             case "RACHAT TOTAL":
                 let codeProduit=e.wnupo.toString().substring(0,3);
-                console.log("codeproduit: "+codeProduit+" et type= "+typeof codeProduit)
+                //console.log("codeproduit: "+codeProduit+" et type= "+typeof codeProduit)
                 switch(codeProduit){
                    case "110":
                    case "112":
@@ -228,14 +228,253 @@ export let checkRdvDate=(e)=>{
                         //cas individuelle
                         //delai de traitement de 60 jr et alerte 15jr avant
                         res=momentBusiness(dateRDV).businessDiff(momentBusiness(today));
-                        console.log("resultat de res: "+res);
+                        //console.log("resultat de res: "+res);
                         if(res<=15){
                             data={
                                 nbj:res,
                                 alerte:res<=15 && res>=13?"NORMAL":"HAUTE"
                             }
-                            console.log("in util funct rachat total i")
-                            console.dir(res);
+                            //console.log("in util funct rachat total i")
+                            //console.dir(res);
+                            return data;
+                        }else{
+                            data={
+                                nbj:res,
+                                alerte:"RAS"
+                            }
+                            return data;
+                        }
+                    }
+                        
+                    break;
+                    case "710":
+                    case "713":
+                    case "715":
+                    case "717":
+                    case "720":
+                    case "722":
+                    case "724":
+                    case "726":
+                    case "731":
+                    case "732":
+                    case "742":
+                    case "745":
+                    case "752":
+                    case "755":
+                    case "760":
+                    case "766":
+                    case "770":
+                    case "772":
+                    case "773":
+                    case "774":
+                    case "776":
+                    case "777":
+                    case "778":
+                    case "782":
+                    case "784":
+                    case "786":
+                        if(moment(dateRDV).isBefore(today)){
+                            data={
+                                nbj:-1,
+                                alerte:"TERMINER"
+                            }
+                            return data;
+                        }else{
+                            //cas bancassurances
+                            //delai de traitement de 45 jr et alerte 10jr avant
+                            res=momentBusiness(dateRDV,'YYYY-MM-DD').businessDiff(momentBusiness(today,'YYYY-MM-DD'));
+                            console.log("resultat de res: "+res);
+                            if(res<=10){
+                                data={
+                                    nbj:res,
+                                    alerte:res<=10 && res>=8?"NORMAL":"HAUTE"
+                                }
+                                console.log("in util funct rachat total b")
+                                console.dir(res);
+                                return data;
+                            }else{
+                                data={
+                                    nbj:res,
+                                    alerte:"RAS"
+                                }
+                                return data;
+                            }
+                        }
+                            
+                }
+            
+            
+            break;
+            case "CAREC":
+                if(moment(dateRDV).isBefore(today)){
+                    data={
+                        nbj:-1,
+                        alerte:"TERMINER"
+                    }
+                    return data;
+                }else{
+                    //delai de traitement de 30 jr et alerte 7jr avant
+                    res=momentBusiness(dateRDV,'YYYY-MM-DD').businessDiff(momentBusiness(today,'YYYY-MM-DD'));
+                    if(res<=7){
+                        data={
+                            nbj:res,
+                            alerte:res<=7 && res>=5?"NORMAL":"HAUTE"
+                        }
+                        console.log("in util funct rdv")
+                        console.dir(res);
+                        return data;
+                    }else{
+                        data={
+                            nbj:res,
+                            alerte:"RAS"
+                        }
+                        return data;
+                    }
+                }
+            
+            break;
+            default:
+            return null;
+            break;
+        }
+    }else{
+        return null;
+    }
+    
+}
+//pour infosurrgt en multidimension
+export let checkRdvDateMD=(e)=>{
+    //console.log("in util funct rdv")
+    let dateReceptionY=e.infoSurRgt[0][0]&&e.infoSurRgt[0][0].DATE_RECEPTION?e.infoSurRgt[0][0].DATE_RECEPTION.substring(0,4):null;
+    let dateReceptionM=e.infoSurRgt[0][0]&&e.infoSurRgt[0][0].DATE_RECEPTION?e.infoSurRgt[0][0].DATE_RECEPTION.substring(5,7):null;
+    let dateReceptionD=e.infoSurRgt[0][0]&&e.infoSurRgt[0][0].DATE_RECEPTION?e.infoSurRgt[0][0].DATE_RECEPTION.substring(8):null;
+    let typeSinistre=e.infoSurRgt[0][0]?e.infoSurRgt[0][0].TYPE_SINISTRE:null
+    let dateRDV=e.dateRDV;
+    let today=moment(Date.now()).format("YYYY-MM-DD");
+    let data;
+    let res;
+    typeSinistre=typeSinistre?typeSinistre.trim():null;
+    //console.log("dateRDV= "+moment(dateRDV).format("DD-MM-YYYY")+" todayIs= "+moment(today).format("DD-MM-YYYY"));
+    if(isValidDate(dateReceptionY,dateReceptionM,dateReceptionD)){
+        //on check le type de prestation
+        //console.log("in the func");
+       // console.log("typeSinistre: "+typeSinistre);
+        switch(typeSinistre){
+            case "RACHAT PARTIEL":
+            case "AVANCE":
+            //delai de traitement de 21 jr et alerte 7jr avant
+            if(moment(dateRDV).isBefore(today)){
+                data={
+                    nbj:-1,
+                    alerte:"TERMINER"
+                }
+                return data;
+            }else{
+                res=momentBusiness(dateRDV).businessDiff(momentBusiness(today));
+                if(res<=7){
+                    data={
+                        nbj:res,
+                        alerte:res<=7 && res>=5?"NORMAL":"HAUTE"
+                    }
+                    //console.log("in util funct rachat partiel")
+                    //console.dir(res);
+                    return data;
+                }else{
+                    data={
+                        nbj:res,
+                        alerte:"RAS"
+                    }
+                    return data;
+                }
+            }
+                
+            break;
+            case "TERME":
+            case "IFC":
+                if(moment(dateRDV).isBefore(today)){
+                    data={
+                        nbj:-1,
+                        alerte:"TERMINER"
+                    }
+                    return data;
+                }else{
+                    //delai de traitement de 15 jr et alerte 7jr avant
+                    res=momentBusiness(dateRDV).businessDiff(momentBusiness(today));
+                    if(res<=7){
+                        data={
+                            nbj:res,
+                            alerte:res<=7 && res>=5?"NORMAL":"HAUTE"
+                        }
+                        //console.log("in util funct ifc")
+                        console.log(res);
+                        return data;
+                    }else{
+                        data={
+                            nbj:res,
+                            alerte:"RAS"
+                        }
+                        return data;
+                    }
+                }
+            
+            break;
+            case "RACHAT TOTAL":
+                let codeProduit=e.wnupo.toString().substring(0,3);
+                //console.log("codeproduit: "+codeProduit+" et type= "+typeof codeProduit)
+                switch(codeProduit){
+                   case "110":
+                   case "112":
+                   case "116":
+                   case "120":
+                   case "122":
+                   case "130":
+                   case "140":
+                   case "162":
+                   case "166":
+                   case "168":
+                   case "210":
+                   case "212":
+                   case "216":
+                   case "218":
+                   case "220":
+                   case "224":
+                   case "230":
+                   case "234":
+                   case "241":
+                   case "242":
+                   case "243":
+                   case "246":
+                   case "247":
+                   case "248":
+                   case "260":
+                   case "310":
+                   case "312":
+                   case "330":
+                   case "331":
+                   case "332":
+                   case "333":
+                   case "334":
+                   case "360":
+                   case "791":
+                   case "793":
+                    if(moment(dateRDV).isBefore(today)){
+                        data={
+                            nbj:-1,
+                            alerte:"TERMINER"
+                        }
+                        return data;
+                    }else{
+                        //cas individuelle
+                        //delai de traitement de 60 jr et alerte 15jr avant
+                        res=momentBusiness(dateRDV).businessDiff(momentBusiness(today));
+                        //console.log("resultat de res: "+res);
+                        if(res<=15){
+                            data={
+                                nbj:res,
+                                alerte:res<=15 && res>=13?"NORMAL":"HAUTE"
+                            }
+                            //console.log("in util funct rachat total i")
+                            //console.dir(res);
                             return data;
                         }else{
                             data={

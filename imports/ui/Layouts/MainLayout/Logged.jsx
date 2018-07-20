@@ -27,6 +27,7 @@ import {Session} from 'meteor/session';
       
    }
     render(){
+        
         console.dir("user loggs "+Meteor.userId());
         if(store.getState().administrateurAction.adminConnected){
             return(
@@ -79,6 +80,7 @@ import {Session} from 'meteor/session';
                         );
                     }
                      else if(data.user[0].role==="C"){
+                     
                     return(
                     <IconMenu 
                     {...this.props}
@@ -101,6 +103,7 @@ import {Session} from 'meteor/session';
                     );
                 }
                     else if(data.user[0].role==="G"){
+                       
                          return(
 
                         <IconMenu 

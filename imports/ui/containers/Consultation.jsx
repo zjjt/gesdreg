@@ -71,6 +71,22 @@ class ConsultDispo extends Component {
             birthdate={this.props.birthdate?moment(convertInTextFromFrenchDate(this.props.birthdate)).format("YYYY-MM-DD"):null} 
             />
         );
+        let chamSearchPeriode=this.props.userRole==="B"?(
+            <div>
+            <Field
+                name="debutdate" 
+                component={TextField}
+                hintText="Date de début EX:01/01/1900"
+                floatingLabelFixed={true}    
+            />
+            <Field
+                name="findate" 
+                component={TextField}
+                hintText="Date de fin EX:01/01/1900"
+                floatingLabelFixed={true}    
+            />
+            </div>
+        ):(<span style={{display:"none"}}></span>);
         let champ=this.props.userRole==="B"?(
             <Field
                 name="numrgt" 
@@ -106,19 +122,10 @@ class ConsultDispo extends Component {
                     <Divider/>
                     <form >
                         <div className="topaligned">
-                                
-                                    <Field
-                                        name="debutdate" 
-                                        component={TextField}
-                                        hintText="Date de début EX:01/01/1900"
-                                        floatingLabelFixed={true}    
-                                    />
-                                    <Field
-                                        name="findate" 
-                                        component={TextField}
-                                        hintText="Date de fin EX:01/01/1900"
-                                        floatingLabelFixed={true}    
-                                    />
+                                    {
+                                        ...chamSearchPeriode
+                                    }
+                                    
                                     {
                                         ...champ
                                     }

@@ -16,6 +16,7 @@ import FontIcon from 'material-ui/FontIcon';
 import DispoTable from '../components/DispoTable.jsx';
 import {moment} from 'meteor/momentjs:moment';
 import { createContainer } from 'meteor/react-meteor-data';
+import {convertInTextFromFrenchDate} from '../../utils/utilitaires';
 import {Meteor} from 'meteor/meteor';
 
 
@@ -83,6 +84,7 @@ class ListDisponibilities extends Component {
                                     <MenuItem value="date_depot_sign" primaryText="Date de dépot pour signature"/>
                                     <MenuItem value="date_recep_sign_reg" primaryText="Date de réception du règlement après signature"/>
                                     <MenuItem value="date_retrait_reg" primaryText="Date de retrait du règlement"/>
+                                    <MenuItem value="dateRDV" primaryText="Date de rendez-vous"/>
                                 </Field>
                                
 
@@ -90,7 +92,7 @@ class ListDisponibilities extends Component {
                                     <Field
                                     name="date" 
                                     component={TextField}
-                                    hintText="A la date EX:1900-01-01"
+                                    hintText="A la date EX:01/01/1900"
                                     floatingLabelFixed={true}    
                                     />
                              
@@ -110,6 +112,7 @@ class ListDisponibilities extends Component {
                                         <MenuItem value="A LA SIGNATURE" primaryText="A LA SIGNATURE"/>
                                         <MenuItem value="PRET" primaryText="PRET"/>
                                         <MenuItem value="SORTIE" primaryText="SORTIE"/>
+                                        <MenuItem value="REFUSER" primaryText="REFUSER"/>
                                         <MenuItem value="" primaryText="AFFICHER TOUS LES STATUTS"/>
                                     </Field>
                                
@@ -167,7 +170,7 @@ class ListDisponibilities extends Component {
                         <Divider/>
                     <DispoTable 
                         typeDate={this.props.typeDate?this.props.typeDate:null} 
-                        date={this.props.date?moment(this.props.date).format("YYYY-MM-DD"):null} 
+                        date={this.props.date?moment(convertInTextFromFrenchDate(this.props.date)).format("YYYY-MM-DD"):null} 
                         statut={this.props.statut?this.props.statut:null}
                         domaine={this.props.domaine?this.props.domaine:null} 
                         numregl={this.props.numregl?this.props.numregl:null}

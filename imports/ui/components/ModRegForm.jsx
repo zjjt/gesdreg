@@ -1,7 +1,7 @@
 import {moment} from 'meteor/momentjs:moment';
 import React,{PropTypes,Component} from 'react';
 import {Field,reduxForm,formValueSelector} from 'redux-form';
-import {TextField,DatePicker,SelectField} from 'redux-form-material-ui';
+import {TextField,DatePicker,SelectField,RadioButtonGroup} from 'redux-form-material-ui';
 import areIntlLocalesSupported from 'intl-locales-supported';
 import MenuItem from 'material-ui/MenuItem';
 import Divider from 'material-ui/Divider';
@@ -13,6 +13,7 @@ import gql from 'graphql-tag';
 import CircularProgress from 'material-ui/CircularProgress';
 import Dialog from 'material-ui/Dialog';
 import Snackbar from 'material-ui/Snackbar';
+import { RadioButton } from 'material-ui/RadioButton';
 import {miseajourDispo,closeBigDialog} from '../../redux/actions/user-actions.js';
 import {$} from 'meteor/jquery';
 
@@ -28,6 +29,7 @@ class ModRegForm extends Component{
             dialogIsOpen:false,
             dialogWIsOpen:false,
             errorMsg:'',
+            formchoice:'',
             warning:'Vous vous appretez à lancer une mise à jour. Avez vous terminer vos modifications ?',
             snackOpen:false,
             snackMsg:'',
@@ -92,49 +94,161 @@ class ModRegForm extends Component{
             console.dir(this.props);
           const submit=(values,dispatch)=>{
              console.dir(values);
-                if((values.date_depot_treso===''||!values.date_depot_treso)
-            &&(values.date_sort_treso===''||!values.date_sort_treso)
-            &&(values.date_depot_sign===''||!values.date_depot_sign)
-            &&(values.date_recep_sign_reg===''||!values.date_recep_sign_reg)
-            &&(values.date_retrait_reg===''||!values.date_retrait_reg)){
-               
-                    this.setState({
-                    errorMsg:"Veuillez fournir au moins une information avant de valider la mise a jour "
-                });
-                this._dialogOpen();
-                return false;
-                
-            }
-            else{
-
-                //console.log(this.props.data.voirInfoReg[0].DATE_SURVENANCE_SINISTRE);
-                    
-              // alert( );
-                console.dir(values);
-                Meteor.call('updateDispos',values,this.props.regSelected,(err)=>{
-                    if(err){
+             if(!values.choixForm||values.choixForm!=="MODIFIER"||values.choixForm!=="MODIFIERDV"||values.choixForm!=="ANNULER"||values.choixForm!=="REFUSER"){
+                 alert("Veuillez choisir une option de formulaire parmis celles proposées");
+             }else{
+                 switch(values.choixForm){
+                     case "MODIFIER":
+                        if((values.date_depot_treso===''||!values.date_depot_treso)
+                        &&(values.date_sort_treso===''||!values.date_sort_treso)
+                        &&(values.date_depot_sign===''||!values.date_depot_sign)
+                        &&(values.date_recep_sign_reg===''||!values.date_recep_sign_reg)
+                        &&(values.date_retrait_reg===''||!values.date_retrait_reg)){
                         
-                        if(err.error==="bad-date"){
-                            this.setState({
-                            errorMsg:err.reason
+                                this.setState({
+                                errorMsg:"Veuillez fournir au moins une information avant de valider la mise a jour "
                             });
-                        }else{
-                            console.log("Erreur survenue: "+err.reason);
-                        }
+                            this._dialogOpen();
+                            return false;
                             
-                        this._dialogOpen();
-                    }else{
-                        this.setState({
-                        snackMsg:`Mise à jour éffectuée`,
-                        snackOpen:true
-                        });
-                        //dispatch(miseajourDispo());
-                        dispatch(closeBigDialog("MOD"));
-                    }
-                });
-            }
+                        }
+                        else{
+
+                            //console.log(this.props.data.voirInfoReg[0].DATE_SURVENANCE_SINISTRE);
+                                
+                        // alert( );
+                            console.dir(values);
+                            Meteor.call('updateDispos',values,this.props.regSelected,(err)=>{
+                                if(err){
+                                    
+                                    if(err.error==="bad-date"){
+                                        this.setState({
+                                        errorMsg:err.reason
+                                        });
+                                    }else{
+                                        console.log("Erreur survenue: "+err.reason);
+                                    }
+                                        
+                                    this._dialogOpen();
+                                }else{
+                                    this.setState({
+                                    snackMsg:`Mise à jour éffectuée`,
+                                    snackOpen:true
+                                    });
+                                    //dispatch(miseajourDispo());
+                                    dispatch(closeBigDialog("MOD"));
+                                }
+                            });
+                        }
+                     break;
+                     case "MODIFIERDV":
+                     break;
+                     case "REFUSER":
+                     break;
+                     case "ANNULER":
+                     break;
+                 }
+             }
+                
          };
 
+         let modformOfChoice=this.state.formchoice==="MODIFIER"?(<div><Field
+            name="date_depot_treso" 
+            DateTimeFormat={DateTimeFormat}
+            className="datepicker"
+            component={DatePicker}
+            hintText="Entrez la date de dépot à la trésorerie"
+            floatingLabelText="Date de dépot à la trésorerie"
+            fullWidth={true}
+            okLabel="OK"
+            cancelLabel="Annuler"
+            locale="fr"
+            format={(value,name)=>{
+                console.log('value being passed ',value);
+                console.log('is of type',typeof value);
+                return value===''?null:value;
+            }}
+            floatingLabelFixed={true}
+        />
+        <Field
+            name="date_sort_treso" 
+            component={DatePicker}
+            className="datepicker"
+            DateTimeFormat={DateTimeFormat}
+            hintText="Entrez la date de sortie de la trésorerie"
+            floatingLabelText="Date de sortie de la trésorerie"
+            fullWidth={true}
+            okLabel="OK"
+            cancelLabel="Annuler"
+            locale="fr"
+            format={(value,name)=>value===''?null:value}
+            floatingLabelFixed={true}
+        />
+        <Field
+            name="date_depot_sign" 
+            component={DatePicker}
+            className="datepicker"
+            DateTimeFormat={DateTimeFormat}
+            hintText="Entrez la date de dépot pour signature"
+            floatingLabelText="Date de dépot pour signature"
+            fullWidth={true}
+            okLabel="OK"
+            cancelLabel="Annuler"
+            locale="fr"
+            format={(value,name)=>value===''?null:value}
+            floatingLabelFixed={true}
+        />
+        <Field
+            name="date_recep_sign_reg" 
+            component={DatePicker}
+            className="datepicker"
+            DateTimeFormat={DateTimeFormat}
+            hintText="Entrez la date de retour de la signature"
+            floatingLabelText="Date de retour de la signature"
+            fullWidth={true}
+            okLabel="OK"
+            cancelLabel="Annuler"
+            locale="fr"
+            format={(value,name)=>value===''?null:value}
+            floatingLabelFixed={true}
+        />
+        <Field
+            name="date_retrait_reg" 
+            component={DatePicker}
+            className="datepicker"
+            DateTimeFormat={DateTimeFormat}
+            hintText="Entrez la date de retrait du règlement"
+            floatingLabelText="Date de retrait du règlement"
+            fullWidth={true}
+            okLabel="OK"
+            cancelLabel="Annuler"
+            locale="fr"
+            format={(value,name)=>value===''?null:value}
+            floatingLabelFixed={true}
+        /></div>):this.state.formchoice==="MODIFIERDV"?(
+            <div>
+                <p>* les dates de rendez vous des ou du règlement sélectionné seront modiffiées.</p>
+                <p>La date de rendez vous actuelle est: </p>
+                <Field
+                    name="dateRDV" 
+                    component={DatePicker}
+                    className="datepicker"
+                    DateTimeFormat={DateTimeFormat}
+                    hintText="Entrez la nouvelle date de rendez-vous"
+                    floatingLabelText="Date de rendez-vous"
+                    fullWidth={true}
+                    okLabel="OK"
+                    cancelLabel="Annuler"
+                    locale="fr"
+                    format={(value,name)=>value===''?null:value}
+                    floatingLabelFixed={true}
+                />
+            </div>
+        ):this.state.formchoice==="REFUSER"?(
+            <div>refus</div>
+        ):this.state.formchoice==="ANNULER"?(
+            <div>annulation</div>
+        ):(<center><p>Veuillez choisir une des options ci dessus</p></center>);
          
         return(
             <div>
@@ -168,82 +282,43 @@ class ModRegForm extends Component{
                         >
                             <span className="warningMsg">{this.state.warning}</span>
                         </Dialog>
-                        
-                        <Field
-                            name="date_depot_treso" 
-                            DateTimeFormat={DateTimeFormat}
-                            className="datepicker"
-                            component={DatePicker}
-                            hintText="Entrez la date de dépot à la trésorerie"
-                            floatingLabelText="Date de dépot à la trésorerie"
-                            fullWidth={true}
-                            okLabel="OK"
-                            cancelLabel="Annuler"
-                            locale="fr"
-                            format={(value,name)=>{
-                                console.log('value being passed ',value);
-                                console.log('is of type',typeof value);
-                                return value===''?null:value;
+                        {/*ici mettre un radio button pour permettre le choix du formulaire de refus ou de modification des dates*/}
+                        <Field component={RadioButtonGroup} 
+                            name="choixForm" 
+                            defaultSelected="MODIFIER" 
+                            onChange={(e,v)=>{
+                                if(v=="MODIFIER"){
+                                    this.setState({
+                                        formchoice:"MODIFIER"  
+                                    });
+                                }else if(v=="MODIFIERDV"){
+                                    let answer=!!this.props.regSelected.reduce((e,n)=>{
+                                        alert(e.dateRDV);
+                                        alert(n.dateRDV);
+                                        return e.dateRDV===n.dateRDV?true:false;
+                                    });
+                                    alert(answer);
+                                    this.setState({
+                                        formchoice:"MODIFIERDV" 
+                                    });
+                                }else if(v=="REFUSER"){
+                                    this.setState({
+                                        formchoice:"REFUSER" 
+                                    });
+                                }else if(v=="ANNULER"){
+                                    this.setState({
+                                        formchoice:"ANNULER" 
+                                    });
+                                }
                             }}
-                            floatingLabelFixed={true}
-                        />
-                        <Field
-                            name="date_sort_treso" 
-                            component={DatePicker}
-                            className="datepicker"
-                            DateTimeFormat={DateTimeFormat}
-                            hintText="Entrez la date de sortie de la trésorerie"
-                            floatingLabelText="Date de sortie de la trésorerie"
-                            fullWidth={true}
-                            okLabel="OK"
-                            cancelLabel="Annuler"
-                            locale="fr"
-                            format={(value,name)=>value===''?null:value}
-                            floatingLabelFixed={true}
-                        />
-                        <Field
-                            name="date_depot_sign" 
-                            component={DatePicker}
-                            className="datepicker"
-                            DateTimeFormat={DateTimeFormat}
-                            hintText="Entrez la date de dépot pour signature"
-                            floatingLabelText="Date de dépot pour signature"
-                            fullWidth={true}
-                            okLabel="OK"
-                            cancelLabel="Annuler"
-                            locale="fr"
-                            format={(value,name)=>value===''?null:value}
-                            floatingLabelFixed={true}
-                        />
-                        <Field
-                            name="date_recep_sign_reg" 
-                            component={DatePicker}
-                            className="datepicker"
-                            DateTimeFormat={DateTimeFormat}
-                            hintText="Entrez la date de retour de la signature"
-                            floatingLabelText="Date de retour de la signature"
-                            fullWidth={true}
-                            okLabel="OK"
-                            cancelLabel="Annuler"
-                            locale="fr"
-                            format={(value,name)=>value===''?null:value}
-                            floatingLabelFixed={true}
-                        />
-                        <Field
-                            name="date_retrait_reg" 
-                            component={DatePicker}
-                            className="datepicker"
-                            DateTimeFormat={DateTimeFormat}
-                            hintText="Entrez la date de retrait du règlement"
-                            floatingLabelText="Date de retrait du règlement"
-                            fullWidth={true}
-                            okLabel="OK"
-                            cancelLabel="Annuler"
-                            locale="fr"
-                            format={(value,name)=>value===''?null:value}
-                            floatingLabelFixed={true}
-                        />
-                     
+                        >
+                            <RadioButton value="MODIFIER" label="Modifier les différentes dates" title="vous permes de modifier la date de dépot à la trésorerie,et les autres dates de procédure normale sur un ou plusieurs règlements"/>
+                            <RadioButton value="MODIFIERDV" label="Modifier les dates de rendez-vous calcuées" title="vous permet de modifier les dates de rendez-vous précalculées par le système sur un ou plusieurs règlements"/>
+                            <RadioButton value="REFUSER" label="Refuser ce  règlement"  title="vous permet de refuser un ou plusieurs règlements en donnant le motif du refus.Attention cette action est irréversible."/>
+                            <RadioButton value="ANNULER" label="Annuler ce règlement" title="vous permet d'annuler un règlement"/>
+                        </Field>
+                            <hr/>
+                        {...modformOfChoice}
                         <input type="submit" className="hidden"/>
                     </form>
             </div>

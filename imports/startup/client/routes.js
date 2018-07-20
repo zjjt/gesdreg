@@ -4,6 +4,7 @@ import {mount} from 'react-mounter';
 import React from 'react';
 import store from '../../redux/store.js'
 import MainLayout from '../../ui/Layouts/MainLayout/MainLayout.jsx';
+import MainLayoutOff from '../../ui/Layouts/MainLayout/MainLayoutOff.jsx';
 import Login from '../../ui/containers/Login.jsx';
 import AdminLogin from '../../ui/containers/AdminLogin.jsx';
 import AdminDashboard from '../../ui/containers/AdminDashboard.jsx';
@@ -26,7 +27,7 @@ FlowRouter.route('/',{
 		}
 	}],
 	action(){
-		mount(MainLayout,
+		mount(MainLayoutOff,
 			{content:()=><Login/>})
 	}
 });
@@ -41,7 +42,7 @@ FlowRouter.route('/create',{
 FlowRouter.route('/admin',{
 	name:'admin',
 	action(){
-		mount(MainLayout,
+		mount(MainLayoutOff,
 			{content:()=><AdminLogin/>})
 	}
 });

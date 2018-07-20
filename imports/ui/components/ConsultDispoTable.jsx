@@ -20,11 +20,11 @@ import InfoReg from './InfoReg.jsx';
 import {$} from 'meteor/jquery';
 import {miseajourDispo} from '../../redux/actions/user-actions.js';
 import Icon from 'react-icons-kit';
-import {neutral} from 'react-icons-kit/icomoon/neutral'//quand letat est null
+import {neutral2} from 'react-icons-kit/icomoon/neutral2'//quand letat est null
 import {smile2} from 'react-icons-kit/icomoon/smile2'// normal pour RAS
 import {tongue2} from 'react-icons-kit/icomoon/tongue2'// pour les OPUS ou avant 2017
 import {sad2} from 'react-icons-kit/icomoon/sad2'//quand le delai se rapproche
-import {confused2} from 'react-icons-kit/icomoon/confused2'//quand c'est chaud 
+import {crying2} from 'react-icons-kit/icomoon/crying2'//quand c'est chaud 
 
 //Quand on click sur les checkbox on compte le nombre de lignes selectionnes et on dispacth une action sur store avec side effects de modification dans la database
 let DateTimeFormat;
@@ -62,10 +62,27 @@ class ConsultDispoTable extends Component{
         }
 
         componentDidUpdate(){
-          
+         
         }
         componentDidMount(){
             $('.tableau').parent().css("width","3832px");
+            
+            setInterval(()=>{
+                Bert.alert({
+                    title: 'Informations',
+                    message: `Vous pouvez estimer les délais de traitement de chaque règlements en mettant le curseur sur les faces dans la colonne état.<br/>Ce sont:<br/>
+                    <ul>
+                    <li><img src="/img/tongue2.svg" class="mySvgs" > --> il s'agit la des règlememts dont la date de rendez vous est dépassée</li>
+                    <li><img src="/img/smile2.svg"  class="mySvgs" /> --> le traitement du règlement suit son cours normal et est dans le délai imparti</li>
+                    <li><img src="/img/sad2.svg"  class="mySvgs" /> --> Le délai assigné est presque atteint il faudrait penser à finaliser le traitement de ce règlement</li>
+                    <li><img src="/img/crying2.svg"  class="mySvgs" /> --> le règlement doit être traité d'urgence</li>
+                    <li><img src="/img/neutral2.svg"  class="mySvgs" /> --> Regroupe les anciens règlements OPUS ou autres règlements à problème, veuillez contacter le service prestations pour ces cas</li>
+                    </ul>`,
+                    type: 'info',
+                    style: 'growl-top-right',
+                    icon: 'fa-check'
+                  });
+            },250000)
         }
 
         _dialogTOpen(){
@@ -117,7 +134,7 @@ class ConsultDispoTable extends Component{
                 />,
                
                 ];
-console.dir(this.props);
+//console.dir(this.props);
             return(
                 <div >
                     <Dialog
@@ -186,7 +203,7 @@ console.dir(this.props);
                                                console.dir(row)
                                             let domaine='';
                                             let statutClass='';
-                                            let etat=row.etat?row.etat.alerte==="TERMINER"?(<Icon icon={tongue2} title={`Niveau d'alerte: ${row.etat.alerte}`} style={{color:"gray"}}/>):row.etat.alerte==="RAS"?(<Icon icon={smile2} title={`Niveau d'alerte: ${row.etat.alerte}`} style={{color:"lightgreen"}}/>):row.etat.alerte==="NORMAL"?(<Icon icon={sad2} title={`Niveau d'alerte: ${row.etat.alerte}`} style={{color:"orange"}}/>):(<Icon icon={confused2} title={`Niveau d'alerte: ${row.etat.alerte}`} style={{color:"purple"}}/>):(<Icon icon={neutral} title={`Voir le service prestations en charge des saisies dans le système`}/>);
+                                            let etat=row.etat?row.etat.alerte==="TERMINER"?(<Icon icon={tongue2} title={`Niveau d'alerte: ${row.etat.alerte} , il s'agit la des règlememts dont la date de rendez vous est dépassé`} style={{color:"gray"}}/>):row.etat.alerte==="RAS"?(<Icon icon={smile2} title={`Niveau d'alerte: ${row.etat.alerte}, le traitement du règlement suit son cours normal et est dans le délai imparti`} style={{color:"lightgreen"}}/>):row.etat.alerte==="NORMAL"?(<Icon icon={sad2} title={`Niveau d'alerte: ${row.etat.alerte}, il faudrait penser à traiter ce règlement`} style={{color:"orange"}}/>):(<Icon icon={crying2} title={`Niveau d'alerte: ${row.etat.alerte},le règlement doit être traité d'urgence`} style={{color:"red"}}/>):(<Icon icon={neutral2} title={`Voir le service prestations en charge des saisies dans le système`}/>);
                                             let typeSinistre=row.infoSurRgt[0]?row.infoSurRgt[0].TYPE_SINISTRE:'NON DEFINI'
                                             let dateRecep=row.infoSurRgt[0]?moment(row.infoSurRgt[0].DATE_RECEPTION).format("DD-MM-YYYY"):'';
                                             let dateRgt=row.infoSurRgt[0]?moment(row.infoSurRgt[0].DATE_REGLEMENT).format("DD-MM-YYYY"):'';
@@ -239,7 +256,7 @@ console.dir(this.props);
                         {loading?"Chargement...":null}
                     </div>
                     <div className="helperDiv">
-                     Pour effectuer une recherche de règlement disponibles,veuillez entrez la date de naissance du bénéficiaire selon le format indiqué <b>AAAA-MM-JJ</b>, ou le numéro de police ou le nom complet du bénéficiaire.<br/>
+                     Pour effectuer une recherche de règlement disponibles,veuillez entrez la date de naissance du bénéficiaire selon le format indiqué <b>JJ-MM-AAAA</b>, ou le numéro de police ou le nom complet du bénéficiaire.<br/>
                      Vous pouvez reconnaitre le statut qu'un règlement a dans le système en observant la couleur de fond de la ligne du tableau qu'il occupe<br/>
                       Ces couleurs sont:<br/>
                         -<span style={{color:"white"}}>BLANC</span> pour le statut <b>EN COURS</b><br/>
@@ -298,6 +315,7 @@ const checkDisponible=gql`
             statut_reg_retirer
             domaine
             redac
+            dateRDV
             etat{
                 nbj
                 alerte
