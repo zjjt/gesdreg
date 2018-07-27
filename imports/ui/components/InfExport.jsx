@@ -251,5 +251,5 @@ const exportdata=gql`
     }`;
 
    export default graphql(exportdata,{
-    options:({ typeDate,startDate,endDate,domaine}) => ({ variables: { typeDate,startDate,endDate,domaine},fetchPolicy: 'cache-and-network',returnPartialData:true}),
+    options:({ typeDate,startDate,endDate,domaine}) => ({ variables: { typeDate,startDate,endDate,domaine},fetchPolicy: 'cache-and-network'}),
 })(InfExport)

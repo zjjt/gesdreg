@@ -84,17 +84,18 @@ class Exportation extends Component {
                                         <MenuItem value="date_depot_sign" primaryText="Date de dépot pour signature"/>
                                         <MenuItem value="date_recep_sign_reg" primaryText="Date de réception du règlement après signature"/>
                                         <MenuItem value="date_retrait_reg" primaryText="Date de retrait du règlement"/>
+                                        <MenuItem value="dateRDV" primaryText="Date de rendez vous du règlement"/>
                                     </Field>
                                     <Field
                                         name="debutdate" 
                                         component={TextField}
-                                        hintText="Date de début EX:1900-01-01"
+                                        hintText="Date de début EX:01/01/1900"
                                         floatingLabelFixed={true}    
                                     />
                                     <Field
                                         name="findate" 
                                         component={TextField}
-                                        hintText="Date de fin EX:1900-01-01"
+                                        hintText="Date de fin EX:01/01/1900"
                                         floatingLabelFixed={true}    
                                     />
                                      <Field

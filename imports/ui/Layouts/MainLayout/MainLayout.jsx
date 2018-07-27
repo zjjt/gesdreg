@@ -28,7 +28,7 @@ const muiTheme= getMuiTheme({
 	}
 });
 Bert.defaults = {
-	hideDelay: 10000,
+	hideDelay: 13000,
 }
 class Bienvenue extends Component{
 	//static muiName='FlatButton';
@@ -168,7 +168,7 @@ export default class MainLayout extends Component{
 								   </ul>`,
 								   type: 'danger',
 								   style: 'growl-bottom-right',
-								   icon: 'fa-danger'
+								   icon: 'fa-bell'
 								 });
 								// console.dir(err);
 							}

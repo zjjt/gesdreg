@@ -66,6 +66,13 @@ class DispoTable extends Component{
 
         componentDidUpdate(){
           //console.dir(this.props);
+          const {isBigDialogUp}=this.props;
+          console.log(isBigDialogUp);
+          if(!isBigDialogUp && this.state.dialogTIsOpen){
+              console.log(isBigDialogUp);
+                this._dialogTClose();
+                this.props.refetch();
+            }
           if(this.props.listeDispo!=this.state.listeDispo && typeof this.props.listeDispo!="undefined"){
             this.setState({listeDispo:this.props.listeDispo})
              }
@@ -94,9 +101,13 @@ class DispoTable extends Component{
         }
 
         _dialogTOpen(){
-            if(this.state.regSelected.length)
-            this.setState({dialogTIsOpen: true});
-            this.props.dispatch(openBigDialog("MOD"));
+            if(this.state.regSelected.length){
+                this.setState({dialogTIsOpen: true});
+                this.props.dispatch(openBigDialog("MOD"));
+            }else{
+                alert("Veuillez sélectionner au moins un règlement pour effectuer une modification");
+            }
+            
         }
 
         _dialogTClose(){
@@ -110,8 +121,8 @@ class DispoTable extends Component{
                 selectedRows:[],
                 regSelected:[],
             });
-            this.props.refetch();
-            console.dir(this.refs);
+           
+            console.dir(this.props);
          // this.forceUpdate(()=>{});
         }
 
@@ -147,11 +158,12 @@ class DispoTable extends Component{
             
         }
         render(){
-            const {handleSubmit,pristine,submitting,dispatch,data,error,listeDispo,loadMoreEntries,loading}=this.props;
+            const {handleSubmit,pristine,submitting,dispatch,data,error,listeDispo,loadMoreEntries,loading,isBigDialogUp}=this.props;
             let statutClass='animated bounceInRight ';
             let liste=listeDispo;
+            
             console.log(JSON.stringify(error));
-            console.dir(this.state.regSelected);
+            console.dir(this.props);
             const mettreAjour=()=>{
                 this.setState({
                     loaderVisible:true
@@ -213,7 +225,7 @@ class DispoTable extends Component{
                             enableSelectAll={this.state.table.enableSelectAll}
                         >
                             <TableRow>
-                                <TableHeaderColumn tooltip="Etat du traitement du règlement">Etat</TableHeaderColumn>
+                                <TableHeaderColumn tooltip="Etat d'avancement et suivi interne des délais de traitement du règlement">Suivi du règlement</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Nom du bénéficiaire">Bénéficiaire</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Date de naissance du bénéficiaire">Date de naissance du Bénéficiaire</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Numéro de l'assuré">No Assuré</TableHeaderColumn>
@@ -261,19 +273,51 @@ class DispoTable extends Component{
                                             </TableRow>
                                            ): typeof this.state.listeDispo!=="undefined" && this.state.listeDispo.length?this.state.listeDispo.map((row,index)=>{
                                             let domaine='';
+                                            let lineTitle="";
                                             let etat=row.etat?row.etat.alerte==="TERMINER"?(<Icon icon={tongue2} title={`Niveau d'alerte: ${row.etat.alerte} , il s'agit la des règlememts dont la date de rendez vous est dépassé`} style={{color:"gray"}}/>):row.etat.alerte==="RAS"?(<Icon icon={smile2} title={`Niveau d'alerte: ${row.etat.alerte}, le traitement du règlement suit son cours normal et est dans le délai imparti`} style={{color:"lightgreen"}}/>):row.etat.alerte==="NORMAL"?(<Icon icon={sad2} title={`Niveau d'alerte: ${row.etat.alerte}, il faudrait penser à traiter ce règlement`} style={{color:"orange"}}/>):(<Icon icon={crying2} title={`Niveau d'alerte: ${row.etat.alerte},le règlement doit être traité d'urgence`} style={{color:"red"}}/>):(<Icon icon={neutral2} title={`Voir le service prestations en charge des saisies dans le système`}/>);
-                                            if(row.domaine==="I")domaine="INDIVIDUEL";
-                                            if(row.domaine==="G")domaine="GROUPE";
-                                            if(row.domaine==="R")domaine="RENTE";
-                                            if(row.statut_reg_retirer==="EN COURS")statutClass='animated bounceInRight ';
-                                            if(row.statut_reg_retirer==="A LA TRESO")statutClass='animated bounceInRight yellowBack';
-                                            if(row.statut_reg_retirer==="SORTIE DE TRESO")statutClass='animated bounceInRight orangeBack';
-                                            if(row.statut_reg_retirer==="A LA SIGNATURE")statutClass='animated bounceInRight roseBack';
-                                            if(row.statut_reg_retirer==="PRET")statutClass='animated bounceInRight greenBack';
-                                            if(row.statut_reg_retirer==="SORTIE")statutClass='animated bounceInRight redBack';
-                                            if(row.statut_reg_retirer==="REFUSER")statutClass='animated bounceInBottom brownBack';
+                                            if(row.domaine==="I"){
+                                                domaine="INDIVIDUEL";
+                                            }
+                                            if(row.domaine==="G"){
+                                                domaine="GROUPE";
+                                            }
+                                            if(row.domaine==="R"){
+                                                domaine="RENTE";
+                                            }
+                                            if(row.statut_reg_retirer==="EN COURS"){
+                                                statutClass='animated bounceInRight ';
+                                                lineTitle="ce règlement attend d'être traité";
+                                            }
+                                            if(row.statut_reg_retirer==="A LA TRESO"){
+                                                statutClass='animated bounceInLeft yellowBack';
+                                                lineTitle="ce règlement est à la trésorerie";
+                                            }
+                                            if(row.statut_reg_retirer==="SORTIE DE TRESO"){
+                                                statutClass='animated bounceInLeft orangeBack';
+                                                lineTitle="ce règlement est sortie de la trésorerie";
+                                            }
+                                            if(row.statut_reg_retirer==="A LA SIGNATURE"){
+                                                statutClass='animated bounceInLeft roseBack';
+                                                lineTitle="ce règlement est à la signature";
+                                            }
+                                            if(row.statut_reg_retirer==="PRET"){
+                                                statutClass='animated bounceInLeft greenBack';
+                                                lineTitle="ce règlement est disponible pour être retiré par le client";
+                                            }
+                                            if(row.statut_reg_retirer==="SORTIE"){
+                                                statutClass='animated bounceInLeft redBack';
+                                                lineTitle=row.ValBank?"ce règlement a été retiré par le client et a été traité à la banque ":"ce règlement a été retiré par le client";
+                                            }
+                                            if(row.statut_reg_retirer==="REFUSER"){
+                                                statutClass='animated fadeInInLeft brownBack';
+                                                lineTitle="ce règlement a été refusé";
+                                            }
+                                            if(row.statut_reg_retirer==="ANNULER"){
+                                                statutClass='animated fadeInInLeft grayBack';
+                                                lineTitle="ce règlement a été annulé";
+                                            }
                                             console.dir(row);
-                                            return(<TableRow key={index} className={ statutClass } selected={this.state.selectedRows.length?true:false} ref={`ligne${index}`}>
+                                            return(<TableRow key={index} className={ statutClass } selected={this.state.selectedRows.length?true:false} ref={`ligne${index}`} title={lineTitle}>
                                                 <TableRowColumn>{etat}</TableRowColumn>
                                                 <TableRowColumn>{row.nom_beneficiaire}</TableRowColumn>
                                                 <TableRowColumn>{row.date_naiss?moment(row.date_naiss).format("DD-MM-YYYY"):"NON DEFINI"}</TableRowColumn>
@@ -365,6 +409,7 @@ class DispoTable extends Component{
                         -<span style={{color:"green"}}>VERT</span> pour le statut <b>PRET</b><br/> 
                         -<span style={{color:"red"}}>ROUGE</span> pour le statut <b>SORTIE</b><br/><br/>
                         -<span style={{color:"brown"}}>MARRON</span> pour le statut <b>REFUSER</b><br/><br/>
+                        -<span style={{color:"#63600a"}}>JAUNE VOMI</span> pour le statut <b>ANNULER</b><br/><br/>
                      Ces informations ci-dessus associées au type de date et à la date renverront des résultats précis.<br/><br/>
                      Si ces informations ne sont pas disponibles,effectuez une recherche par numéro de règlement, par statut, par domaine ou numéro de police ou par le nom du bénéficiaire.
                      <br/>Les recherches par numéro de règlement ou numéro de police ou nom du bénéficiaire sont exclusives et ne necessitent aucune autre information.<br/>
@@ -381,9 +426,11 @@ DispoTable=reduxForm({
     form:'modifForm',
    //fields:['nom','prenom','username','password','passwordconf','codeRedac']
 })(DispoTable);
-function mapDispatchToProps(dispatch){
+function mapDispatchToProps(state,dispatch){
+    let isBigDialogUp=state.userActions.isBigDialogUp;
     return{
-        dispatch
+        dispatch,
+        isBigDialogUp
     }
 }
 DispoTable=connect(mapDispatchToProps)(DispoTable);
@@ -465,6 +512,7 @@ export default graphql(listeDisponibilities,{
                 loading,
                 error,
                 listeDispo,
+                refetch,
                 loadMoreEntries(){
                     return fetchMore({
                         variables:{

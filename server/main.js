@@ -10,19 +10,18 @@ Meteor.startup(()=>{
     publications();
     WhatsNewPub();
     methods();
-    Meteor.call("quoiDeneuf",()=>{
-        console.log("Mises à jour chargées");
-    })
+    
    turnAround();
 });
+
 
 
 function turnAround(){
     if(Meteor.isServer){
         
-        /* Meteor.setInterval(()=>{
+         Meteor.setTimeout(()=>{
                 checkSQLandDoMAJ();
-            }, 13000);*/
+            }, 3000);
     }
 }
 function checkSQLandDoMAJ(){
@@ -57,6 +56,7 @@ function checkSQLandDoMAJ(){
                             //console.log("unused user account "+muser.username+" deleted");
                         }else{
                            res.map((e,arr,i)=>{
+                              // Meteor.call("createNewUser",e);
                             Accounts.createUser({
                                 username:e.ulogin,
                                 password:e.mdp.substring(8)
@@ -71,6 +71,10 @@ function checkSQLandDoMAJ(){
                                         prenoms:e.prenom,
                                         email:e.email,
                                         fullname: e.nom+' '+e.prenom,
+                                        hasSeenUpdate:false,
+                                        seenUpdateXtime:0,
+                                        isNewsThere:false,
+                                        NewsID:null,
                                         codeRedac:e.redac.toUpperCase(),
                                         role:e.role
                                     }
@@ -85,6 +89,9 @@ function checkSQLandDoMAJ(){
                                 }
                                     
                            });  
+                            Meteor.call("quoiDeneuf",()=>{
+                                console.log("Mises à jour chargées");
+                            });
                         }
                     }));
             }

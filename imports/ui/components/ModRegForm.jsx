@@ -93,8 +93,8 @@ class ModRegForm extends Component{
          const {handleSubmit,pristine,submitting,dispatch,reset}=this.props;
             console.dir(this.props);
           const submit=(values,dispatch)=>{
-             console.dir(values);
-             if(!values.choixForm||values.choixForm!=="MODIFIER"||values.choixForm!=="MODIFIERDV"||values.choixForm!=="ANNULER"||values.choixForm!=="REFUSER"){
+             console.dir(typeof values.choixForm);
+             if(!values.choixForm){
                  alert("Veuillez choisir une option de formulaire parmis celles proposées");
              }else{
                  switch(values.choixForm){
@@ -120,7 +120,7 @@ class ModRegForm extends Component{
                             console.dir(values);
                             Meteor.call('updateDispos',values,this.props.regSelected,(err)=>{
                                 if(err){
-                                    
+                                    console.dir(err);
                                     if(err.error==="bad-date"){
                                         this.setState({
                                         errorMsg:err.reason
@@ -136,22 +136,116 @@ class ModRegForm extends Component{
                                     snackOpen:true
                                     });
                                     //dispatch(miseajourDispo());
-                                    dispatch(closeBigDialog("MOD"));
+                                    setTimeout(()=>{
+                                        dispatch(closeBigDialog("MOD"));
+                                    },5500);
                                 }
                             });
                         }
                      break;
                      case "MODIFIERDV":
+                     //alert(JSON.stringify(this.props.regSelected));
+                        if(!values.dateRDV||values.dateRDV==""||!moment(values.dateRDV).isValid()){
+                            this.setState({
+                                errorMsg:"Veuillez fournir une date de rendez vous valide  "
+                            });
+                            this._dialogOpen();
+                            return false;
+                        }else if(moment(values.dateRDV).isBefore(moment(this.props.regSelected[0].dateRDV))){
+                            this.setState({
+                                errorMsg:"Veuillez fournir une date de rendez vous valide. Celle que vous avez entrée est antérieure à celle déjà définie par le système  "
+                            });
+                            this._dialogOpen();
+                            return false;
+                        }else{
+
+                            //console.log(this.props.data.voirInfoReg[0].DATE_SURVENANCE_SINISTRE);
+                                
+                        // alert( );
+                            console.dir(values);
+                            Meteor.call('updateDispos',values,this.props.regSelected,(err)=>{
+                                if(err){
+                                    console.dir(err);
+                                    if(err.error==="bad-date"){
+                                        this.setState({
+                                        errorMsg:err.reason
+                                        });
+                                    }else{
+                                        console.log("Erreur survenue: "+err.reason);
+                                    }
+                                        
+                                    this._dialogOpen();
+                                }else{
+                                    this.setState({
+                                    snackMsg:`Mise à jour éffectuée`,
+                                    snackOpen:true
+                                    });
+                                    //dispatch(miseajourDispo());
+                                    setTimeout(()=>{
+                                        dispatch(closeBigDialog("MOD"));
+                                    },5500);
+                                }
+                            });
+                        }
                      break;
                      case "REFUSER":
+                     console.dir(values);
+                            Meteor.call('updateDispos',values,this.props.regSelected,(err)=>{
+                                if(err){
+                                    console.dir(err);
+                                    if(err.error==="bad-date"){
+                                        this.setState({
+                                        errorMsg:err.reason
+                                        });
+                                    }else{
+                                        console.log("Erreur survenue: "+err.reason);
+                                    }
+                                        
+                                    this._dialogOpen();
+                                }else{
+                                    this.setState({
+                                    snackMsg:`Mise à jour éffectuée`,
+                                    snackOpen:true
+                                    });
+                                    //dispatch(miseajourDispo());
+                                    setTimeout(()=>{
+                                        dispatch(closeBigDialog("MOD"));
+                                    },5500);
+                                }
+                            });
                      break;
                      case "ANNULER":
+                     console.dir(values);
+                            Meteor.call('updateDispos',values,this.props.regSelected,(err)=>{
+                                if(err){
+                                    console.dir(err);
+                                    if(err.error==="bad-date"){
+                                        this.setState({
+                                        errorMsg:err.reason
+                                        });
+                                    }else{
+                                        console.log("Erreur survenue: "+err.reason);
+                                    }
+                                        
+                                    this._dialogOpen();
+                                }else{
+                                    this.setState({
+                                    snackMsg:`Mise à jour éffectuée`,
+                                    snackOpen:true
+                                    });
+                                    //dispatch(miseajourDispo());
+                                    setTimeout(()=>{
+                                        dispatch(closeBigDialog("MOD"));
+                                    },5500);
+                                }
+                            });
                      break;
                  }
              }
                 
          };
-
+         //console.log(this.props.regSelected);
+         const maxLength = max => value =>value && value.length > max ? `Ce champs doit avoir un maximum de ${max} caractères ou moins` : undefined
          let modformOfChoice=this.state.formchoice==="MODIFIER"?(<div><Field
             name="date_depot_treso" 
             DateTimeFormat={DateTimeFormat}
@@ -228,7 +322,7 @@ class ModRegForm extends Component{
         /></div>):this.state.formchoice==="MODIFIERDV"?(
             <div>
                 <p>* les dates de rendez vous des ou du règlement sélectionné seront modiffiées.</p>
-                <p>La date de rendez vous actuelle est: </p>
+                <p>La date de rendez vous actuelle est: {`${moment(this.props.regSelected.dateRDV).format("DD-MM-YYYY")}`}</p>
                 <Field
                     name="dateRDV" 
                     component={DatePicker}
@@ -245,9 +339,37 @@ class ModRegForm extends Component{
                 />
             </div>
         ):this.state.formchoice==="REFUSER"?(
-            <div>refus</div>
+            <div>
+                <p>* Rappelez vous!!! cette modification est irreversible.Veuillez contacter un administrateur en cas d'erreur</p>
+                <p>Veuillez indiquer ci-dessous le motif du refus de ce règlement (255 caractères maximum)</p>
+                        <Field
+                            name="comment" 
+                            component={TextField}
+                            hintText="motif du refus"
+                            floatingLabelText="Pourquoi ?"
+                            fullWidth={true}
+                            style={this.state.textAreaDisabled?{"diaplay":"none"}:{"display":"block"}}
+                            floatingLabelFixed={true}
+                            disabled={this.state.textAreaDisabled}
+                            validate={this.state.textAreaDisabled?[]:[maxLength(255)]}
+                        />
+            </div>
         ):this.state.formchoice==="ANNULER"?(
-            <div>annulation</div>
+            <div>
+                <p>* Rappelez vous!!! cette modification est irreversible.Veuillez contacter un administrateur en cas d'erreur</p>
+                <p>Veuillez indiquer ci-dessous le motif de l'annulation de ce règlement (255 caractères maximum)</p>
+                        <Field
+                            name="comment" 
+                            component={TextField}
+                            hintText="motif de l'annulation"
+                            floatingLabelText="Pourquoi ?"
+                            fullWidth={true}
+                            style={this.state.textAreaDisabled?{"diaplay":"none"}:{"display":"block"}}
+                            floatingLabelFixed={true}
+                            disabled={this.state.textAreaDisabled}
+                            validate={this.state.textAreaDisabled?[]:[maxLength(255)]}
+                        />
+            </div>
         ):(<center><p>Veuillez choisir une des options ci dessus</p></center>);
          
         return(
@@ -293,11 +415,11 @@ class ModRegForm extends Component{
                                     });
                                 }else if(v=="MODIFIERDV"){
                                     let answer=!!this.props.regSelected.reduce((e,n)=>{
-                                        alert(e.dateRDV);
-                                        alert(n.dateRDV);
+                                        //alert(e.dateRDV);
+                                        //alert(n.dateRDV);
                                         return e.dateRDV===n.dateRDV?true:false;
                                     });
-                                    alert(answer);
+                                    //alert(answer);
                                     this.setState({
                                         formchoice:"MODIFIERDV" 
                                     });
@@ -312,10 +434,10 @@ class ModRegForm extends Component{
                                 }
                             }}
                         >
-                            <RadioButton value="MODIFIER" label="Modifier les différentes dates" title="vous permes de modifier la date de dépot à la trésorerie,et les autres dates de procédure normale sur un ou plusieurs règlements"/>
-                            <RadioButton value="MODIFIERDV" label="Modifier les dates de rendez-vous calcuées" title="vous permet de modifier les dates de rendez-vous précalculées par le système sur un ou plusieurs règlements"/>
-                            <RadioButton value="REFUSER" label="Refuser ce  règlement"  title="vous permet de refuser un ou plusieurs règlements en donnant le motif du refus.Attention cette action est irréversible."/>
-                            <RadioButton value="ANNULER" label="Annuler ce règlement" title="vous permet d'annuler un règlement"/>
+                            <RadioButton value="MODIFIER" label="Modifier les différentes dates" title="vous permet de modifier la date de dépot à la trésorerie,et les autres dates de procédure normale sur un ou plusieurs règlements"/>
+                            <RadioButton value="MODIFIERDV" label="Modifier la date de rendez-vous calculées" disabled={this.props.regSelected.length>1?true:false} title="vous permet de modifier la date de rendez-vous précalculé par le système sur un ou plusieurs règlements"/>
+                            <RadioButton value="REFUSER" label="Refuser ce  règlement" disabled={this.props.regSelected.length>1?true:false} title="vous permet de refuser un règlement en donnant le motif du refus.Attention cette action est irréversible."/>
+                            <RadioButton value="ANNULER" label="Annuler ce règlement" disabled={this.props.regSelected.length>1?true:false} title="vous permet d'annuler un règlement"/>
                         </Field>
                             <hr/>
                         {...modformOfChoice}

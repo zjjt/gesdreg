@@ -22,20 +22,24 @@ import {Session} from 'meteor/session';
 
     _dialogClose(){
         Meteor.call("updateNewsScreenTime",()=>{
-           // alert("lool");
+            alert("lool");
         });
         this.setState({dialogIsOpen: false});
     }
     componentWillReceiveProps(nextProps){
         const {news}=this.props;
+        alert(JSON.stringify(news));
         if(news.length>0 && typeof news[0].updates!="undefined"){
             this._dialogOpen();
         }
     }
-    
+    componentWillMount(){
+        
+    }
     render(){
         
-        console.log("object de sessiion user "+Session.get('userRole'));
+       // console.log("object de sessiion user "+Session.get('userRole'));
+       console.dir(this.props);
             let user=Session.get('userRole');
             //alert(user);
             const {news,currentUser}=this.props;

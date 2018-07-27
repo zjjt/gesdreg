@@ -7,6 +7,9 @@ import {FlowRouter} from 'meteor/kadira:flow-router';
 import {Field,reduxForm,formValueSelector} from 'redux-form';
 import Dialog from 'material-ui/Dialog';
 import FlatButton from 'material-ui/FlatButton';
+import Icon from 'react-icons-kit';
+import {eye} from 'react-icons-kit/fa/eye';
+import {eyeSlash} from 'react-icons-kit/fa/eyeSlash'
 import {Meteor} from 'meteor/meteor'
 
  class LoginForm extends Component{
@@ -14,7 +17,8 @@ import {Meteor} from 'meteor/meteor'
         super();
         this.state={
             dialogIsOpen:false,
-            errorMsg:''
+            errorMsg:'',
+            passHidden:false
         }
     }
 
@@ -80,15 +84,23 @@ import {Meteor} from 'meteor/meteor'
                         fullWidth={true}
                         
                     />
-                    <Field 
-                        name="password" 
-                        component={TextField}
-                        hintText="Entrez votre mot de passe"
-                        floatingLabelText="Mot de passe"
-                        type="password"
-                        fullWidth={true}
-                    />
-                    
+                    <div style={{display:"flex",flexDirection:"row",justifyContent:"space-between"}}>
+                        <Field 
+                            name="password" 
+                            component={TextField}
+                            hintText="Entrez votre mot de passe"
+                            floatingLabelText="Mot de passe"
+                            type={!this.state.passHidden?"password":"text"}
+                            fullWidth={true}
+                        />
+                    <div style={{alignSelf:"flex-end"}} onClick={()=>{
+                            this.setState({
+                                passHidden:!this.state.passHidden
+                            });
+                        }}>
+                        <Icon icon={!this.state.passHidden?eye:eyeSlash} size={32} style={{color:"gray"}}/>
+                    </div>
+                    </div>
                     <div className="loginBtnDiv">
                         <RaisedButton 
                             label="Se connecter" 

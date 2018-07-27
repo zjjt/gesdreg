@@ -164,7 +164,7 @@ class ConsultDispoTable extends Component{
                             enableSelectAll={this.state.table.enableSelectAll}
                         >
                             <TableRow>
-                                <TableHeaderColumn tooltip="Etat du traitement du règlement">Etat</TableHeaderColumn>
+                                <TableHeaderColumn tooltip="Etat d'avancement et suivi interne des délais de traitement du règlement">Suivi du règlement</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Numéro du bénéficiaire">Bénéficiaire No</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Numéro de règlement">Règlement No</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Numéro de police">Police</TableHeaderColumn>
@@ -202,6 +202,7 @@ class ConsultDispoTable extends Component{
                                            ):typeof consultDispo!=='undefined'?consultDispo.map((row,index)=>{
                                                console.dir(row)
                                             let domaine='';
+                                            let lineTitle="";
                                             let statutClass='';
                                             let etat=row.etat?row.etat.alerte==="TERMINER"?(<Icon icon={tongue2} title={`Niveau d'alerte: ${row.etat.alerte} , il s'agit la des règlememts dont la date de rendez vous est dépassé`} style={{color:"gray"}}/>):row.etat.alerte==="RAS"?(<Icon icon={smile2} title={`Niveau d'alerte: ${row.etat.alerte}, le traitement du règlement suit son cours normal et est dans le délai imparti`} style={{color:"lightgreen"}}/>):row.etat.alerte==="NORMAL"?(<Icon icon={sad2} title={`Niveau d'alerte: ${row.etat.alerte}, il faudrait penser à traiter ce règlement`} style={{color:"orange"}}/>):(<Icon icon={crying2} title={`Niveau d'alerte: ${row.etat.alerte},le règlement doit être traité d'urgence`} style={{color:"red"}}/>):(<Icon icon={neutral2} title={`Voir le service prestations en charge des saisies dans le système`}/>);
                                             let typeSinistre=row.infoSurRgt[0]?row.infoSurRgt[0].TYPE_SINISTRE:'NON DEFINI'
@@ -210,13 +211,39 @@ class ConsultDispoTable extends Component{
                                             if(row.domaine==="I")domaine="INDIVIDUEL";
                                             if(row.domaine==="G")domaine="GROUPE";
                                             if(row.domaine==="R")domaine="RENTE";
-                                            if(row.statut_reg_retirer==="EN COURS")statutClass='animated bounceInRight ';
-                                            if(row.statut_reg_retirer==="A LA TRESO")statutClass='animated bounceInLeft yellowBack';
-                                            if(row.statut_reg_retirer==="SORTIE DE TRESO")statutClass='animated bounceInLeft orangeBack';
-                                            if(row.statut_reg_retirer==="A LA SIGNATURE")statutClass='animated bounceInLeft roseBack';
-                                            if(row.statut_reg_retirer==="PRET")statutClass='animated bounceInLeft greenBack';
-                                            if(row.statut_reg_retirer==="SORTIE")statutClass='animated bounceInLeft redBack';
-                                            return(<TableRow key={index} className={statutClass} selected={this.state.selectedRows.indexOf(index)!==-1} ref={`user${index}`}>
+                                            if(row.statut_reg_retirer==="EN COURS"){
+                                                statutClass='animated bounceInRight ';
+                                                lineTitle="ce règlement attend d'être traité";
+                                            }
+                                            if(row.statut_reg_retirer==="A LA TRESO"){
+                                                statutClass='animated bounceInLeft yellowBack';
+                                                lineTitle="ce règlement est à la trésorerie";
+                                            }
+                                            if(row.statut_reg_retirer==="SORTIE DE TRESO"){
+                                                statutClass='animated bounceInLeft orangeBack';
+                                                lineTitle="ce règlement est sortie de la trésorerie";
+                                            }
+                                            if(row.statut_reg_retirer==="A LA SIGNATURE"){
+                                                statutClass='animated bounceInLeft roseBack';
+                                                lineTitle="ce règlement est à la signature";
+                                            }
+                                            if(row.statut_reg_retirer==="PRET"){
+                                                statutClass='animated bounceInLeft greenBack';
+                                                lineTitle="ce règlement est disponible pour être retiré par le client";
+                                            }
+                                            if(row.statut_reg_retirer==="SORTIE"){
+                                                statutClass='animated bounceInLeft redBack';
+                                                lineTitle=row.ValBank?"ce règlement a été retiré par le client et a été traité à la banque ":"ce règlement a été retiré par le client";
+                                            }
+                                            if(row.statut_reg_retirer==="REFUSER"){
+                                                statutClass='animated fadeInInLeft brownBack';
+                                                lineTitle="ce règlement a été refusé";
+                                            }
+                                            if(row.statut_reg_retirer==="ANNULER"){
+                                                statutClass='animated fadeInInLeft grayBack';
+                                                lineTitle="ce règlement a été annulé";
+                                            }
+                                            return(<TableRow key={index} className={statutClass} selected={this.state.selectedRows.indexOf(index)!==-1} ref={`user${index}`} title={lineTitle}>
                                                 <TableRowColumn>{etat}</TableRowColumn>
                                                 <TableRowColumn>{row.wasrg}</TableRowColumn>
                                                 <TableRowColumn>{row.wnrgt}</TableRowColumn>
@@ -265,6 +292,8 @@ class ConsultDispoTable extends Component{
                         -<span style={{color:"pink"}}>ROSE</span> pour le statut <b>A LA SIGNATURE</b><br/> 
                         -<span style={{color:"green"}}>VERT</span> pour le statut <b>PRET</b><br/> 
                         -<span style={{color:"red"}}>ROUGE</span> pour le statut <b>SORTIE</b><br/><br/>
+                        -<span style={{color:"brown"}}>MARRON</span> pour le statut <b>REFUSER</b><br/><br/>
+                        -<span style={{color:"#63600a"}}>JAUNE VOMI</span> pour le statut <b>ANNULER</b><br/><br/>
                      <br/>Les recherches sont complémentaires et peuvent être combinés pour un résultat plus précis.<br/>
                      <b>NB:LES RECHERCHES SONT EXECUTEES DYNAMIQUEMENT.</b>
                      </div>

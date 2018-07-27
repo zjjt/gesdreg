@@ -113,6 +113,7 @@ class ListDisponibilities extends Component {
                                         <MenuItem value="PRET" primaryText="PRET"/>
                                         <MenuItem value="SORTIE" primaryText="SORTIE"/>
                                         <MenuItem value="REFUSER" primaryText="REFUSER"/>
+                                        <MenuItem value="ANNULER" primaryText="ANNULER"/>
                                         <MenuItem value="" primaryText="AFFICHER TOUS LES STATUTS"/>
                                     </Field>
                                
