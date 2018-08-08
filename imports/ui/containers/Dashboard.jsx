@@ -22,13 +22,13 @@ import {Session} from 'meteor/session';
 
     _dialogClose(){
         Meteor.call("updateNewsScreenTime",()=>{
-            alert("lool");
+            //alert("lool");
         });
         this.setState({dialogIsOpen: false});
     }
     componentWillReceiveProps(nextProps){
         const {news}=this.props;
-        alert(JSON.stringify(news));
+        //alert(JSON.stringify(news));
         if(news.length>0 && typeof news[0].updates!="undefined"){
             this._dialogOpen();
         }

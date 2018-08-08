@@ -4,6 +4,7 @@ import publications from './publications/User.js';
 import WhatsNewPub from './publications/WhatsNew.js';
 import {userSQL,dispoSQL,DBSQL,DBSQLSERVER} from './graphql/connectors.js';
 import methods from './methods';
+var schedule = require('node-schedule');
 
 Meteor.startup(()=>{
    // Meteor.users._ensureIndex({codeRedac:1},{unique:true});
@@ -14,7 +15,11 @@ Meteor.startup(()=>{
    turnAround();
 });
 
-
+var w = schedule.scheduleJob(Meteor.settings.RUNMAJ,Meteor.bindEnvironment(function(){
+    console.log("lancement mise a jour");
+    Meteor.call('maj_database');
+        console.log("done MAJ regdispo "+Date.now() );
+  }));
 
 function turnAround(){
     if(Meteor.isServer){
