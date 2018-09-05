@@ -139,8 +139,8 @@ Exportation=connect(
     return {
       typeDate,
       statut,
-      startDate:findate,
-      endDate:debutdate
+      startDate:debudate,
+      endDate:findate
     }
   }
 )(Exportation);
