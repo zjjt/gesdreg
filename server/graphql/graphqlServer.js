@@ -6,11 +6,29 @@ import resolvers from './resolvers.js';
 import express from 'express';
 import cors from 'cors';
 import { WebApp } from 'meteor/webapp'; // Meteor-specific
+import { createApolloServer } from 'meteor/apollo';
 import { execute, subscribe } from 'graphql';
 import { SubscriptionServer } from 'subscriptions-transport-ws';
 import { makeExecutableSchema } from 'graphql-tools';
 import { createServer } from 'http';
-export const GRAPHQL_PORT=5000;
+import {Meteor} from 'meteor/meteor';
+
+
+const executableSchema=makeExecutableSchema({
+  typeDefs:schema,
+  resolvers:resolvers,
+  allowUndefinedInResolve:false,
+  printErrors:true
+});
+console.log( typeof createApolloServer)
+createApolloServer({
+  schema:executableSchema,
+}, {
+  configServer: expressServer => expressServer.use(cors()),
+});
+console.log(`Apollo Server is now running on http://localhost`);
+
+/*export const GRAPHQL_PORT=Meteor.settings.public.GRAPHQL_PORT?Meteor.settings.public.GRAPHQL_PORT:5000;
 
 let graphQLServer=express();
 
@@ -56,3 +74,4 @@ ws.listen(GRAPHQL_PORT, () => {
 });
 //graphQLServer.listen(GRAPHQL_PORT);
 WebApp.rawConnectHandlers.use(proxyMiddleware(`http://localhost:${GRAPHQL_PORT}/graphql`));
+*/

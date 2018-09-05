@@ -18,6 +18,7 @@ import {moment} from 'meteor/momentjs:moment';
 import { createContainer } from 'meteor/react-meteor-data';
 import {Meteor} from 'meteor/meteor';
 import InfExport from '../components/InfExport.jsx';
+import {convertInTextFromFrenchDate} from '../../utils/utilitaires';
 
 
 
@@ -116,7 +117,7 @@ class Exportation extends Component {
                             </div>
                         </form>
                         <Divider/>
-                        <InfExport typeDate={this.props.typeDate?this.props.typeDate:null} startDate={this.props.debutdate?this.props.debutdate:null} endDate={this.props.findate?this.props.findate:null} domaine={this.props.domaine?this.props.domaine:null} />
+                        <InfExport typeDate={this.props.typeDate?this.props.typeDate:null} startDate={this.props.startDate?moment(convertInTextFromFrenchDate(this.props.startDate)).format("YYYY-MM-DD"):null} endDate={this.props.endDate?moment(convertInTextFromFrenchDate(this.props.endDate)).format("YYYY-MM-DD"):null} domaine={this.props.domaine?this.props.domaine:null} />
                 </div>
             </div>
         );
@@ -138,8 +139,8 @@ Exportation=connect(
     return {
       typeDate,
       statut,
-      findate,
-      debutdate
+      startDate:findate,
+      endDate:debutdate
     }
   }
 )(Exportation);

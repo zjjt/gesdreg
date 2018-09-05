@@ -1,5 +1,5 @@
 import {Meteor} from 'meteor/meteor';
-import '../../api/graphql/server.js';
+import '../../api/graphql/graphqlServer.js';
 
 
 Meteor.startup(()=>{

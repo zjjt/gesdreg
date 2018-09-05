@@ -409,12 +409,7 @@ export default ()=>{
                     query="update exp.regdispo set date_depot_treso=:ddt, date_sort_treso=:dst, date_depot_sign=:dds,date_recep_sign_reg=:drsr,date_retrait_reg=:drr,redac=:r,statut_reg_retirer=:srr where wnupo=:wnupo and wnrgt=:wnrgt and domaine=:d ";               
                    rgtArray.forEach((e,i,arr)=>{
                        console.log("ligne de rgt: "+i);
-                       Historique.insert({
-                            dateConnexion:new Date(),
-                            heure:moment(Date.now()).format("HH:mm:ss"),
-                            actions:"Mise a jour de date sur le reglement "+e.wnrgt,
-                            par:redac.codeRedac
-                        });
+                       
                         prom= Promise.await(dispoSQL.findOne({
                             where:{
                                 wnrgt:e.wnrgt,
@@ -569,7 +564,12 @@ export default ()=>{
                                                
                                            }
                                         else{
-                                            
+                                            Historique.insert({
+                                                dateConnexion:new Date(),
+                                                heure:moment(Date.now()).format("HH:mm:ss"),
+                                                actions:"Mise a jour de date sur le reglement "+e.wnrgt,
+                                                par:redac.codeRedac
+                                            });
                                             DBSQLSERVER.query(query,{
                                                 replacements:{
                                                     wnrgt:e.wnrgt,
