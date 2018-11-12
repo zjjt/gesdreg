@@ -451,11 +451,12 @@ DispoTable.propTypes={
 };
 
 const listeDisponibilities=gql`
-    query listeDisponibilities($typeDate:String,$date:String,$statut:String,$domaine:String,$numregl:Int,$numpol:Int,$nomtotal:String,$numreglStart:Int,$numreglEnd:Int,$offset:Int,$limit:Int){
-        listeDispo(typeDate:$typeDate,date:$date,statut:$statut,domaine:$domaine,numregl:$numregl,numpol:$numpol,nomtotal:$nomtotal,numreglStart:$numreglStart,numreglEnd:$numreglEnd,offset:$offset,limit:$limit){
+    query listeDisponibilities($typeDate:String,$date:String,$statut:String,$domaine:String,$numenv:Int,$numregl:Int,$numpol:Int,$nomtotal:String,$numreglStart:Int,$numreglEnd:Int,$offset:Int,$limit:Int){
+        listeDispo(typeDate:$typeDate,date:$date,statut:$statut,domaine:$domaine,numenv:$numenv,numregl:$numregl,numpol:$numpol,nomtotal:$nomtotal,numreglStart:$numreglStart,numreglEnd:$numreglEnd,offset:$offset,limit:$limit){
             wasrg
             wnrgt
             wnupo
+            Num_envoi
             nom_beneficiaire
             date_naiss
             date_depot_treso

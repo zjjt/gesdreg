@@ -54,7 +54,7 @@ export const pubsub = new PubSub();
             
            // let chainer=new Sequelize.Utils.QueryChainer();
             //si on a la date,et pas de statut,de domaine,de num_regl et on ne veut pas afficher seulment ceux kon a edite et non ordoner par num_regl
-            if(args.typeDate && args.date && !args.statut && !args.domaine && !args.numregl && !args.numpol && !args.nomtotal && !args.numreglStart && !args.numreglEnd ){
+            if(args.typeDate && args.date && !args.statut && !args.domaine && !args.numenv && !args.numregl && !args.numpol && !args.nomtotal && !args.numreglStart && !args.numreglEnd ){
                 
                 switch(args.typeDate){
                     case "date_naiss":
@@ -333,7 +333,7 @@ export const pubsub = new PubSub();
                                     });  
                 }
                 
-            }else if(args.typeDate && args.date && args.statut && !args.domaine && !args.numregl && !args.numpol && !args.nomtotal && !args.numreglStart && !args.numreglEnd){
+            }else if(args.typeDate && args.date && args.statut && !args.domaine && !args.numenv && !args.numregl && !args.numpol && !args.nomtotal && !args.numreglStart && !args.numreglEnd){
                 switch(args.typeDate){
                     case "date_naiss":
                     return dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
@@ -610,7 +610,7 @@ export const pubsub = new PubSub();
                     
                 }
                 
-            }else if(args.typeDate && args.date  && args.statut && args.domaine && !args.numregl && !args.numpol && !args.nomtotal && !args.numreglStart && !args.numreglEnd){
+            }else if(args.typeDate && args.date  && args.statut && args.domaine && !args.numenv && !args.numregl && !args.numpol && !args.nomtotal && !args.numreglStart && !args.numreglEnd){
                 console.log(args.typeDate);
                 switch(args.typeDate){
                     case "date_naiss":
@@ -891,7 +891,34 @@ export const pubsub = new PubSub();
                     
                 }
                 
-            }else if(!args.typeDate && !args.date && !args.statut && !args.domaine && args.numregl && !args.numpol && !args.nomtotal && !args.numreglStart && !args.numreglEnd){
+            }else if(!args.typeDate && !args.date && !args.statut && !args.domaine && args.numenv && !args.numregl && !args.numpol && !args.nomtotal && !args.numreglStart && !args.numreglEnd){
+                console.log("son type est "+typeof args.numenv);
+                return dispoSQL.findAll({attributes:{exclude:['id']},where:{
+                             Num_envoi:parseInt(args.numenv,10)
+                        },order:[['wnrgt','DESC']],offset:args.offset,limit:args.limit}).then((res)=>{
+                                let promises=[];
+                                let dispo;
+                                res.forEach((r)=>{
+                                    promises.push(
+                                        Promise.all([
+                                        DBSQLSERVER.query(query,{ replacements:{numero_reg:r.wnrgt,domaine:r.domaine},type:DBSQLSERVER.QueryTypes.SELECT})
+                                        ]).spread((infosurrgt)=>{
+                                            dispo=r.toJSON();
+                                            infosurrgt.MONTANT_BRUT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_BRUT,10));
+                                infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
+                                            dispo.infoSurRgt=infosurrgt;
+                                            dispo.etat=checkRdvDate(dispo);
+                                            return dispo;
+                                        })
+                                    );
+                                });
+                                return Promise.all(promises)
+                                
+                            }).then((dispos)=>{
+                                console.dir(dispos);
+                                return dispos;
+                            });
+            }else if(!args.typeDate && !args.date && !args.statut && !args.domaine && !args.numenv && args.numregl && !args.numpol && !args.nomtotal && !args.numreglStart && !args.numreglEnd){
                 console.log("son type est "+typeof args.numregl);
                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                              wnrgt:parseInt(args.numregl,10)
@@ -918,7 +945,7 @@ export const pubsub = new PubSub();
                                 console.dir(dispos);
                                 return dispos;
                             });
-            }else if(!args.typeDate && !args.date && !args.statut && !args.domaine && !args.numregl && args.numpol && !args.nomtotal && !args.numreglStart && !args.numreglEnd){
+            }else if(!args.typeDate && !args.date && !args.statut && !args.domaine && !args.numenv && !args.numregl && args.numpol && !args.nomtotal && !args.numreglStart && !args.numreglEnd){
                  return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                              wnupo:args.numpol
                         },offset:args.offset,limit:args.limit}).then((res)=>{
@@ -944,7 +971,7 @@ export const pubsub = new PubSub();
                               //  console.dir(dispos);
                                 return dispos;
                             });
-            }else if(!args.typeDate && !args.date && !args.statut && !args.domaine && !args.numregl && !args.numpol && args.nomtotal && !args.numreglStart && !args.numreglEnd){
+            }else if(!args.typeDate && !args.date && !args.statut && !args.domaine && !args.numenv && !args.numregl && !args.numpol && args.nomtotal && !args.numreglStart && !args.numreglEnd){
                  return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                              nom_beneficiaire:{
                                     $like:'%'+args.nomtotal+'%'
@@ -971,7 +998,7 @@ export const pubsub = new PubSub();
                                 return dispos;
                             });
             }
-            else if(!args.typeDate && !args.date && args.statut && !args.domaine && !args.numregl && !args.numpol && !args.nomtotal && !args.numreglStart && !args.numreglEnd){
+            else if(!args.typeDate && !args.date && args.statut && !args.domaine && !args.numenv && !args.numregl && !args.numpol && !args.nomtotal && !args.numreglStart && !args.numreglEnd){
                  return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                              statut_reg_retirer:args.statut
                         },offset:args.offset,limit:args.limit}).then((res)=>{
@@ -998,7 +1025,7 @@ export const pubsub = new PubSub();
                                 return dispos;
                             });
             }
-            else if(!args.typeDate && !args.date && !args.statut && args.domaine && !args.numregl && !args.numpol && !args.nomtotal && !args.numreglStart && !args.numreglEnd){
+            else if(!args.typeDate && !args.date && !args.statut && args.domaine && !args.numenv && !args.numregl && !args.numpol && !args.nomtotal && !args.numreglStart && !args.numreglEnd){
                return dispoSQL.findAll({
                     attributes:{exclude:['id']},
                     where:{domaine:args.domaine},
@@ -1041,7 +1068,7 @@ export const pubsub = new PubSub();
                     return nd;
                 });
             }
-            else if(!args.typeDate && !args.date && !args.statut && !args.domaine && !args.numregl && !args.numpol && !args.nomtotal && args.numreglStart && args.numreglEnd){
+            else if(!args.typeDate && !args.date && !args.statut && !args.domaine  && !args.numenv && !args.numregl && !args.numpol && !args.nomtotal && args.numreglStart && args.numreglEnd){
                 return  dispoSQL.findAll({
                     attributes:{exclude:['id']},
                     where:{

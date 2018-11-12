@@ -158,7 +158,12 @@ class ListDisponibilities extends Component {
                                     floatingLabelFixed={true}
                                     />
                                 
-                                
+                                    <Field
+                                    name="numenv" 
+                                    component={TextField}
+                                    hintText="Entrez le numéro d'envoi"
+                                    floatingLabelFixed={true}
+                                    />
                                     <Field
                                         name="nomtotal" 
                                         component={TextField}
@@ -175,6 +180,7 @@ class ListDisponibilities extends Component {
                         statut={this.props.statut?this.props.statut:null}
                         domaine={this.props.domaine?this.props.domaine:null} 
                         numregl={this.props.numregl?this.props.numregl:null}
+                        numenv={this.props.numenv?this.props.numenv:null}
                         numpol={this.props.numpol?this.props.numpol:null}
                         nomtotal={this.props.nomtotal?this.props.nomtotal:null}
                         numreglStart={this.props.numreglStart?this.props.numreglStart:null}
@@ -199,7 +205,7 @@ const selector = formValueSelector('searchDispo');
 ListDisponibilities=connect(
     state => {
     // or together as a group
-    let { typeDate, date, statut, numregl,domaine,numpol,nomtotal,numreglStart,numreglEnd } = selector(state, 'typeDate', 'date','statut','numregl','domaine','numpol','nomtotal','numreglStart','numreglEnd');
+    let { typeDate, date, statut,numenv, numregl,domaine,numpol,nomtotal,numreglStart,numreglEnd } = selector(state, 'typeDate', 'date','statut','numenv','numregl','domaine','numpol','nomtotal','numreglStart','numreglEnd');
   /* let dd=date?date.substring(0,2):'';
    let mm=date?date.substring(3,5):'';
    let yy=date?date.substring(6):'';
@@ -209,6 +215,7 @@ ListDisponibilities=connect(
       date,
       statut,
       domaine,
+      numenv:parseInt(numenv,10),
       numregl:parseInt(numregl,10),
       numpol:parseInt(numpol,10),
       nomtotal,

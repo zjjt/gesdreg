@@ -43,6 +43,7 @@ const schema=`
             wasrg:String
             wnrgt:Int
             wnupo:Int
+            Num_envoi:Int
             nom_beneficiaire:String
             date_naiss:String
             date_depot_treso:String
@@ -68,7 +69,7 @@ const schema=`
             userSQL(nom:String,orderDesc:Boolean!):[UserSQL] 
             dataToExport(typeDate:String,startDate:String,endDate:String,domaine:String):[DisporegSQL]
             consultDispo(startDate:String,endDate:String,numpolice:Int,nomtotal:String,birthdate:String,offset:Int,limit:Int):[DisporegSQL]
-            listeDispo(typeDate:String,date:String,statut:String,domaine:String,numregl:Int,numpol:Int,nomtotal:String,numreglStart:Int,numreglEnd:Int,offset:Int,limit:Int):[DisporegSQL]
+            listeDispo(typeDate:String,date:String,statut:String,domaine:String,numenv:Int,numregl:Int,numpol:Int,nomtotal:String,numreglStart:Int,numreglEnd:Int,offset:Int,limit:Int):[DisporegSQL]
             consultDispoBank(startDate:String,endDate:String,numrgt:Int,nomtotal:String,birthdate:String,offset:Int,limit:Int):[DisporegSQL]
             voirInfoReg(wnrgt:Int,domaine:String):[InfosREG]
         }
