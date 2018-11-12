@@ -232,6 +232,7 @@ class DispoTable extends Component{
                                 <TableHeaderColumn tooltip="Numéro de police">No Police</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Numéro de décompte">No Décompte</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Numéro de règlement">No Règlement</TableHeaderColumn>
+                                <TableHeaderColumn tooltip="Numéro d'envoi">No Envoi</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Mode de règlement">Mode de règlement</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Type du sinistre">Type du sinistre</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="libellé du sinistre">Libellé du sinistre</TableHeaderColumn>
@@ -325,6 +326,7 @@ class DispoTable extends Component{
                                                 <TableRowColumn>{row.wnupo}</TableRowColumn>
                                                 <TableRowColumn>{row.infoSurRgt[0]?row.infoSurRgt[0].DECOMPTE:"NON DEFINI"}</TableRowColumn>
                                                 <TableRowColumn>{row.wnrgt}</TableRowColumn>
+                                                <TableRowColumn>{row.Num_envoi?row.Num_envoi:"AUCUN"}</TableRowColumn>
                                                 <TableRowColumn>{row.MRGGT}</TableRowColumn>
                                                 <TableRowColumn>{row.infoSurRgt[0]?row.infoSurRgt[0].TYPE_SINISTRE:"NON DEFINI"}</TableRowColumn>
                                                 <TableRowColumn>{row.infoSurRgt[0]?row.infoSurRgt[0].LIBELLE_SINISTRE:"NON DEFINI"}</TableRowColumn>

@@ -438,10 +438,16 @@ export default ()=>{
                                         && moment(values.date_depot_treso).isBefore(e.infoSurRgt[0].DATE_SURVENANCE_SINISTRE)
                                         && moment(values.date_depot_treso).isBefore(e.infoSurRgt[0].DATE_RECEPTION)
                                         ){
-                                            throw new Meteor.Error("bad-date","Veuillez re verifier la date de dépot à la trésorerie du règlement "+e.wnrgt+" . Elle ne peut être avant la date de survenance du sinistre ou la date du règlement");
+                                            throw new Meteor.Error("bad-date","Veuillez re verifier la date de dépot à la trésorerie du règlement "+e.wnrgt+" . Elle ne peut être avant la date de survenance du sinistre ou la date de réception du règlement");
                                         }
                                         else if(values.date_depot_treso 
                                             &&(values.date_sort_treso||values.date_depot_sign||values.date_recep_sign_reg||values.date_retrait_reg)
+                                            &&( moment(values.date_depot_treso).diff(moment(values.date_sort_treso))>0
+                                            ||  moment(values.date_depot_treso).diff(moment(values.date_depot_sign))>0
+                                            ||  moment(values.date_depot_treso).diff(moment(values.date_recep_sign_reg))>0
+                                            ||  moment(values.date_depot_treso).diff(moment(values.date_retrait_reg))>0
+                                            
+                                                )
                                             && (
                                                 moment(values.date_depot_treso).isAfter(values.date_sort_treso)
                                                 ||moment(values.date_depot_treso).isAfter(values.date_depot_sign)
@@ -461,13 +467,18 @@ export default ()=>{
                                             && moment(values.date_sort_treso).isBefore(e.infoSurRgt[0].DATE_SURVENANCE_SINISTRE)
                                             && moment(values.date_sort_treso).isBefore(e.infoSurRgt[0].DATE_RECEPTION)
                                         ){
-                                                throw new Meteor.Error("bad-date","Veuillez re verifier la date de sortie de trésorerie du règlement "+e.wnrgt+" .Elle ne peut être avant la date de survenance du sinistre ou la date du règlement");
+                                                throw new Meteor.Error("bad-date","Veuillez re verifier la date de sortie de trésorerie du règlement "+e.wnrgt+" .Elle ne peut être avant la date de survenance du sinistre ou la date de réception du règlement");
                                             }
                                       /*  else if(p.date_depot_treso && moment(values.date_sort_treso).isBefore(moment(p.date_depot_treso).format("YYYY-MM-DD"))){
                                             throw new Meteor.Error("bad-date","Veuillez re verifier la date de sortie de trésorerie du règlement "+e.wnrgt+" .Elle ne peut être avant la date de dépot à la trésorerie que vous avez précédemment saisie.");
                                         }*/
                                         else if(values.date_sort_treso 
                                            &&(values.date_depot_treso||values.date_depot_sign||values.date_recep_sign_reg||values.date_retrait_reg)
+                                           &&( moment(values.date_sort_treso).diff(moment(values.date_depot_treso))<0
+                                            ||  moment(values.date_sort_treso).diff(moment(values.date_depot_sign))>0
+                                            ||  moment(values.date_sort_treso).diff(moment(values.date_recep_sign_reg))>0
+                                            ||  moment(values.date_sort_treso).diff(moment(values.date_retrait_reg))>0
+                                                )
                                            && (
                                                moment(values.date_sort_treso).isBefore(values.date_depot_treso)
                                                ||(values.date_depot_sign && moment(values.date_sort_treso).isAfter(values.date_depot_sign))
@@ -488,7 +499,7 @@ export default ()=>{
                                            && moment(values.date_depot_sign).isBefore(e.infoSurRgt[0].DATE_RECEPTION)
                                            && moment(values.date_depot_sign).isBefore(e.infoSurRgt[0].DATE_SURVENANCE_SINISTRE)
                                            ){
-                                               throw new Meteor.Error("bad-date","Veuillez re verifier la date de dépot pour signature du règlement "+e.wnrgt+" .Elle ne peut être avant la date de survenance du sinistre ou la date du règlement ");
+                                               throw new Meteor.Error("bad-date","Veuillez re verifier la date de dépot pour signature du règlement "+e.wnrgt+" .Elle ne peut être avant la date de survenance du sinistre ou la date de réception du règlement ");
                                            }
                                        /*else if(moment(values.date_depot_sign).isBefore(moment(p.date_depot_treso).format("YYYY-MM-DD"))
                                            ||moment(values.date_depot_sign).isBefore(moment(p.date_sort_treso).format("YYYY-MM-DD"))){
@@ -496,6 +507,11 @@ export default ()=>{
                                            }*/
                                        else if(values.date_depot_sign 
                                            &&(values.date_depot_treso||values.date_sort_treso||values.date_recep_sign_reg||values.date_retrait_reg)
+                                           &&( moment(values.date_depot_sign).diff(moment(values.date_depot_treso))<0
+                                            ||  moment(values.date_depot_sign).diff(moment(values.date_sort_treso))<0
+                                            ||  moment(values.date_depot_sign).diff(moment(values.date_recep_sign_reg))>0
+                                            ||  moment(values.date_depot_sign).diff(moment(values.date_retrait_reg))>0
+                                                )
                                            && (
                                                moment(values.date_depot_sign).isBefore(values.date_depot_treso)
                                                ||moment(values.date_depot_sign).isBefore(values.date_sort_treso)
@@ -515,7 +531,7 @@ export default ()=>{
                                            && moment(values.date_recep_sign_reg).isBefore(e.infoSurRgt[0].DATE_RECEPTION)
                                            && moment(values.date_recep_sign_reg).isBefore(e.infoSurRgt[0].DATE_SURVENANCE_SINISTRE)
                                            ){
-                                               throw new Meteor.Error("bad-date","Veuillez re verifier la date de retour de signature du règlement "+e.wnrgt+" .Elle ne peut être avant la date de survenance du sinistre ou la date du règlement ");
+                                               throw new Meteor.Error("bad-date","Veuillez re verifier la date de retour de signature du règlement "+e.wnrgt+" .Elle ne peut être avant la date de survenance du sinistre ou la date de réception du règlement ");
                                            }
                                        /*else if(moment(values.date_recep_sign_reg).isBefore(moment(p.date_depot_treso).format("YYYY-MM-DD"))
                                            ||moment(values.date_recep_sign_reg).isBefore(moment(p.date_sort_treso).format("YYYY-MM-DD"))
@@ -524,6 +540,11 @@ export default ()=>{
                                            }*/
                                        else if(values.date_recep_sign_reg 
                                            &&(values.date_depot_treso||values.date_sort_treso||values.date_depot_sign||values.date_retrait_reg)
+                                           &&( moment(values.date_recep_sign_reg).diff(moment(values.date_depot_treso))<0
+                                            ||  moment(values.date_recep_sign_reg).diff(moment(values.date_sort_treso))<0
+                                            ||  moment(values.date_recep_sign_reg).diff(moment(values.date_depot_sign))<0
+                                            ||  moment(values.date_recep_sign_reg).diff(moment(values.date_retrait_reg))>0
+                                                )
                                            && (
                                                moment(values.date_recep_sign_reg).isBefore(values.date_depot_treso)
                                                ||moment(values.date_recep_sign_reg).isBefore(values.date_sort_treso)
@@ -542,7 +563,7 @@ export default ()=>{
                                            && moment(values.date_retrait_reg).isBefore(e.infoSurRgt[0].DATE_RECEPTION)
                                            && moment(values.date_retrait_reg).isBefore(e.infoSurRgt[0].DATE_SURVENANCE_SINISTRE)
                                            ){
-                                               throw new Meteor.Error("bad-date","Veuillez re verifier la date de retrait du règlement du règlement "+e.wnrgt+" . Elle ne peut être avant la date de survenance du sinistre ou la date du règlement.");
+                                               throw new Meteor.Error("bad-date","Veuillez re verifier la date de retrait du règlement du règlement "+e.wnrgt+" . Elle ne peut être avant la date de survenance du sinistre ou la date de réception du règlement.");
                                            }
                                        /*else if(moment(values.date_retrait_reg).isBefore(moment(p.date_depot_treso).format("YYYY-MM-DD"))
                                            ||moment(values.date_retrait_reg).isBefore(moment(p.date_sort_treso).format("YYYY-MM-DD"))
@@ -553,6 +574,11 @@ export default ()=>{
                                            }*/
                                        else if(values.date_retrait_reg 
                                            &&(values.date_depot_treso||values.date_sort_treso||values.date_depot_sign||values.date_recep_sign_reg)
+                                           &&( moment(values.date_retrait_reg).diff(moment(values.date_depot_treso))<0
+                                            ||  moment(values.date_retrait_reg).diff(moment(values.date_sort_treso))<0
+                                            ||  moment(values.date_retrait_reg).diff(moment(values.date_depot_sign))<0
+                                            ||  moment(values.date_retrait_reg).diff(moment(values.date_recep_sign_reg))<0
+                                                )
                                            && (
                                                moment(values.date_retrait_reg).isBefore(values.date_depot_treso)
                                                ||moment(values.date_retrait_reg).isBefore(values.date_sort_treso)

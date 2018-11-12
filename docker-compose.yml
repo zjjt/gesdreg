@@ -1,7 +1,7 @@
 app:
   image: gesdreg
   ports:
-    - "89:3000"    
+    - "82:3000"
   links:
     - mongo
   environment:
@@ -12,9 +12,9 @@ app:
       "DBSQLSERVER_PORT":"57055", 
       "DBSQLSERVER_USER":"reportvie",
       "DBSQLSERVER_PASSWORD":"reportvie",
-      "DBSQLSERVER_DATABASE":"SUNDB_RCI",
-      "ADMINLOGMDP":"Nsia@RGT2017",
-      "ADMINMAIL":"thibaut.zehi@groupensia.com"
+      "DBSQLSERVER_DATABASE":"SUN_COTEDIVOIRE",
+      "ADMINLOGMDP":"Nsia@RGT2018",
+      "ADMINMAIL":"thibaut.zehi@groupensia.com",
       "RUNMAJ":"00 12 * * *"
       }'
   restart: always
