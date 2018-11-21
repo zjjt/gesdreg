@@ -334,11 +334,17 @@ export let checkRdvDate=(e)=>{
             
             break;
             default:
-            return null;
+            return {
+                nbj:-1,
+                alerte:"ERROR"
+            };
             break;
         }
     }else{
-        return null;
+        return {
+            nbj:-1,
+            alerte:"ERROR"
+        };
     }
     
 }

@@ -167,7 +167,12 @@ const regDispoModel=DBSQLSERVER.define('regdispo',{
       type: Sequelize.STRING,
       allowNull: true,
       field: 'CommentsBank'
-    },        
+    },   
+    Num_envoi: {
+      type: Sequelize.INTEGER,
+      allowNull: true,
+      field: 'Num_envoi'
+    },    
 },{
     schema:'exp',
     timestamps:false,

@@ -174,6 +174,7 @@ class ListDisponibilities extends Component {
                             </div>
                         </form>
                         <Divider/>
+                        {console.log(this.props)}
                     <DispoTable 
                         typeDate={this.props.typeDate?this.props.typeDate:null} 
                         date={this.props.date?moment(convertInTextFromFrenchDate(this.props.date)).format("YYYY-MM-DD"):null} 
@@ -187,6 +188,7 @@ class ListDisponibilities extends Component {
                         numreglEnd={this.props.numreglEnd?this.props.numreglEnd:null}
                         withRedactor={this.state.withRedactor?this.state.withRedactor:null}
                         orderbyNumReg={this.state.orderbyNumReg?this.state.orderbyNumReg:null}
+                        sall={this.props.sall}
                         iamTheRedactor={'CKM'}/>
                     
                 </div>
@@ -220,7 +222,8 @@ ListDisponibilities=connect(
       numpol:parseInt(numpol,10),
       nomtotal,
       numreglStart:parseInt(numreglStart,10),
-      numreglEnd:parseInt(numreglEnd,10)
+      numreglEnd:parseInt(numreglEnd,10),
+      sall:numenv?true:false
     }
   }
 )(ListDisponibilities);

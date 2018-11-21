@@ -56,7 +56,8 @@ class DispoTable extends Component{
                         showRowHover:false,
                         selectable:true,
                         multiSelectable: true,
-                        enableSelectAll:false,
+                        enableSelectAll:true,
+                        allRowsSelected:false,
                         deselectOnClickaway:true,
                         showCheckboxes:true,
                         height:'450px'
@@ -76,12 +77,15 @@ class DispoTable extends Component{
           if(this.props.listeDispo!=this.state.listeDispo && typeof this.props.listeDispo!="undefined"){
             this.setState({listeDispo:this.props.listeDispo})
              }
+             /*let newState = Object.assign({}, this.state);
+             newState.table.allRowsSelected = this.props.sall;
+             this.setState(newState);*/
         }
         componentWillUpdate(){
             
         }
         componentDidMount(){
-            $('.tableau').parent().css("width","6762px");
+            $('.tableau').parent().css("width","7017px");
             setInterval(()=>{
                 Bert.alert({
                     title: 'Informations',
@@ -112,10 +116,13 @@ class DispoTable extends Component{
 
         _dialogTClose(){
             console.dir(this.refs);
-            this.state.selectedRows.map((e,i,arr)=>{
-                this.refs[`ligne${i}`].props.selected=!this.refs[`ligne${i}`].props.selected;
-               // console.log(this.refs[`ligne${i}`].props.selected);
-            });
+            if(Array.isArray(this.state.selectedRows)&& this.state.selectedRows.length){
+                this.state.selectedRows.map((e,i,arr)=>{
+                    this.refs[`ligne${i}`].props.selected=!this.refs[`ligne${i}`].props.selected;
+                   // console.log(this.refs[`ligne${i}`].props.selected);
+                });
+            }
+            
             this.setState({
                 dialogTIsOpen: false,
                 selectedRows:[],
@@ -128,13 +135,16 @@ class DispoTable extends Component{
 
        
 
-        _onRowSelection(rowsarr){
+        _onRowSelection(selectedRows){
             let regarray=[];
-            if(rowsarr){
-                rowsarr.map((r)=>{
+            if(Array.isArray(selectedRows)){
+                selectedRows.map((r)=>{
                 regarray.push(this.props.listeDispo[r]);
                 //console.dir(this.props.data.userSQL[r])
              });
+            }else{
+                regarray=this.props.listeDispo; 
+                //alert("Afin de minimiser la memoire utilisé")
             }
             switch(regarray[0].domaine){
                 case "I":
@@ -149,7 +159,7 @@ class DispoTable extends Component{
                 
             }
             this.setState({
-                selectedRows:rowsarr,
+                selectedRows:selectedRows,
                 regSelected:regarray,
                 //dialogTIsOpen:true
             });
@@ -199,7 +209,7 @@ class DispoTable extends Component{
             return(
                 <div >
                     <Dialog
-                    title={this.state.regSelected.length?`Modification de la disponibilité des ${this.state.regSelected.length} règlements sélectionnés`:null}
+                    title={this.state.regSelected.length?this.props.numenv?`Modification de la disponibilité des règlements de l'envoi ${parseInt(this.props.numenv,10)}`:`Modification de la disponibilité des ${this.state.regSelected.length} règlements sélectionnés`:null}
                     actions={dialogTActions}
                     modal={false}
                     open={this.state.dialogTIsOpen}
@@ -208,7 +218,7 @@ class DispoTable extends Component{
                     contentStyle={{width:'60%',maxWidth:'none'}}
                     autoScrollBodyContent={true}
                     >
-                        <ModRegForm dispatch={dispatch} regSelected={this.state.regSelected.length?this.state.regSelected:null} wnrgt={this.state.regSelected.length?this.state.regSelected[0].wnrgt:null} domaine={this.state.regSelected.length?this.state.regSelected[0].domaine:null}/>
+                        <ModRegForm dispatch={dispatch} numenv={this.props.numenv?parseInt(this.props.numenv,10):null} regSelected={this.state.regSelected.length?this.state.regSelected:null} wnrgt={this.state.regSelected.length?this.state.regSelected[0].wnrgt:null} domaine={this.state.regSelected.length?this.state.regSelected[0].domaine:null}/>
                     </Dialog>
                     <Table
                         height={this.state.table.height}
@@ -494,19 +504,20 @@ const listeDisponibilities=gql`
 
 
 export default graphql(listeDisponibilities,{
-    options:({ typeDate,date,statut,domaine,numregl,numpol,nomtotal,numreglStart,numreglEnd}) => ({ 
+    options:({ typeDate,date,statut,domaine,numenv,numregl,numpol,nomtotal,numreglStart,numreglEnd}) => ({ 
         variables: {
             typeDate,
             date,
             statut,
             domaine,
+            numenv:parseInt(numenv,10),
             numregl:parseInt(numregl,10),
             numpol,
             nomtotal,
             numreglStart,
             numreglEnd,
             offset:0,
-            limit:ITEMS_PER_PAGE          
+            limit:parseInt(numenv,10)?10:ITEMS_PER_PAGE          
     },fetchPolicy: 'cache-and-network' }),
         props:({data:{loading,error,listeDispo,fetchMore,refetch}})=>{
             //alert(JSON.stringify(error));

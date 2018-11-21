@@ -49,17 +49,17 @@ export const pubsub = new PubSub();
                 return userSQL.findAll({attributes:{exclude:['id']},order:[['nom','ASC']]});
             }
         },
-        listeDispo(_,args){
+        async listeDispo(_,args){
             let query="exec info_reg_dispo :numero_reg,:domaine ";
             
            // let chainer=new Sequelize.Utils.QueryChainer();
             //si on a la date,et pas de statut,de domaine,de num_regl et on ne veut pas afficher seulment ceux kon a edite et non ordoner par num_regl
             if(args.typeDate && args.date && !args.statut && !args.domaine && !args.numenv && !args.numregl && !args.numpol && !args.nomtotal && !args.numreglStart && !args.numreglEnd ){
-                
+                let l=null;
                 switch(args.typeDate){
                     case "date_naiss":
                         
-                        return dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],
+                         l=await dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],
                             where:{
                                 date_naiss:args.date,
                             },offset:args.offset,limit:args.limit
@@ -77,6 +77,11 @@ export const pubsub = new PubSub();
                                 infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                             dispo.infoSurRgt=infosurrgt;
                                             dispo.etat=checkRdvDate(dispo);
+                                            if(typeof dispo.etat == "undefined")
+                                                dispo.etat={
+                                                    nbj:-1,
+                                                    alerte:"ERROR"
+                                                    };
                                             return dispo;
                                         })
                                     );
@@ -97,12 +102,12 @@ export const pubsub = new PubSub();
                                 //console.dir(nd);
                                  return nd;
                             });
-                     
+                            return l;
                 
                    
                     case "date_depot_treso":
                     
-                    return dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
+                     l=await dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
                             date_depot_treso:args.date,
                             
                         },offset:args.offset,limit:args.limit}).then((res)=>{
@@ -118,6 +123,11 @@ export const pubsub = new PubSub();
                                 infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                             dispo.infoSurRgt=infosurrgt;
                                             dispo.etat=checkRdvDate(dispo);
+                                            if(typeof dispo.etat == "undefined")
+                                                dispo.etat={
+                                                    nbj:-1,
+                                                    alerte:"ERROR"
+                                                    };
                                             return dispo;
                                         })
                                     );
@@ -138,9 +148,9 @@ export const pubsub = new PubSub();
                                 //console.dir(nd);
                                  return nd;
                             });
-                   
+                            return l;
                     case "date_sort_treso":
-                    return dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
+                    l= await dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
                             date_sort_treso:args.date,
                             
                         },offset:args.offset,limit:args.limit}).then((res)=>{
@@ -156,6 +166,11 @@ export const pubsub = new PubSub();
                                 infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                             dispo.infoSurRgt=infosurrgt;
                                             dispo.etat=checkRdvDate(dispo);
+                                            if(typeof dispo.etat == "undefined")
+                                                dispo.etat={
+                                                    nbj:-1,
+                                                    alerte:"ERROR"
+                                                    };
                                             return dispo;
                                         })
                                     );
@@ -176,9 +191,9 @@ export const pubsub = new PubSub();
                                 //console.dir(nd);
                                  return nd;
                             });
-                    
+                            return l;
                     case "date_depot_sign":
-                    return dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
+                    l= await dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
                             date_depot_sign:args.date,
                            
                         },offset:args.offset,limit:args.limit}).then((res)=>{
@@ -194,6 +209,11 @@ export const pubsub = new PubSub();
                                 infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                             dispo.infoSurRgt=infosurrgt;
                                             dispo.etat=checkRdvDate(dispo);
+                                            if(typeof dispo.etat == "undefined")
+                                                dispo.etat={
+                                                    nbj:-1,
+                                                    alerte:"ERROR"
+                                                    };
                                             return dispo;
                                         })
                                     );
@@ -214,9 +234,9 @@ export const pubsub = new PubSub();
                                 //console.dir(nd);
                                  return nd;
                             });
-                    
+                            return l;
                     case "date_recep_sign_reg":
-                    return dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
+                     l=await dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
                             date_recep_sign_reg:args.date,
                             
                         },offset:args.offset,limit:args.limit}).then((res)=>{
@@ -232,6 +252,11 @@ export const pubsub = new PubSub();
                                 infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                             dispo.infoSurRgt=infosurrgt;
                                             dispo.etat=checkRdvDate(dispo);
+                                            if(typeof dispo.etat == "undefined")
+                                                dispo.etat={
+                                                    nbj:-1,
+                                                    alerte:"ERROR"
+                                                    };
                                             return dispo;
                                         })
                                     );
@@ -253,9 +278,9 @@ export const pubsub = new PubSub();
                                 
                                  return nd;
                             });
-                    
+                            return l;
                     case "date_retrait_reg":
-                    return dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
+                    l= await dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
                             date_retrait_reg:args.date,
                             
                     },offset:args.offset,limit:args.limit}).then((res)=>{
@@ -271,6 +296,11 @@ export const pubsub = new PubSub();
                                 infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                             dispo.infoSurRgt=infosurrgt;
                                             dispo.etat=checkRdvDate(dispo);
+                                            if(typeof dispo.etat == "undefined")
+                                                dispo.etat={
+                                                    nbj:-1,
+                                                    alerte:"ERROR"
+                                                    };
                                             return dispo;
                                         })
                                     );
@@ -292,9 +322,9 @@ export const pubsub = new PubSub();
                                 
                                  return nd;
                             });
-
+                            return l;
                             case "dateRDV":
-                            return dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
+                            l= await dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
                                     dateRDV:args.date,
                                     
                             },offset:args.offset,limit:args.limit}).then((res)=>{
@@ -310,6 +340,11 @@ export const pubsub = new PubSub();
                                         infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                                     dispo.infoSurRgt=infosurrgt;
                                                     dispo.etat=checkRdvDate(dispo);
+                                                    if(typeof dispo.etat == "undefined")
+                                                dispo.etat={
+                                                    nbj:-1,
+                                                    alerte:"ERROR"
+                                                    };
                                                     return dispo;
                                                 })
                                             );
@@ -330,13 +365,15 @@ export const pubsub = new PubSub();
                                         //console.dir(nd);
                                         
                                          return nd;
-                                    });  
+                                    }); 
+                                    return l; 
                 }
                 
             }else if(args.typeDate && args.date && args.statut && !args.domaine && !args.numenv && !args.numregl && !args.numpol && !args.nomtotal && !args.numreglStart && !args.numreglEnd){
+                let l=null;
                 switch(args.typeDate){
                     case "date_naiss":
-                    return dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
+                    l= await dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
                             date_naiss:args.date,
                             statut_reg_retirer:args.statut
                         },offset:args.offset,limit:args.limit}).then((res)=>{
@@ -352,6 +389,11 @@ export const pubsub = new PubSub();
                                 infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                             dispo.infoSurRgt=infosurrgt;
                                             dispo.etat=checkRdvDate(dispo);
+                                            if(typeof dispo.etat == "undefined")
+                                                dispo.etat={
+                                                    nbj:-1,
+                                                    alerte:"ERROR"
+                                                    };
                                             return dispo;
                                         })
                                     );
@@ -373,9 +415,9 @@ export const pubsub = new PubSub();
                                 
                                  return nd;
                             });
-
+                            return l;
                     case "date_depot_treso":
-                    return dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
+                     l=await dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
                             date_depot_treso:args.date,
                             statut_reg_retirer:args.statut
                         },offset:args.offset,limit:args.limit}).then((res)=>{
@@ -391,6 +433,11 @@ export const pubsub = new PubSub();
                                 infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                             dispo.infoSurRgt=infosurrgt;
                                             dispo.etat=checkRdvDate(dispo);
+                                            if(typeof dispo.etat == "undefined")
+                                                dispo.etat={
+                                                    nbj:-1,
+                                                    alerte:"ERROR"
+                                                    };
                                             return dispo;
                                         })
                                     );
@@ -412,9 +459,9 @@ export const pubsub = new PubSub();
                                 
                                  return nd;
                             });
-                   
+                            return l;
                     case "date_sort_treso":
-                    return dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
+                     l=await dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
                             date_sort_treso:args.date,
                              statut_reg_retirer:args.statut
                         },offset:args.offset,limit:args.limit}).then((res)=>{
@@ -430,6 +477,11 @@ export const pubsub = new PubSub();
                                 infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                             dispo.infoSurRgt=infosurrgt;
                                             dispo.etat=checkRdvDate(dispo);
+                                            if(typeof dispo.etat == "undefined")
+                                                dispo.etat={
+                                                    nbj:-1,
+                                                    alerte:"ERROR"
+                                                    };
                                             return dispo;
                                         })
                                     );
@@ -451,9 +503,9 @@ export const pubsub = new PubSub();
                                 
                                  return nd;
                             });
-                    
+                            return l;
                     case "date_depot_sign":
-                    return dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
+                     l=await dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
                             date_depot_sign:args.date,
                            statut_reg_retirer:args.statut 
                         },offset:args.offset,limit:args.limit}).then((res)=>{
@@ -469,6 +521,11 @@ export const pubsub = new PubSub();
                                 infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                             dispo.infoSurRgt=infosurrgt;
                                             dispo.etat=checkRdvDate(dispo);
+                                            if(typeof dispo.etat == "undefined")
+                                                dispo.etat={
+                                                    nbj:-1,
+                                                    alerte:"ERROR"
+                                                    };
                                             return dispo;
                                         })
                                     );
@@ -490,9 +547,9 @@ export const pubsub = new PubSub();
                                 
                                  return nd;
                             });
-                    
+                            return l;
                     case "date_recep_sign_reg":
-                    return dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
+                    l= await dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
                             date_recep_sign_reg:args.date,
                             statut_reg_retirer:args.statut 
                         },offset:args.offset,limit:args.limit}).then((res)=>{
@@ -508,6 +565,11 @@ export const pubsub = new PubSub();
                                 infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                             dispo.infoSurRgt=infosurrgt;
                                             dispo.etat=checkRdvDate(dispo);
+                                            if(typeof dispo.etat == "undefined")
+                                                dispo.etat={
+                                                    nbj:-1,
+                                                    alerte:"ERROR"
+                                                    };
                                             return dispo;
                                         })
                                     );
@@ -529,9 +591,9 @@ export const pubsub = new PubSub();
                                 
                                  return nd;
                             });
-                    
+                            return l;
                     case "date_retrait_reg":
-                    return dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
+                     l=await dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
                             date_retrait_reg:args.date,
                              statut_reg_retirer:args.statut
                         },offset:args.offset,limit:args.limit}).then((res)=>{
@@ -547,6 +609,11 @@ export const pubsub = new PubSub();
                                 infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                             dispo.infoSurRgt=infosurrgt;
                                             dispo.etat=checkRdvDate(dispo);
+                                            if(typeof dispo.etat == "undefined")
+                                                dispo.etat={
+                                                    nbj:-1,
+                                                    alerte:"ERROR"
+                                                    };
                                             return dispo;
                                         })
                                     );
@@ -568,9 +635,9 @@ export const pubsub = new PubSub();
                                 
                                  return nd;
                             });
-
+                            return l;
                             case "dateRDV":
-                            return dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
+                             l=await dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
                                      dateRDV:args.date,
                                      statut_reg_retirer:args.statut
                                 },offset:args.offset,limit:args.limit}).then((res)=>{
@@ -586,6 +653,11 @@ export const pubsub = new PubSub();
                                         infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                                     dispo.infoSurRgt=infosurrgt;
                                                     dispo.etat=checkRdvDate(dispo);
+                                                    if(typeof dispo.etat == "undefined")
+                                                dispo.etat={
+                                                    nbj:-1,
+                                                    alerte:"ERROR"
+                                                    };
                                                     return dispo;
                                                 })
                                             );
@@ -607,14 +679,15 @@ export const pubsub = new PubSub();
                                         
                                          return nd;
                                     });
-                    
+                                    return l;
                 }
                 
             }else if(args.typeDate && args.date  && args.statut && args.domaine && !args.numenv && !args.numregl && !args.numpol && !args.nomtotal && !args.numreglStart && !args.numreglEnd){
                 console.log(args.typeDate);
+                let l=null;
                 switch(args.typeDate){
                     case "date_naiss":
-                    return dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
+                    l= await dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
                             date_naiss:args.date,
                             statut_reg_retirer:args.statut,
                             domaine:args.domaine
@@ -631,6 +704,11 @@ export const pubsub = new PubSub();
                                 infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                             dispo.infoSurRgt=infosurrgt;
                                             dispo.etat=checkRdvDate(dispo);
+                                            if(typeof dispo.etat == "undefined")
+                                                dispo.etat={
+                                                    nbj:-1,
+                                                    alerte:"ERROR"
+                                                    };
                                             return dispo;
                                         })
                                     );
@@ -651,9 +729,9 @@ export const pubsub = new PubSub();
                                 //console.dir(nd);
                                  return nd;
                             });
-                       
+                            return l;
                     case "date_depot_treso":
-                    return dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
+                     l=await dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
                             date_depot_treso:args.date,
                             statut_reg_retirer:args.statut,
                             domaine:args.domaine
@@ -670,6 +748,11 @@ export const pubsub = new PubSub();
                                 infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                             dispo.infoSurRgt=infosurrgt;
                                             dispo.etat=checkRdvDate(dispo);
+                                            if(typeof dispo.etat == "undefined")
+                                                dispo.etat={
+                                                    nbj:-1,
+                                                    alerte:"ERROR"
+                                                    };
                                             return dispo;
                                         })
                                     );
@@ -690,9 +773,9 @@ export const pubsub = new PubSub();
                                 //console.dir(nd);
                                  return nd;
                             });
-                           
+                            return l; 
                     case "date_sort_treso":
-                   return dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
+                    l= await dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
                             date_sort_treso:args.date,
                              statut_reg_retirer:args.statut,
                              domaine:args.domaine
@@ -709,6 +792,11 @@ export const pubsub = new PubSub();
                                 infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                             dispo.infoSurRgt=infosurrgt;
                                             dispo.etat=checkRdvDate(dispo);
+                                            if(typeof dispo.etat == "undefined")
+                                                dispo.etat={
+                                                    nbj:-1,
+                                                    alerte:"ERROR"
+                                                    };
                                             return dispo;
                                         })
                                     );
@@ -729,9 +817,9 @@ export const pubsub = new PubSub();
                                 //console.dir(nd);
                                  return nd;
                             });
-                           
+                            return l;  
                     case "date_depot_sign":
-                    return dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
+                     l=await dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
                             date_depot_sign:args.date,
                            statut_reg_retirer:args.statut ,
                            domaine:args.domaine
@@ -748,6 +836,11 @@ export const pubsub = new PubSub();
                                 infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                             dispo.infoSurRgt=infosurrgt;
                                             dispo.etat=checkRdvDate(dispo);
+                                            if(typeof dispo.etat == "undefined")
+                                                dispo.etat={
+                                                    nbj:-1,
+                                                    alerte:"ERROR"
+                                                    };
                                             return dispo;
                                         })
                                     );
@@ -768,9 +861,9 @@ export const pubsub = new PubSub();
                                 //console.dir(nd);
                                  return nd;
                             });
-                           
+                            return l; 
                     case "date_recep_sign_reg":
-                    return dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
+                     l=await dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
                             date_recep_sign_reg:args.date,
                             statut_reg_retirer:args.statut ,
                             domaine:args.domaine
@@ -787,6 +880,11 @@ export const pubsub = new PubSub();
                                 infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                             dispo.infoSurRgt=infosurrgt;
                                             dispo.etat=checkRdvDate(dispo);
+                                            if(typeof dispo.etat == "undefined")
+                                                dispo.etat={
+                                                    nbj:-1,
+                                                    alerte:"ERROR"
+                                                    };
                                             return dispo;
                                         })
                                     );
@@ -807,10 +905,10 @@ export const pubsub = new PubSub();
                                 //console.dir(nd);
                                  return nd;
                             });
-                            
+                            return l;   
                     
                     case "date_retrait_reg":
-                    return dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
+                     l=await dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
                             date_retrait_reg:args.date,
                              statut_reg_retirer:args.statut,
                              domaine:args.domaine
@@ -827,6 +925,11 @@ export const pubsub = new PubSub();
                                 infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                             dispo.infoSurRgt=infosurrgt;
                                             dispo.etat=checkRdvDate(dispo);
+                                            if(typeof dispo.etat == "undefined")
+                                                dispo.etat={
+                                                    nbj:-1,
+                                                    alerte:"ERROR"
+                                                    };
                                             return dispo;
                                         })
                                     );
@@ -848,9 +951,9 @@ export const pubsub = new PubSub();
                             //console.dir(nd);
                              return nd;
                             });
-
+                            return l;
                             case "dateRDV":
-                            return dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
+                            l= await dispoSQL.findAll({attributes:{exclude:['id']},order:[['wnrgt','DESC']],where:{
                                      dateRDV:args.date,
                                      statut_reg_retirer:args.statut,
                                      domaine:args.domaine
@@ -867,6 +970,11 @@ export const pubsub = new PubSub();
                                         infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                                     dispo.infoSurRgt=infosurrgt;
                                                     dispo.etat=checkRdvDate(dispo);
+                                                    if(typeof dispo.etat == "undefined")
+                                                dispo.etat={
+                                                    nbj:-1,
+                                                    alerte:"ERROR"
+                                                    };
                                                     return dispo;
                                                 })
                                             );
@@ -888,12 +996,13 @@ export const pubsub = new PubSub();
                                     //console.dir(nd);
                                      return nd;
                                     });
+                                    return l;
                     
                 }
                 
             }else if(!args.typeDate && !args.date && !args.statut && !args.domaine && args.numenv && !args.numregl && !args.numpol && !args.nomtotal && !args.numreglStart && !args.numreglEnd){
-                console.log("son type est "+typeof args.numenv);
-                return dispoSQL.findAll({attributes:{exclude:['id']},where:{
+                console.log("son type est "+typeof args.numenv+"dans la requete du numero denvoi "+args.numenv);
+               let l= await dispoSQL.findAll({attributes:{exclude:['id']},where:{
                              Num_envoi:parseInt(args.numenv,10)
                         },order:[['wnrgt','DESC']],offset:args.offset,limit:args.limit}).then((res)=>{
                                 let promises=[];
@@ -908,6 +1017,11 @@ export const pubsub = new PubSub();
                                 infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                             dispo.infoSurRgt=infosurrgt;
                                             dispo.etat=checkRdvDate(dispo);
+                                            if(typeof dispo.etat == "undefined")
+                                                dispo.etat={
+                                                    nbj:-1,
+                                                    alerte:"ERROR"
+                                                    };
                                             return dispo;
                                         })
                                     );
@@ -918,9 +1032,10 @@ export const pubsub = new PubSub();
                                 console.dir(dispos);
                                 return dispos;
                             });
+                            return l;
             }else if(!args.typeDate && !args.date && !args.statut && !args.domaine && !args.numenv && args.numregl && !args.numpol && !args.nomtotal && !args.numreglStart && !args.numreglEnd){
                 console.log("son type est "+typeof args.numregl);
-                return dispoSQL.findAll({attributes:{exclude:['id']},where:{
+               let l= await dispoSQL.findAll({attributes:{exclude:['id']},where:{
                              wnrgt:parseInt(args.numregl,10)
                         },offset:args.offset,limit:args.limit}).then((res)=>{
                                 let promises=[];
@@ -935,6 +1050,11 @@ export const pubsub = new PubSub();
                                 infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                             dispo.infoSurRgt=infosurrgt;
                                             dispo.etat=checkRdvDate(dispo);
+                                            if(typeof dispo.etat == "undefined")
+                                                dispo.etat={
+                                                    nbj:-1,
+                                                    alerte:"ERROR"
+                                                    };
                                             return dispo;
                                         })
                                     );
@@ -945,8 +1065,9 @@ export const pubsub = new PubSub();
                                 console.dir(dispos);
                                 return dispos;
                             });
+                            return l;
             }else if(!args.typeDate && !args.date && !args.statut && !args.domaine && !args.numenv && !args.numregl && args.numpol && !args.nomtotal && !args.numreglStart && !args.numreglEnd){
-                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
+                let l=await dispoSQL.findAll({attributes:{exclude:['id']},where:{
                              wnupo:args.numpol
                         },offset:args.offset,limit:args.limit}).then((res)=>{
                                 let promises=[];
@@ -961,6 +1082,11 @@ export const pubsub = new PubSub();
                                 infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                             dispo.infoSurRgt=infosurrgt;
                                             dispo.etat=checkRdvDate(dispo);
+                                            if(typeof dispo.etat == "undefined")
+                                                dispo.etat={
+                                                    nbj:-1,
+                                                    alerte:"ERROR"
+                                                    };
                                             return dispo;
                                         })
                                     );
@@ -971,8 +1097,9 @@ export const pubsub = new PubSub();
                               //  console.dir(dispos);
                                 return dispos;
                             });
+                            return l;
             }else if(!args.typeDate && !args.date && !args.statut && !args.domaine && !args.numenv && !args.numregl && !args.numpol && args.nomtotal && !args.numreglStart && !args.numreglEnd){
-                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
+               let l= await dispoSQL.findAll({attributes:{exclude:['id']},where:{
                              nom_beneficiaire:{
                                     $like:'%'+args.nomtotal+'%'
                                  }
@@ -987,6 +1114,11 @@ export const pubsub = new PubSub();
                                             dispo=r.toJSON();
                                             dispo.infoSurRgt=infosurrgt;
                                             dispo.etat=checkRdvDate(dispo);
+                                            if(typeof dispo.etat == "undefined")
+                                                dispo.etat={
+                                                    nbj:-1,
+                                                    alerte:"ERROR"
+                                                    };
                                             return dispo;
                                         })
                                     );
@@ -997,9 +1129,10 @@ export const pubsub = new PubSub();
                                // console.dir(dispos);
                                 return dispos;
                             });
+                            return l;
             }
             else if(!args.typeDate && !args.date && args.statut && !args.domaine && !args.numenv && !args.numregl && !args.numpol && !args.nomtotal && !args.numreglStart && !args.numreglEnd){
-                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
+               let l= await dispoSQL.findAll({attributes:{exclude:['id']},where:{
                              statut_reg_retirer:args.statut
                         },offset:args.offset,limit:args.limit}).then((res)=>{
                                 let promises=[];
@@ -1014,6 +1147,11 @@ export const pubsub = new PubSub();
                                             infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                             dispo.infoSurRgt=infosurrgt;
                                             dispo.etat=checkRdvDate(dispo);
+                                            if(typeof dispo.etat == "undefined")
+                                                dispo.etat={
+                                                    nbj:-1,
+                                                    alerte:"ERROR"
+                                                    };
                                             return dispo;
                                         })
                                     );
@@ -1024,9 +1162,10 @@ export const pubsub = new PubSub();
                                 console.dir(dispos);
                                 return dispos;
                             });
+                            return l;
             }
             else if(!args.typeDate && !args.date && !args.statut && args.domaine && !args.numenv && !args.numregl && !args.numpol && !args.nomtotal && !args.numreglStart && !args.numreglEnd){
-               return dispoSQL.findAll({
+               let l= await dispoSQL.findAll({
                     attributes:{exclude:['id']},
                     where:{domaine:args.domaine},
                     order:[['wnrgt','DESC']],
@@ -1044,6 +1183,11 @@ export const pubsub = new PubSub();
                                 infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                 dispo.infoSurRgt=infosurrgt;
                                 dispo.etat=checkRdvDate(dispo);
+                                if(typeof dispo.etat == "undefined")
+                                                dispo.etat={
+                                                    nbj:-1,
+                                                    alerte:"ERROR"
+                                                    };
                                 return dispo;
                             })
                         );
@@ -1067,9 +1211,10 @@ export const pubsub = new PubSub();
                 
                     return nd;
                 });
+                return l;
             }
             else if(!args.typeDate && !args.date && !args.statut && !args.domaine  && !args.numenv && !args.numregl && !args.numpol && !args.nomtotal && args.numreglStart && args.numreglEnd){
-                return  dispoSQL.findAll({
+               let l= await  dispoSQL.findAll({
                     attributes:{exclude:['id']},
                     where:{
                         wnrgt:{
@@ -1091,6 +1236,11 @@ export const pubsub = new PubSub();
                                 infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                 dispo.infoSurRgt=infosurrgt;
                                 dispo.etat=checkRdvDate(dispo);
+                                if(typeof dispo.etat == "undefined")
+                                                dispo.etat={
+                                                    nbj:-1,
+                                                    alerte:"ERROR"
+                                                    };
                                 return dispo;
                             })
                         );
@@ -1114,10 +1264,11 @@ export const pubsub = new PubSub();
                 
                     return nd;
                 });
+                return l;
             }
             else{
                 //on affiche tout et on ordonne par date de la demande
-               let l=  dispoSQL.findAll({
+               let l= await dispoSQL.findAll({
                                         attributes:{exclude:['id']},
                                         order:[['wnrgt','DESC']],
                                         offset:args.offset,
@@ -1134,6 +1285,11 @@ export const pubsub = new PubSub();
                                             infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                             dispo.infoSurRgt=infosurrgt;
                                             dispo.etat=checkRdvDate(dispo);
+                                            if(typeof dispo.etat == "undefined")
+                                                dispo.etat={
+                                                    nbj:-1,
+                                                    alerte:"ERROR"
+                                                    };
                                             return dispo;
                                         })
                                     );
@@ -1192,6 +1348,11 @@ export const pubsub = new PubSub();
                                 infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                    dispo.infoSurRgt=infosurrgt;
                                    dispo.etat=checkRdvDate(dispo);
+                                   if(typeof dispo.etat == "undefined")
+                                    dispo.etat={
+                                        nbj:-1,
+                                        alerte:"ERROR"
+                                        };
                                    return dispo;
                                })
                            );
@@ -1243,6 +1404,11 @@ export const pubsub = new PubSub();
                                 infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                    dispo.infoSurRgt=infosurrgt;
                                    dispo.etat=checkRdvDate(dispo);
+                                   if(typeof dispo.etat == "undefined")
+                                    dispo.etat={
+                                        nbj:-1,
+                                        alerte:"ERROR"
+                                        };
                                    return dispo;
                                })
                            );
@@ -1295,6 +1461,11 @@ export const pubsub = new PubSub();
                                 infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                    dispo.infoSurRgt=infosurrgt;
                                    dispo.etat=checkRdvDate(dispo);
+                                   if(typeof dispo.etat == "undefined")
+                                    dispo.etat={
+                                        nbj:-1,
+                                        alerte:"ERROR"
+                                        };
                                    return dispo;
                                })
                            );
@@ -1350,6 +1521,11 @@ export const pubsub = new PubSub();
                                 infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                    dispo.infoSurRgt=infosurrgt;
                                    dispo.etat=checkRdvDate(dispo);
+                                   if(typeof dispo.etat == "undefined")
+                                    dispo.etat={
+                                        nbj:-1,
+                                        alerte:"ERROR"
+                                        };
                                    return dispo;
                                })
                            );
@@ -1400,6 +1576,11 @@ export const pubsub = new PubSub();
                                 infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                 dispo.infoSurRgt=infosurrgt;
                                 dispo.etat=checkRdvDate(dispo);
+                                if(typeof dispo.etat == "undefined")
+                                    dispo.etat={
+                                        nbj:-1,
+                                        alerte:"ERROR"
+                                        };
                                 return dispo;
                             })
                         );
@@ -1451,6 +1632,11 @@ export const pubsub = new PubSub();
                                 infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                 dispo.infoSurRgt=infosurrgt;
                                 dispo.etat=checkRdvDate(dispo);
+                                if(typeof dispo.etat == "undefined")
+                                    dispo.etat={
+                                        nbj:-1,
+                                        alerte:"ERROR"
+                                        };
                                 return dispo;
                             })
                         );
@@ -1499,6 +1685,11 @@ export const pubsub = new PubSub();
                             infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                             dispo.infoSurRgt=infosurrgt;
                             dispo.etat=checkRdvDate(dispo);
+                            if(typeof dispo.etat == "undefined")
+                                    dispo.etat={
+                                        nbj:-1,
+                                        alerte:"ERROR"
+                                        };
                             return dispo;
                         })
                     );
@@ -1550,6 +1741,11 @@ export const pubsub = new PubSub();
                                 infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                 dispo.infoSurRgt=infosurrgt;
                                 dispo.etat=checkRdvDate(dispo);
+                                if(typeof dispo.etat == "undefined")
+                                    dispo.etat={
+                                        nbj:-1,
+                                        alerte:"ERROR"
+                                        };
                                 return dispo;
                             })
                         );
@@ -1600,6 +1796,11 @@ export const pubsub = new PubSub();
                                 infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                 dispo.infoSurRgt=infosurrgt;
                                 dispo.etat=checkRdvDate(dispo);
+                                if(typeof dispo.etat == "undefined")
+                                    dispo.etat={
+                                        nbj:-1,
+                                        alerte:"ERROR"
+                                        };
                                 return dispo;
                             })
                         );
@@ -1652,6 +1853,11 @@ export const pubsub = new PubSub();
                                 infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                 dispo.infoSurRgt=infosurrgt;
                                 dispo.etat=checkRdvDate(dispo);
+                                if(typeof dispo.etat == "undefined")
+                                    dispo.etat={
+                                        nbj:-1,
+                                        alerte:"ERROR"
+                                        };
                                 return dispo;
                             })
                         );
@@ -1700,6 +1906,11 @@ export const pubsub = new PubSub();
                                 infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                 dispo.infoSurRgt=infosurrgt;
                                 dispo.etat=checkRdvDate(dispo);
+                                if(typeof dispo.etat == "undefined")
+                                    dispo.etat={
+                                        nbj:-1,
+                                        alerte:"ERROR"
+                                        };
                                 return dispo;
                             })
                         );
@@ -1752,6 +1963,11 @@ export const pubsub = new PubSub();
                                 infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                 dispo.infoSurRgt=infosurrgt;
                                 dispo.etat=checkRdvDate(dispo);
+                                if(typeof dispo.etat == "undefined")
+                                    dispo.etat={
+                                        nbj:-1,
+                                        alerte:"ERROR"
+                                        };
                                 return dispo;
                             })
                         );
@@ -1816,6 +2032,11 @@ export const pubsub = new PubSub();
                                    infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                    dispo.infoSurRgt=infosurrgt;
                                    dispo.etat=checkRdvDate(dispo);
+                                   if(typeof dispo.etat == "undefined")
+                                    dispo.etat={
+                                        nbj:-1,
+                                        alerte:"ERROR"
+                                        };
                                    return dispo;
                                })
                            );
@@ -1877,6 +2098,11 @@ export const pubsub = new PubSub();
                                 infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                    dispo.infoSurRgt=infosurrgt;
                                    dispo.etat=checkRdvDate(dispo);
+                                   if(typeof dispo.etat == "undefined")
+                                    dispo.etat={
+                                        nbj:-1,
+                                        alerte:"ERROR"
+                                        };
                                    return dispo;
                                })
                            );
@@ -1939,6 +2165,11 @@ export const pubsub = new PubSub();
                                 infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                    dispo.infoSurRgt=infosurrgt;
                                    dispo.etat=checkRdvDate(dispo);
+                                   if(typeof dispo.etat == "undefined")
+                                    dispo.etat={
+                                        nbj:-1,
+                                        alerte:"ERROR"
+                                        };
                                    return dispo;
                                })
                            );
@@ -2004,6 +2235,11 @@ export const pubsub = new PubSub();
                                     infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                    dispo.infoSurRgt=infosurrgt;
                                    dispo.etat=checkRdvDate(dispo);
+                                   if(typeof dispo.etat == "undefined")
+                                    dispo.etat={
+                                        nbj:-1,
+                                        alerte:"ERROR"
+                                        };
                                    return dispo;
                                })
                            );
@@ -2064,6 +2300,11 @@ export const pubsub = new PubSub();
                                 infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                 dispo.infoSurRgt=infosurrgt;
                                 dispo.etat=checkRdvDate(dispo);
+                                if(typeof dispo.etat == "undefined")
+                                    dispo.etat={
+                                        nbj:-1,
+                                        alerte:"ERROR"
+                                        };
                                 return dispo;
                             })
                         );
@@ -2125,6 +2366,11 @@ export const pubsub = new PubSub();
                                 infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                 dispo.infoSurRgt=infosurrgt;
                                 dispo.etat=checkRdvDate(dispo);
+                                if(typeof dispo.etat == "undefined")
+                                    dispo.etat={
+                                        nbj:-1,
+                                        alerte:"ERROR"
+                                        };
                                 return dispo;
                             })
                         );
@@ -2183,6 +2429,11 @@ export const pubsub = new PubSub();
                                 infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                 dispo.infoSurRgt=infosurrgt;
                                 dispo.etat=checkRdvDate(dispo);
+                                if(typeof dispo.etat == "undefined")
+                                    dispo.etat={
+                                        nbj:-1,
+                                        alerte:"ERROR"
+                                        };
                                 return dispo;
                             })
                         );
@@ -2241,6 +2492,11 @@ export const pubsub = new PubSub();
                             infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                             dispo.infoSurRgt=infosurrgt;
                             dispo.etat=checkRdvDate(dispo);
+                            if(typeof dispo.etat == "undefined")
+                                    dispo.etat={
+                                        nbj:-1,
+                                        alerte:"ERROR"
+                                        };
                             return dispo;
                         })
                     );
@@ -2302,6 +2558,11 @@ export const pubsub = new PubSub();
                                 infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                 dispo.infoSurRgt=infosurrgt;
                                 dispo.etat=checkRdvDate(dispo);
+                                if(typeof dispo.etat == "undefined")
+                                    dispo.etat={
+                                        nbj:-1,
+                                        alerte:"ERROR"
+                                        };
                                 return dispo;
                             })
                         );
@@ -2362,6 +2623,11 @@ export const pubsub = new PubSub();
                                 infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                 dispo.infoSurRgt=infosurrgt;
                                 dispo.etat=checkRdvDate(dispo);
+                                if(typeof dispo.etat == "undefined")
+                                    dispo.etat={
+                                        nbj:-1,
+                                        alerte:"ERROR"
+                                        };
                                 return dispo;
                             })
                         );
@@ -2424,6 +2690,11 @@ export const pubsub = new PubSub();
                                 infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                 dispo.infoSurRgt=infosurrgt;
                                 dispo.etat=checkRdvDate(dispo);
+                                if(typeof dispo.etat == "undefined")
+                                    dispo.etat={
+                                        nbj:-1,
+                                        alerte:"ERROR"
+                                        };
                                 return dispo;
                             })
                         );
@@ -2481,6 +2752,11 @@ export const pubsub = new PubSub();
                                 infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
                                 dispo.infoSurRgt=infosurrgt;
                                 dispo.etat=checkRdvDate(dispo);
+                                if(typeof dispo.etat == "undefined")
+                                    dispo.etat={
+                                        nbj:-1,
+                                        alerte:"ERROR"
+                                        };
                                 return dispo;
                             })
                         );
@@ -2534,6 +2810,11 @@ export const pubsub = new PubSub();
                                             dispo=r.toJSON();
                                             dispo.infoSurRgt=infosurrgt;
                                             dispo.etat=checkRdvDate(dispo);
+                                            if(typeof dispo.etat == "undefined")
+                                                dispo.etat={
+                                                    nbj:-1,
+                                                    alerte:"ERROR"
+                                                    };
                                             return dispo;
                                         })
                                     );
@@ -2580,6 +2861,11 @@ export const pubsub = new PubSub();
                                             dispo=r.toJSON();
                                             dispo.infoSurRgt=infosurrgt;
                                             dispo.etat=checkRdvDate(dispo);
+                                            if(typeof dispo.etat == "undefined")
+                                                dispo.etat={
+                                                    nbj:-1,
+                                                    alerte:"ERROR"
+                                                    };
                                             return dispo;
                                         })
                                     );
@@ -2626,6 +2912,11 @@ export const pubsub = new PubSub();
                                             dispo=r.toJSON();
                                             dispo.infoSurRgt=infosurrgt;
                                             dispo.etat=checkRdvDate(dispo);
+                                            if(typeof dispo.etat == "undefined")
+                                                dispo.etat={
+                                                    nbj:-1,
+                                                    alerte:"ERROR"
+                                                    };
                                             return dispo;
                                         })
                                     );
@@ -2672,6 +2963,11 @@ export const pubsub = new PubSub();
                                             dispo=r.toJSON();
                                             dispo.infoSurRgt=infosurrgt;
                                             dispo.etat=checkRdvDate(dispo);
+                                            if(typeof dispo.etat == "undefined")
+                                                dispo.etat={
+                                                    nbj:-1,
+                                                    alerte:"ERROR"
+                                                    };
                                             return dispo;
                                         })
                                     );
@@ -2718,6 +3014,11 @@ export const pubsub = new PubSub();
                                             dispo=r.toJSON();
                                             dispo.infoSurRgt=infosurrgt;
                                             dispo.etat=checkRdvDate(dispo);
+                                            if(typeof dispo.etat == "undefined")
+                                                dispo.etat={
+                                                    nbj:-1,
+                                                    alerte:"ERROR"
+                                                    };
                                             return dispo;
                                         })
                                     );
@@ -2764,6 +3065,11 @@ export const pubsub = new PubSub();
                                             dispo=r.toJSON();
                                             dispo.infoSurRgt=infosurrgt;
                                             dispo.etat=checkRdvDate(dispo);
+                                            if(typeof dispo.etat == "undefined")
+                                                dispo.etat={
+                                                    nbj:-1,
+                                                    alerte:"ERROR"
+                                                    };
                                             return dispo;
                                         })
                                     );
@@ -2810,6 +3116,11 @@ export const pubsub = new PubSub();
                                             dispo=r.toJSON();
                                             dispo.infoSurRgt=infosurrgt;
                                             dispo.etat=checkRdvDate(dispo);
+                                            if(typeof dispo.etat == "undefined")
+                                                dispo.etat={
+                                                    nbj:-1,
+                                                    alerte:"ERROR"
+                                                    };
                                             return dispo;
                                         })
                                     );
@@ -2860,6 +3171,11 @@ export const pubsub = new PubSub();
                                             dispo=r.toJSON();
                                             dispo.infoSurRgt=infosurrgt;
                                             dispo.etat=checkRdvDate(dispo);
+                                            if(typeof dispo.etat == "undefined")
+                                                dispo.etat={
+                                                    nbj:-1,
+                                                    alerte:"ERROR"
+                                                    };
                                             return dispo;
                                         })
                                     );
@@ -2907,6 +3223,11 @@ export const pubsub = new PubSub();
                                             dispo=r.toJSON();
                                             dispo.infoSurRgt=infosurrgt;
                                             dispo.etat=checkRdvDate(dispo);
+                                            if(typeof dispo.etat == "undefined")
+                                                dispo.etat={
+                                                    nbj:-1,
+                                                    alerte:"ERROR"
+                                                    };
                                             return dispo;
                                         })
                                     );
@@ -2954,6 +3275,11 @@ export const pubsub = new PubSub();
                                             dispo=r.toJSON();
                                             dispo.infoSurRgt=infosurrgt;
                                             dispo.etat=checkRdvDate(dispo);
+                                            if(typeof dispo.etat == "undefined")
+                                                dispo.etat={
+                                                    nbj:-1,
+                                                    alerte:"ERROR"
+                                                    };
                                             return dispo;
                                         })
                                     );
@@ -3001,6 +3327,11 @@ export const pubsub = new PubSub();
                                             dispo=r.toJSON();
                                             dispo.infoSurRgt=infosurrgt;
                                             dispo.etat=checkRdvDate(dispo);
+                                            if(typeof dispo.etat == "undefined")
+                                                dispo.etat={
+                                                    nbj:-1,
+                                                    alerte:"ERROR"
+                                                    };
                                             return dispo;
                                         })
                                     );
@@ -3048,6 +3379,11 @@ export const pubsub = new PubSub();
                                             dispo=r.toJSON();
                                             dispo.infoSurRgt=infosurrgt;
                                             dispo.etat=checkRdvDate(dispo);
+                                            if(typeof dispo.etat == "undefined")
+                                                dispo.etat={
+                                                    nbj:-1,
+                                                    alerte:"ERROR"
+                                                    };
                                             return dispo;
                                         })
                                     );
@@ -3095,6 +3431,11 @@ export const pubsub = new PubSub();
                                             dispo=r.toJSON();
                                             dispo.infoSurRgt=infosurrgt;
                                             dispo.etat=checkRdvDate(dispo);
+                                            if(typeof dispo.etat == "undefined")
+                                                dispo.etat={
+                                                    nbj:-1,
+                                                    alerte:"ERROR"
+                                                    };
                                             return dispo;
                                         })
                                     );
@@ -3142,6 +3483,11 @@ export const pubsub = new PubSub();
                                             dispo=r.toJSON();
                                             dispo.infoSurRgt=infosurrgt;
                                             dispo.etat=checkRdvDate(dispo);
+                                            if(typeof dispo.etat == "undefined")
+                                                dispo.etat={
+                                                    nbj:-1,
+                                                    alerte:"ERROR"
+                                                    };
                                             return dispo;
                                         })
                                     );

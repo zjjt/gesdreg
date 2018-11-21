@@ -118,7 +118,7 @@ class ModRegForm extends Component{
                                 
                         // alert( );
                             console.dir(values);
-                            Meteor.call('updateDispos',values,this.props.regSelected,(err)=>{
+                            Meteor.call('updateDispos',values,this.props.regSelected,this.props.numenv,(err)=>{
                                 if(err){
                                     console.dir(err);
                                     if(err.error==="bad-date"){

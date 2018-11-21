@@ -115,7 +115,7 @@ export default class MainLayoutOff extends Component{
 						{content()}
 						</section>
 						<footer>
-							GESDREG v.1.0.0 &copy; Nsia Vie Assurances tous droits réservés. 
+							GESDREG v.1.5.0 &copy; Nsia Vie Assurances tous droits réservés. 
 						</footer>
 					</div>
 				</MuiThemeProvider>	
