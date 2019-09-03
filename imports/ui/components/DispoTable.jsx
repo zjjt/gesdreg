@@ -85,7 +85,7 @@ class DispoTable extends Component{
             
         }
         componentDidMount(){
-            $('.tableau').parent().css("width","7017px");
+            $('.tableau').parent().css("width","6762px");
             setInterval(()=>{
                 Bert.alert({
                     title: 'Informations',
@@ -187,6 +187,7 @@ class DispoTable extends Component{
                                 this.setState({
                                     errorMsg:"La mise à jour a échoué."
                                     });
+                                    console.log("La mise à jour a échoué.");
                                 this._dialogOpen();
                             }
                     });
@@ -459,14 +460,13 @@ DispoTable.propTypes={
     numregl:PropTypes.number
     
 };
-
+//Rajouter Num_envoi pour le pqssqge en production
 const listeDisponibilities=gql`
     query listeDisponibilities($typeDate:String,$date:String,$statut:String,$domaine:String,$numenv:Int,$numregl:Int,$numpol:Int,$nomtotal:String,$numreglStart:Int,$numreglEnd:Int,$offset:Int,$limit:Int){
         listeDispo(typeDate:$typeDate,date:$date,statut:$statut,domaine:$domaine,numenv:$numenv,numregl:$numregl,numpol:$numpol,nomtotal:$nomtotal,numreglStart:$numreglStart,numreglEnd:$numreglEnd,offset:$offset,limit:$limit){
             wasrg
             wnrgt
             wnupo
-            Num_envoi
             nom_beneficiaire
             date_naiss
             date_depot_treso
@@ -477,6 +477,7 @@ const listeDisponibilities=gql`
             statut_reg_retirer
             domaine
             dateRDV
+            Num_envoi
             Comments
             CommentsBank
             redac

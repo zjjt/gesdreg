@@ -167,6 +167,7 @@ class ConsultDispoTable extends Component{
                                 <TableHeaderColumn tooltip="Etat d'avancement et suivi interne des délais de traitement du règlement">Suivi du règlement</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Numéro du bénéficiaire">Bénéficiaire No</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Numéro de règlement">Règlement No</TableHeaderColumn>
+                                <TableHeaderColumn tooltip="Mode de règlement">Mode de règlement</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Numéro de police">Police</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Numéro de décompte">Décompte No</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Type de prestations">Type de prestations</TableHeaderColumn>
@@ -247,6 +248,7 @@ class ConsultDispoTable extends Component{
                                                 <TableRowColumn>{etat}</TableRowColumn>
                                                 <TableRowColumn>{row.wasrg}</TableRowColumn>
                                                 <TableRowColumn>{row.wnrgt}</TableRowColumn>
+                                                <TableRowColumn>{row.MRGGT}</TableRowColumn>
                                                 <TableRowColumn>{row.wnupo}</TableRowColumn>
                                                 <TableRowColumn>{row.infoSurRgt[0]?row.infoSurRgt[0].DECOMPTE:"NON DEFINI"}</TableRowColumn>
                                                 <TableRowColumn>{typeSinistre!=""?typeSinistre:"NON DEFINI"}</TableRowColumn>

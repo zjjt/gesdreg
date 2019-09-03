@@ -20,7 +20,8 @@ DBSQL.authenticate().then(()=>{
 DBSQLSERVER.sync();
 DBSQLSERVER.authenticate().then(()=>{
     console.log('Connection MsSql etablie');
-}).catch(()=>{
+}).catch((e)=>{
+    console.dir(e);
     console.log('Impossible de se connecter a MsSql,veuillez reverifier');
 });
 
