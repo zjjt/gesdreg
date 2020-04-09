@@ -10,6 +10,18 @@ module.exports = function(sequelize, DataTypes) {
       type: "NUMERIC",
       allowNull: true
     },
+    wnupo: {
+      type: "NUMERIC",
+      allowNull: true
+    },
+    cheque: {
+      type: "NUMERIC",
+      allowNull: true
+    },
+    Num_envoi: {
+      type: "NUMERIC",
+      allowNull: true
+    },
     date_depot_treso: {
       type: DataTypes.DATE,
       allowNull: true
@@ -39,6 +51,14 @@ module.exports = function(sequelize, DataTypes) {
       allowNull: true
     },
     redac: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    banque: {
+      type: DataTypes.STRING,
+      allowNull: true
+    },
+    Comments: {
       type: DataTypes.STRING,
       allowNull: true
     }

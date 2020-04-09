@@ -69,7 +69,7 @@ FlowRouter.route('/dashboard/consult_dispo',{
 	}],
 	action(){
 		mount(MainLayout,
-			{content:()=><ConsultDispo userRole={Session.get("userRole")}/>})
+			{content:()=><ConsultDispo userRole={Session.get("userRole")} banque={Session.get("banque")}/>})
 	}
 });
 FlowRouter.route('/dashboard/list_dispo',{

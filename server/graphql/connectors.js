@@ -172,7 +172,23 @@ const regDispoModel=DBSQLSERVER.define('regdispo',{
       type: Sequelize.INTEGER,
       allowNull: true,
       field: 'Num_envoi'
-    },    
+    }, 
+    banque: {
+      type: Sequelize.STRING,
+      allowNull: true,
+      field: 'banque'
+    }, 
+    Comments: {
+      type: Sequelize.STRING,
+      allowNull: true,
+      field: 'Comments'
+    }, 
+    cheque: {
+      type: Sequelize.INTEGER,
+      allowNull: true,
+      field: 'cheque'
+    },   
+      
 },{
     schema:'exp',
     timestamps:false,

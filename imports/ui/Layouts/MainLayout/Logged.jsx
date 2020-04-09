@@ -56,7 +56,9 @@ import {Session} from 'meteor/session';
                 {
                     store.dispatch(userconnected(data.user[0]));
                     Session.set("userRole",data.user[0].role);
+                    Session.set("banque",data.user[0].prenoms);
                     Session.set("canshow",true);
+                    console.log("contenu de data");
                     console.dir(data);
 
                     if(data.user[0].role==="B"){

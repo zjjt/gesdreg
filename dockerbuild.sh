@@ -2,7 +2,7 @@
 
 set -e
 
-CONTAINER=gesdregtest #gesdregofficial	# <-- Name your container
+CONTAINER=gesdregofficial	# <-- Name your container
 TAG=latest									# <-- Tag for your container
 REGISTRY=false								# <-- If you use other then github repo
 BUILD_DIR=${PWD}/.build			# <-- This is where meteor build your files.

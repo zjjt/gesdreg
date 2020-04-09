@@ -57,6 +57,32 @@
 # volumes:
 #   data:
 # TEST COMPOSE
+# version: '2.0'
+
+# services:
+#   mongo:
+#     container_name: gesdregTestMongo
+#     image: mongo:latest 
+#     restart: always
+#   gesdreg:
+#     container_name: gesdregAppTest
+#     hostname: gesdregtest.app
+#     restart: always
+#     image: gesdregtest:latest
+#     ports:
+#       - 85:3000
+#     links:
+#       - mongo
+#     environment:
+#       APP: gesdreg
+#       ROOT_URL: http://gesdregtest.app
+#       MONGO_URL: mongodb://mongo:27017/meteor
+#       # MONGO_OPLOG_URL: mongodb://USERNAME:PASSWORD@mongo:27017/local
+#       # MAIL_URL: smtp://info@meteor.click:PASSWORD@mail.server.net:465/
+#       NODE_ENV: production
+#       PORT: 3000
+#       METEOR_SETTINGS: '{"DBSQLSERVER_HOST":"10.10.3.70", "DBSQLSERVER_PORT":"63960", "DBSQLSERVER_USER":"reportvie", "DBSQLSERVER_PASSWORD":"reportvie","DBSQLSERVER_DATABASE":"SUNDB_RCI","ADMINLOGMDP":"Nsia@RGT2018","ADMINMAIL":"thibaut.zehi@groupensia.com","RUNMAJ":"00 12 * * *"}' # paste meteor settings.json here in one line!
+# PROD COMPOSE
 version: '2.0'
 
 services:
@@ -65,44 +91,20 @@ services:
     restart: always
   gesdreg:
     container_name: gesdregApp
-    hostname: gesdregtest.app
+    hostname: gesdreg.app
     restart: always
-    image: gesdregtest:latest
+    image: gesdregofficial:latest
     ports:
       - 85:3000
     links:
       - mongo
     environment:
       APP: gesdreg
-      ROOT_URL: http://gesdregtest.app
+      ROOT_URL: http://gesdreg.app
       MONGO_URL: mongodb://mongo:27017/meteor
       # MONGO_OPLOG_URL: mongodb://USERNAME:PASSWORD@mongo:27017/local
       # MAIL_URL: smtp://info@meteor.click:PASSWORD@mail.server.net:465/
       NODE_ENV: production
       PORT: 3000
-      METEOR_SETTINGS: '{"DBSQLSERVER_HOST":"10.10.3.70", "DBSQLSERVER_PORT":"63960", "DBSQLSERVER_USER":"reportvie", "DBSQLSERVER_PASSWORD":"reportvie","DBSQLSERVER_DATABASE":"SUNDB_RCI","ADMINLOGMDP":"Nsia@RGT2018","ADMINMAIL":"thibaut.zehi@groupensia.com","RUNMAJ":"00 12 * * *"}' # paste meteor settings.json here in one line!
-# PROD COMPOSE
-# version: '2.0'
-
-# services:
-#   mongo:
-#     image: mongo:latest 
-#     restart: always
-#   gesdreg:
-#     container_name: gesdregApp
-#     hostname: gesdreg.app
-#     restart: always
-#     image: gesdregofficial:latest
-#     ports:
-#       - 82:3000
-#     links:
-#       - mongo
-#     environment:
-#       APP: gesdreg
-#       ROOT_URL: http://gesdreg.app
-#       MONGO_URL: mongodb://mongo:27017/meteor
-#       # MONGO_OPLOG_URL: mongodb://USERNAME:PASSWORD@mongo:27017/local
-#       # MAIL_URL: smtp://info@meteor.click:PASSWORD@mail.server.net:465/
-#       NODE_ENV: production
-#       PORT: 3000
-#       METEOR_SETTINGS: '{"DBSQLSERVER_HOST":"10.8.3.29", "DBSQLSERVER_PORT":"57055", "DBSQLSERVER_USER":"reportvie", "DBSQLSERVER_PASSWORD":"reportvie","DBSQLSERVER_DATABASE":"SUN_COTEDIVOIRE","ADMINLOGMDP":"Nsia@RGT2018","ADMINMAIL":"thibaut.zehi@groupensia.com","RUNMAJ":"00 12 * * *"}' # paste meteor settings.json here in one line!
+      METEOR_SETTINGS: '{"DBSQLSERVER_HOST":"10.8.3.29", "DBSQLSERVER_PORT":"57055", "DBSQLSERVER_USER":"reportvie", "DBSQLSERVER_PASSWORD":"reportvie","DBSQLSERVER_DATABASE":"SUN_COTEDIVOIRE","ADMINLOGMDP":"Nsia@RGT2018","ADMINMAIL":"thibaut.zehi@groupensia.com","RUNMAJ":"00 17 * * *"}' # paste meteor settings.json here in one line!
+      #METEOR_SETTINGS: '{"DBSQLSERVER_HOST":"10.10.3.70", "DBSQLSERVER_PORT":"63960", "DBSQLSERVER_USER":"reportvie", "DBSQLSERVER_PASSWORD":"reportvie","DBSQLSERVER_DATABASE":"SUNDB_RCI","ADMINLOGMDP":"Nsia@RGT2018","ADMINMAIL":"thibaut.zehi@groupensia.com","RUNMAJ":"00 12 * * *"}' # paste meteor settings.json here in one line!

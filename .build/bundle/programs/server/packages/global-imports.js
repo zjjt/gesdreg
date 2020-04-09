@@ -1,0 +1,45 @@
+/* Imports for global scope */
+
+MongoInternals = Package.mongo.MongoInternals;
+Mongo = Package.mongo.Mongo;
+ReactiveVar = Package['reactive-var'].ReactiveVar;
+Tracker = Package.tracker.Tracker;
+Deps = Package.tracker.Deps;
+ECMAScript = Package.ecmascript.ECMAScript;
+FlowRouter = Package['kadira:flow-router'].FlowRouter;
+check = Package.check.check;
+Match = Package.check.Match;
+Random = Package.random.Random;
+ReactMeteorData = Package['react-meteor-data'].ReactMeteorData;
+Accounts = Package['accounts-base'].Accounts;
+Email = Package.email.Email;
+EmailInternals = Package.email.EmailInternals;
+Template = Package['meteorhacks:ssr'].Template;
+SSR = Package['meteorhacks:ssr'].SSR;
+WebApp = Package.webapp.WebApp;
+WebAppInternals = Package.webapp.WebAppInternals;
+main = Package.webapp.main;
+moment = Package['momentjs:moment'].moment;
+Bert = Package['themeteorchef:bert'].Bert;
+FilesCollection = Package['ostrio:files'].FilesCollection;
+Excel = Package['netanelgilad:excel'].Excel;
+Meteor = Package.meteor.Meteor;
+global = Package.meteor.global;
+meteorEnv = Package.meteor.meteorEnv;
+_ = Package.underscore._;
+DDP = Package['ddp-client'].DDP;
+DDPServer = Package['ddp-server'].DDPServer;
+LaunchScreen = Package['launch-screen'].LaunchScreen;
+Blaze = Package.ui.Blaze;
+UI = Package.ui.UI;
+Handlebars = Package.ui.Handlebars;
+Spacebars = Package.spacebars.Spacebars;
+meteorInstall = Package.modules.meteorInstall;
+meteorBabelHelpers = Package['babel-runtime'].meteorBabelHelpers;
+Promise = Package.promise.Promise;
+Autoupdate = Package.autoupdate.Autoupdate;
+HTML = Package.htmljs.HTML;
+Symbol = Package['ecmascript-runtime-server'].Symbol;
+Map = Package['ecmascript-runtime-server'].Map;
+Set = Package['ecmascript-runtime-server'].Set;
+

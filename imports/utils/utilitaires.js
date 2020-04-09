@@ -15,10 +15,11 @@ export const englishDateToFr=(date)=>{
     return dd+"-"+mm+"-"+yy;
 } 
 export const frenchDateToEn=(date)=>{
-    let yy=date.substring(0,4);
-    let mm=date.substring(5,7);
-    let dd=date.substring(8);
-    return dd+"-"+mm+"-"+yy;
+    //21-02-2018
+    let yy=date.substring(6);
+    let mm=date.substring(3,5);
+    let dd=date.substring(0,2);
+    return yy+"-"+mm+"-"+dd;
 } 
 
 export let formatNumberInMoney=(x)=>{

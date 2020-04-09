@@ -103,7 +103,7 @@ class ModRegForm extends Component{
                         &&(values.date_sort_treso===''||!values.date_sort_treso)
                         &&(values.date_depot_sign===''||!values.date_depot_sign)
                         &&(values.date_recep_sign_reg===''||!values.date_recep_sign_reg)
-                        &&(values.date_retrait_reg===''||!values.date_retrait_reg)){
+                        &&(values.date_retrait_reg===''||!values.date_retrait_reg) && values.coderej===''){
                         
                                 this.setState({
                                 errorMsg:"Veuillez fournir au moins une information avant de valider la mise a jour "
@@ -121,7 +121,7 @@ class ModRegForm extends Component{
                             Meteor.call('updateDispos',values,this.props.regSelected,this.props.numenv,(err)=>{
                                 if(err){
                                     console.dir(err);
-                                    if(err.error==="bad-date"){
+                                    if(err.error==="bad-date"||err.error==="bad-coderej"){
                                         this.setState({
                                         errorMsg:err.reason
                                         });
@@ -246,7 +246,9 @@ class ModRegForm extends Component{
          };
          //console.log(this.props.regSelected);
          const maxLength = max => value =>value && value.length > max ? `Ce champs doit avoir un maximum de ${max} caractères ou moins` : undefined
-         let modformOfChoice=this.state.formchoice==="MODIFIER"?(<div><Field
+         let modformOfChoice=this.state.formchoice==="MODIFIER"?(<div>
+            
+            <Field
             name="date_depot_treso" 
             DateTimeFormat={DateTimeFormat}
             className="datepicker"
@@ -269,8 +271,8 @@ class ModRegForm extends Component{
             component={DatePicker}
             className="datepicker"
             DateTimeFormat={DateTimeFormat}
-            hintText="Entrez la date de sortie de la trésorerie"
-            floatingLabelText="Date de sortie de la trésorerie"
+            hintText="Entrez la date de sortie de la trésorerie / Envoyer à la banque"
+            floatingLabelText="Date de sortie de la trésorerie / Envoyer à la banque le"
             fullWidth={true}
             okLabel="OK"
             cancelLabel="Annuler"
@@ -311,15 +313,44 @@ class ModRegForm extends Component{
             component={DatePicker}
             className="datepicker"
             DateTimeFormat={DateTimeFormat}
-            hintText="Entrez la date de retrait du règlement"
-            floatingLabelText="Date de retrait du règlement"
+            hintText="Entrez la date de retrait du règlement / Execution du virement"
+            floatingLabelText="Date de retrait du règlement / Execution du virement"
             fullWidth={true}
             okLabel="OK"
             cancelLabel="Annuler"
             locale="fr"
             format={(value,name)=>value===''?null:value}
             floatingLabelFixed={true}
-        /></div>):this.state.formchoice==="MODIFIERDV"?(
+        />
+        <Divider/>
+            <div style={{textAlign:"center",color:"1e2c67",backgroundColor:"#cc992c"}}>ENTREZ LES NUMEROS DE REGLEMENTS A EXCLURE DE LA MISE A JOUR</div>
+        <Divider/>
+        <Field
+                name="delreg" 
+                component={TextField}
+                hintText="entrez les numéros de règlements à exclure de la mise à jour séparé de ;"
+                floatingLabelText="Règlements à exclure"
+                fullWidth={true}
+                style={this.state.textAreaDisabled?{"diaplay":"none"}:{"display":"block"}}
+                floatingLabelFixed={true}
+                disabled={this.state.textAreaDisabled}
+                validate={this.state.textAreaDisabled?[]:[maxLength(255)]}
+            />
+        <Divider/>
+            <div style={{textAlign:"center",color:"1e2c67",backgroundColor:"#cc992c"}}>DANS LE CAS D'ENVOI DE VIREMENT,VEUILLEZ PRECISER LE CODE REJET DANS LE CHAMPS CI-DESSOUS</div>
+        <Divider/>
+        <Field
+                name="coderej" 
+                component={TextField}
+                hintText="exemple: 123"
+                floatingLabelText="Code de rejet de l'envoi sélectionné"
+                fullWidth={true}
+                style={this.state.textAreaDisabled?{"diaplay":"none"}:{"display":"block"}}
+                floatingLabelFixed={true}
+                disabled={this.state.textAreaDisabled}
+                validate={this.state.textAreaDisabled?[]:[maxLength(255)]}
+            />
+        </div>):this.state.formchoice==="MODIFIERDV"?(
             <div>
                 <p>* les dates de rendez vous des ou du règlement sélectionné seront modiffiées.</p>
                 <p>La date de rendez vous actuelle est: {`${moment(this.props.regSelected.dateRDV).format("DD-MM-YYYY")}`}</p>
@@ -440,6 +471,7 @@ class ModRegForm extends Component{
                             <RadioButton value="ANNULER" label="Annuler ce règlement" disabled={this.props.regSelected.length>1?true:false} title="vous permet d'annuler un règlement"/>
                         </Field>
                             <hr/>
+                        
                         {...modformOfChoice}
                         <input type="submit" className="hidden"/>
                     </form>
@@ -450,7 +482,7 @@ class ModRegForm extends Component{
 
 ModRegForm=reduxForm({
     form:"modifForm",
-    fields:['date_depot_treso','date_sort_treso','date_depot_sign','date_recep_sign_reg','date_retrait_reg','statut']
+    fields:['date_depot_treso','date_sort_treso','date_depot_sign','date_recep_sign_reg','date_retrait_reg','statut','delreg','coderej']
 })(ModRegForm);
 
 ModRegForm.propTypes={

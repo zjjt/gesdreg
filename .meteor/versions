@@ -58,12 +58,15 @@ modules-runtime@0.8.0
 momentjs:moment@2.22.2
 mongo@1.1.22
 mongo-id@1.0.6
+netanelgilad:excel@0.2.6
 nooitaf:colors@1.1.2_1
 npm-bcrypt@0.9.3
 npm-mongo@2.2.30
 observe-sequence@1.0.16
 ordered-dict@1.0.9
 orionsoft:apollo@0.1.7
+ostrio:cookies@2.2.7
+ostrio:files@1.9.7
 promise@0.8.9
 random@1.0.10
 rate-limit@1.0.8

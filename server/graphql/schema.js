@@ -44,6 +44,7 @@ const schema=`
             wnrgt:Int
             wnupo:Int
             Num_envoi:Int
+            cheque:Int
             nom_beneficiaire:String
             date_naiss:String
             date_depot_treso:String
@@ -60,6 +61,8 @@ const schema=`
             ValBank:String
             Comments:String
             CommentsBank:String
+            banque:String
+            chequeState:String
             etat:Alert
             infosRedac:[UserSQL]
             infoSurRgt:[InfosREG]
@@ -68,9 +71,9 @@ const schema=`
             user(username:String):[User]
             userSQL(nom:String,orderDesc:Boolean!):[UserSQL] 
             dataToExport(typeDate:String,startDate:String,endDate:String,domaine:String):[DisporegSQL]
-            consultDispo(startDate:String,endDate:String,numpolice:Int,nomtotal:String,birthdate:String,offset:Int,limit:Int):[DisporegSQL]
-            listeDispo(typeDate:String,date:String,statut:String,domaine:String,numenv:Int,numregl:Int,numpol:Int,nomtotal:String,numreglStart:Int,numreglEnd:Int,offset:Int,limit:Int):[DisporegSQL]
-            consultDispoBank(startDate:String,endDate:String,numrgt:Int,nomtotal:String,birthdate:String,offset:Int,limit:Int):[DisporegSQL]
+            consultDispo(startDate:String,endDate:String,numpolice:Int,numrgt:Int,numenv:Int,numcheque:Int,nomtotal:String,birthdate:String,offset:Int,limit:Int):[DisporegSQL]
+            listeDispo(typeDate:String,date:String,statut:String,domaine:String,numenv:Int,numregl:Int,numcheque:Int,numpol:Int,nomtotal:String,numreglStart:Int,numreglEnd:Int,offset:Int,limit:Int):[DisporegSQL]
+            consultDispoBank(startDate:String,endDate:String,numpolice:Int,banque:String,numrgt:Int,numenv:Int,numcheque:Int,nomtotal:String,birthdate:String,offset:Int,limit:Int):[DisporegSQL]
             voirInfoReg(wnrgt:Int,domaine:String):[InfosREG]
         }
         type Subscription{

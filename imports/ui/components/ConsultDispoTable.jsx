@@ -65,7 +65,7 @@ class ConsultDispoTable extends Component{
          
         }
         componentDidMount(){
-            $('.tableau').parent().css("width","3832px");
+            $('.tableau').parent().css("width","5032px");
             
             setInterval(()=>{
                 Bert.alert({
@@ -167,7 +167,10 @@ class ConsultDispoTable extends Component{
                                 <TableHeaderColumn tooltip="Etat d'avancement et suivi interne des délais de traitement du règlement">Suivi du règlement</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Numéro du bénéficiaire">Bénéficiaire No</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Numéro de règlement">Règlement No</TableHeaderColumn>
+                                <TableHeaderColumn tooltip="Numéro d'envoi">Envoi No</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Mode de règlement">Mode de règlement</TableHeaderColumn>
+                                <TableHeaderColumn tooltip="Banque">Banque</TableHeaderColumn>
+                                <TableHeaderColumn tooltip="Mode de règlement">Numéro de chèque</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Numéro de police">Police</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Numéro de décompte">Décompte No</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Type de prestations">Type de prestations</TableHeaderColumn>
@@ -180,6 +183,7 @@ class ConsultDispoTable extends Component{
                                 <TableHeaderColumn tooltip="Date de rendez-vous">Date RDV</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Statut du règlement">Statut</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Domaine du règlement">Domaine</TableHeaderColumn>
+                                <TableHeaderColumn tooltip="Commentaire">Commentaire</TableHeaderColumn>
                               
                             </TableRow>
                         </TableHeader>
@@ -201,12 +205,14 @@ class ConsultDispoTable extends Component{
                                                </TableRowColumn>
                                             </TableRow>
                                            ):typeof consultDispo!=='undefined'?consultDispo.map((row,index)=>{
-                                               console.dir(row)
+                                               console.log("1 reglement");
+                                               console.dir(row);
                                             let domaine='';
                                             let lineTitle="";
                                             let statutClass='';
+                                            let prestation='';
+                                            let comments=row.Comments;
                                             let etat=row.etat?row.etat.alerte==="TERMINER"?(<Icon icon={tongue2} title={`Niveau d'alerte: ${row.etat.alerte} , il s'agit la des règlememts dont la date de rendez vous est dépassé`} style={{color:"gray"}}/>):row.etat.alerte==="RAS"?(<Icon icon={smile2} title={`Niveau d'alerte: ${row.etat.alerte}, le traitement du règlement suit son cours normal et est dans le délai imparti`} style={{color:"lightgreen"}}/>):row.etat.alerte==="NORMAL"?(<Icon icon={sad2} title={`Niveau d'alerte: ${row.etat.alerte}, il faudrait penser à traiter ce règlement`} style={{color:"orange"}}/>):(<Icon icon={crying2} title={`Niveau d'alerte: ${row.etat.alerte},le règlement doit être traité d'urgence`} style={{color:"red"}}/>):(<Icon icon={neutral2} title={`Voir le service prestations en charge des saisies dans le système`}/>);
-                                            let typeSinistre=row.infoSurRgt[0]?row.infoSurRgt[0].TYPE_SINISTRE:'NON DEFINI'
                                             let dateRecep=row.infoSurRgt[0]?moment(row.infoSurRgt[0].DATE_RECEPTION).format("DD-MM-YYYY"):'';
                                             let dateRgt=row.infoSurRgt[0]?moment(row.infoSurRgt[0].DATE_REGLEMENT).format("DD-MM-YYYY"):'';
                                             if(row.domaine==="I")domaine="INDIVIDUEL";
@@ -244,23 +250,45 @@ class ConsultDispoTable extends Component{
                                                 statutClass='animated fadeInInLeft grayBack';
                                                 lineTitle="ce règlement a été annulé";
                                             }
+                                            if(row.Comments && row.Comments.includes("%MAN%")){
+                                                statutClass='animated fadeInInLeft kakiBack';
+                                                lineTitle="c'est un règlement manuel";
+                                                comments.replace("%MAN%"," ");
+                                                //recuperation du type de prestation
+                                                prestation = row.Comments.substring(
+                                                    row.Comments.lastIndexOf("$") + 1, 
+                                                    row.Comments.lastIndexOf("!")
+                                                );
+                                                comments.replace(`$${prestation}!`," ");
+                                            }
+                                            if((row.MRGGT=="C" && row.chequeState && row.chequeState!="CHEQUE VALIDE")){
+                                                statutClass='animated fadeInInLeft darkBack';
+                                                lineTitle="Le chèque de ce règlement a été annulé";
+                                            }
+                                            let typeSinistre=row.infoSurRgt[0]&&!statutClass.includes("kakiBack")?row.infoSurRgt[0].TYPE_SINISTRE:statutClass.includes("kakiBack")?prestation:"NON DEFINI";
+
                                             return(<TableRow key={index} className={statutClass} selected={this.state.selectedRows.indexOf(index)!==-1} ref={`user${index}`} title={lineTitle}>
-                                                <TableRowColumn>{etat}</TableRowColumn>
+                                                <TableRowColumn>{statutClass.includes("kakiBack")?"M":etat}</TableRowColumn>
                                                 <TableRowColumn>{row.wasrg}</TableRowColumn>
                                                 <TableRowColumn>{row.wnrgt}</TableRowColumn>
+                                                <TableRowColumn>{row.Num_envoi?row.Num_envoi:"AUCUN"}</TableRowColumn>
                                                 <TableRowColumn>{row.MRGGT}</TableRowColumn>
+                                                <TableRowColumn>{row.banque?row.banque:"AUCUNE"}</TableRowColumn>
+                                                <TableRowColumn>{row.cheque?row.cheque:row.infoSurRgt[0]?row.infoSurRgt[0].NUMERO_CHEQUE:"AUCUN"}</TableRowColumn>
                                                 <TableRowColumn>{row.wnupo}</TableRowColumn>
                                                 <TableRowColumn>{row.infoSurRgt[0]?row.infoSurRgt[0].DECOMPTE:"NON DEFINI"}</TableRowColumn>
                                                 <TableRowColumn>{typeSinistre!=""?typeSinistre:"NON DEFINI"}</TableRowColumn>
                                                 <TableRowColumn>{dateRecep!=""?dateRecep:"NON DEFINIE"}</TableRowColumn>
-                                                <TableRowColumn>{ dateRgt!=""?dateRgt:"NON DEFINIE"}</TableRowColumn>
-                                                <TableRowColumn>{ row.infoSurRgt[0]?formatNumberInMoney(row.infoSurRgt[0].MONTANT_BRUT):"NON DEFINI"}</TableRowColumn>
-                                                <TableRowColumn>{ row.infoSurRgt[0]?formatNumberInMoney(row.infoSurRgt[0].MONTANT_NET_REGLEMENT):"NON DEFINI"}</TableRowColumn>
+                                                <TableRowColumn>{dateRgt!=""?dateRgt:"NON DEFINIE"}</TableRowColumn>
+                                                <TableRowColumn>{row.infoSurRgt[0]?formatNumberInMoney(row.infoSurRgt[0].MONTANT_BRUT):"NON DEFINI"}</TableRowColumn>
+                                                <TableRowColumn>{row.infoSurRgt[0]?formatNumberInMoney(row.infoSurRgt[0].MONTANT_NET_REGLEMENT):"NON DEFINI"}</TableRowColumn>
                                                 <TableRowColumn>{row.nom_beneficiaire}</TableRowColumn>
                                                 <TableRowColumn>{row.date_naiss?moment(row.date_naiss).format("DD-MM-YYYY"):"NON DEFINIE"}</TableRowColumn>
                                                 <TableRowColumn>{row.dateRDV?moment(row.dateRDV).format("DD-MM-YYYY"):"NON DEFINIE"}</TableRowColumn>
                                                <TableRowColumn>{row.statut_reg_retirer}</TableRowColumn>
                                                 <TableRowColumn>{domaine}</TableRowColumn>
+                                                <TableRowColumn>{row.Comments?comments:"R.A.S"}</TableRowColumn>
+
                                              
                                             </TableRow>);
                                         }):<TableRow>
@@ -295,7 +323,11 @@ class ConsultDispoTable extends Component{
                         -<span style={{color:"green"}}>VERT</span> pour le statut <b>PRET</b><br/> 
                         -<span style={{color:"red"}}>ROUGE</span> pour le statut <b>SORTIE</b><br/><br/>
                         -<span style={{color:"brown"}}>MARRON</span> pour le statut <b>REFUSER</b><br/><br/>
-                        -<span style={{color:"#63600a"}}>JAUNE VOMI</span> pour le statut <b>ANNULER</b><br/><br/>
+                        -<span style={{color:"#63600a"}}>JAUNE VOMI</span> pour le statut <b>ANNULER</b>dans <b>GESDREG</b><br/><br/>
+                        -<span style={{color:"#eddb9f"}}>KAKI</span> pour les reglements manuels <b>MANUELS</b><br/><br/>
+                        -<span style={{color:"#1a1918"}}>NOIR SOMBRE</span> pour les reglements dont les chèques / envois sont annulés depuis <b>SUNSHINE</b><br/><br/>
+
+
                      <br/>Les recherches sont complémentaires et peuvent être combinés pour un résultat plus précis.<br/>
                      <b>NB:LES RECHERCHES SONT EXECUTEES DYNAMIQUEMENT.</b>
                      </div>
@@ -331,11 +363,12 @@ ConsultDispoTable.propTypes={
 };
 
 const checkDisponible=gql`
-    query checkDisponible($numpol:Int,$nomtotal:String,$birthdate:String,$offset:Int,$limit:Int){
-        consultDispo(numpolice:$numpol,nomtotal:$nomtotal,birthdate:$birthdate,offset:$offset,limit:$limit){
+    query checkDisponible($numrgt:Int,$numcheque:Int,$numpol:Int,$numenv:Int,$nomtotal:String,$birthdate:String,$offset:Int,$limit:Int){
+        consultDispo(numrgt:$numrgt,numcheque:$numcheque,numpolice:$numpol,numenv:$numenv,nomtotal:$nomtotal,birthdate:$birthdate,offset:$offset,limit:$limit){
             wasrg
             wnrgt
             wnupo
+            Num_envoi
             nom_beneficiaire
             date_naiss
             date_depot_treso
@@ -343,10 +376,14 @@ const checkDisponible=gql`
             date_depot_sign
             date_recep_sign_reg
             date_retrait_reg
+            MRGGT
             statut_reg_retirer
+            cheque
+            banque
             domaine
             redac
             dateRDV
+            chequeState
             etat{
                 nbj
                 alerte
@@ -369,11 +406,14 @@ const checkDisponible=gql`
 
 
 export default graphql(checkDisponible,{
-    options:({ birthdate,numpol,nomtotal}) => ({ 
+    options:({ birthdate,numpol,numrgt,nomtotal,numenv,numcheque}) => ({ 
         
         variables: {
             birthdate,
             numpol,
+            numrgt,
+            numcheque,
+            numenv,
             nomtotal,
             offset:0,
             limit:ITEMS_PER_PAGE          

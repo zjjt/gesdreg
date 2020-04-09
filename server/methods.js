@@ -8,7 +8,9 @@ import {WhatsNew,RegUpdated,Historique} from '../imports/api/collections.js';
 import {pubsub} from './graphql/resolvers';
 import {moment} from 'meteor/momentjs:moment';
 import {Email} from 'meteor/email';
-import {checkRdvDateMD} from '../imports/utils/utilitaires'
+import {checkRdvDateMD, frenchDateToEn} from '../imports/utils/utilitaires';
+import {Excel} from 'meteor/netanelgilad:excel';
+const fs = require('fs');
 
 const json2xls=require('json2xls');
 
@@ -50,14 +52,13 @@ export default ()=>{
                 return (S4()+S4()+"-"+S4()+"-"+S4()+"-"+S4()+"-"+S4()+S4()+S4());
             };
                 const updates=[
-                    "GESDREG (Gestion des disponibilités de règlements) version 1.5.0",
+                    "GESDREG (Gestion des disponibilités de règlements) version 2.0.0",
                     "Dans cette version les mises à jour suivantes ont été effectuées:",
-                    "---Mise à disposition de la modification groupée par numéro d'envoi",
-                    "---Recherche par Numéro d'envois",
-                    "---Mise à disposition d'une interface de consultation et de validation des règlements par la banque",
-                    "---Système intégré de suivi des délais de traitements des règlements",
-                    "---L'annulation et/ou le refus d'un règlement peut être effectué par un gestionnaire",
-                    "---Mise à jour journalière des règlements après l'exécution des batchs dans sunshine",
+                    "---Possibilité d'exclusion des règlements par numéro de règlement",
+                    "---Insertion des codes rejets des envois",
+                    "---Intégration des règlements manuels par fichier Excel",
+                    "---Affichage des chèques annulés ou non valides",
+                    "---Interface banquaire mise à jour",
                     
                 ];
                 let newsId=guidGenerator();
@@ -383,6 +384,104 @@ export default ()=>{
                 return true;
             });
         },
+        updateDisposManuel(){
+            var excel = new Excel('xlsx');
+            const pathToFile=process.env.PWD+'/FICHIERS/rgtmanuel/rgtmanuel.xlsx';
+            var workbook = excel.readFile(pathToFile,{cellDates: true,dateNF:"dd/MM/yyyy"}); 
+            //console.dir(workbook);
+            var sheet = workbook.Sheets.Feuil1;
+            var options = {};
+            const redac=Meteor.users.findOne({_id:Meteor.user()._id});
+
+            // Generate the JSON like so:
+            var workbookJson = excel.utils.sheet_to_json( sheet, options );
+            //console.dir(workbookJson);
+            let query="insert into exp.regdispo (date_depot_treso,date_sort_treso,date_depot_sign,date_recep_sign_reg,date_retrait_reg,redac,statut_reg_retirer,wnupo,wnrgt,MNTGT,nom_beneficiaire,domaine,Num_envoi,cheque,MRGGT,banque,Comments) values (:ddt,:dst,:dds,:drsr,:drr,:r,:srr,:p,:rgt,:mnt,:nb,:dom,:nenv,:c,:mrggt,:ban,:com)";
+            workbookJson.map((e,i)=>{
+                console.log("in the loop");
+                if(!e.DOMAINE){
+                    throw new Meteor.Error("bad-coderej","Veuillez vérifier la ligne "+(i+2)+" du fichier des règlements manuels.le domaine n'est pas renseigné.");
+                    return;
+                }
+                if(e.MODE_REGLEMENT=='C' && (e.CHEQUE==""||isNaN(e.CHEQUE))){
+                    throw new Meteor.Error("bad-coderej","Veuillez vérifier la ligne "+(i+2)+" du fichier des règlements manuels.le numéro de chèque est mal renseigné.");
+                    return;
+                }
+                if(e.MODE_REGLEMENT=='B' && (e.ENVOI==""||isNaN(e.ENVOI))){
+                    throw new Meteor.Error("bad-coderej","Veuillez vérifier la ligne "+(i+2)+" du fichier des règlements manuels.le numéro d'envoi est mal renseigné.");
+                    return;
+                }
+                if(e.PRESTATION==""||!e.PRESTATION){
+                    throw new Meteor.Error("bad-coderej","Veuillez vérifier la ligne "+(i+2)+" du fichier des règlements manuels.le champs PRESTATION n'est pas renseigné.");
+                    return;
+                }
+                /*if(e.REGLEMENT!='88888' ||parseInt(e.REGLEMENT)!=88888 ){
+                    throw new Meteor.Error("bad-coderej","Veuillez vérifier la ligne "+(i+2)+" du fichier des règlements manuels.le numéro de reglement doit être 88888.");
+                    return;
+                }*/
+                if(isNaN(e.POLICE) ){
+                    throw new Meteor.Error("bad-coderej","Veuillez vérifier la ligne "+(i+2)+" du fichier des règlements manuels.le numéro de police est mal renseigné.");
+                    return;
+                }
+                if(isNaN(e.MONTANT) ){
+                    throw new Meteor.Error("bad-coderej","Veuillez vérifier la ligne "+(i+2)+" du fichier des règlements manuels.le numéro de police est mal renseigné.");
+                    return;
+                }
+                let statut="EN COURS";
+                    if(e.DATE_ENTREE_TRESO){
+                        statut="A LA TRESO";
+                    }
+                   if(e.DATE_SORTIE_TRESO){
+                    statut="SORTIE DE TRESO";
+                   }
+                   if(e.DATE_ENTREE_SIGNATURE){
+                    statut="A LA SIGNATURE";
+                   }
+                   if(e.DATE_SORTIE_SIGNATURE){
+                    statut="PRET";
+                   }
+                   if(e.DATE_RETRAIT){
+                       statut="SORTIE"
+                   }
+                Historique.insert({
+                    dateConnexion:new Date(),
+                    heure:moment(Date.now()).format("HH:mm:ss"),
+                    actions:"Insertion des reglements manuel",
+                    par:redac.codeRedac
+                });
+                DBSQLSERVER.query(query,{
+                    replacements:{
+                       
+                        ddt:e.DATE_ENTREE_TRESO?moment(frenchDateToEn(e.DATE_ENTREE_TRESO)).format("YYYY-MM-DD"):null,
+                        dst:e.DATE_SORTIE_TRESO?moment(frenchDateToEn(e.DATE_SORTIE_TRESO)).format("YYYY-MM-DD"):null,
+                        dds:e.DATE_ENTREE_SIGNATURE?moment(frenchDateToEn(e.DATE_ENTREE_SIGNATURE)).format("YYYY-MM-DD"):null,
+                        drsr:e.DATE_SORTIE_SIGNATURE?moment(frenchDateToEn(e.DATE_SORTIE_SIGNATURE)).format("YYYY-MM-DD"):null,
+                        drr:e.DATE_RETRAIT?moment(frenchDateToEn(e.DATE_RETRAIT)).format("YYYY-MM-DD"):null,
+                        r:redac.codeRedac,
+                        srr:statut,
+                        p:e.POLICE,
+                        rgt:e.REGLEMENT,
+                        mnt:e.MONTANT,
+                        nb:e.BENEFICIAIRE,
+                        dom:e.DOMAINE,
+                        nenv:e.ENVOI?parseInt(e.ENVOI):null,
+                        c:e.CHEQUE?parseInt(e.CHEQUE):null,
+                        mrggt:e.MODE_REGLEMENT,
+                        ban:e.BANQUE?e.BANQUE:null,
+                        com:e.COMMENTAIRE+'%MAN%$'+e.PRESTATION+'!',
+                    },
+                    type:DBSQLSERVER.QueryTypes.INSERT
+                }).catch((err)=>{
+                    console.log(err);
+                    throw new Meteor.Error("bad-coderej","Une erreur est survenue lors de la mise à jour veuillez vérifier votre fichier");
+                    return err.reason;
+                });
+            });
+
+
+           
+
+        },
         updateDispos(values,rgtArray,numenv){
             //mise a jour groupee des reglement
             console.log("numenv est "+numenv);
@@ -409,14 +508,55 @@ export default ()=>{
                    if(values.date_retrait_reg){
                        statut="SORTIE"
                    }
+                   /*if(values.delreg){
+                       console.log("contents of delreg");
+                       console.dir(values.delreg);
+                       var rgtEx = values.delreg.match(/\d+/g).map(Number);
+                       console.log("les rgt a exclure sont:");
+                       console.dir(rgtEx);
+                       query="and wnrgt not in (";
+                       rgtEx.map((e,i)=>{
+                        if(i==rgtEx.length-1){
+                            query+=e+')';
+                        }else{
+                            query+=e+',';
+                        }
+                       });
+                       console.log(query);
+                       //return;
+                   }*/
                     if(numenv){
-                        query="update exp.regdispo set date_depot_treso=:ddt, date_sort_treso=:dst, date_depot_sign=:dds,date_recep_sign_reg=:drsr,date_retrait_reg=:drr,redac=:r,statut_reg_retirer=:srr where Num_envoi=:n "; 
+                        query="update exp.regdispo set date_depot_treso=:ddt, date_sort_treso=:dst, date_depot_sign=:dds,date_recep_sign_reg=:drsr,date_retrait_reg=:drr,redac=:r,statut_reg_retirer=:srr"; 
+                        let cdr="";
+                        if(values.coderej && values.coderej!=""){
+                            if(typeof parseInt(values.coderej,10) !="number"){
+                                throw new Meteor.Error("bad-coderej","Veuillez re verifier le code rejet renseigné.Seulement les nombres sont acceptés.");
+
+                            }
+                            query+=`,Comments=:cdr`;
+                        }
+                        query+=" where Num_envoi=:n";
+                        if(values.delreg){
+                            var rgtEx = values.delreg.match(/\d+/g).map(Number);
+                            query+="and wnrgt not in (";
+                            rgtEx.map((e,i)=>{
+                                if(i==rgtEx.length-1){
+                                    query+=e+')';
+                                }else{
+                                    query+=e+',';
+                                }
+                            });
+                            console.log(query);
+                           // query+="and wnrgt not in ()";
+                           
+                        }
                         Historique.insert({
                             dateConnexion:new Date(),
                             heure:moment(Date.now()).format("HH:mm:ss"),
                             actions:"Mise a jour de date sur les reglements de l'envoi "+numenv,
                             par:redac.codeRedac
                         });
+                        //faire l'envoi des sms et mail ici
                         DBSQLSERVER.query(query,{
                             replacements:{
                                
@@ -427,6 +567,7 @@ export default ()=>{
                                 drr:values.date_retrait_reg?moment(values.date_retrait_reg).format("YYYY-MM-DD"):null,
                                 r:redac.codeRedac,
                                 srr:statut,
+                                cdr:values.coderej?values.coderej:'',
                                 n:numenv
                             },
                             type:DBSQLSERVER.QueryTypes.UPDATE
@@ -436,6 +577,19 @@ export default ()=>{
                         });
                     }else{
                         query="update exp.regdispo set date_depot_treso=:ddt, date_sort_treso=:dst, date_depot_sign=:dds,date_recep_sign_reg=:drsr,date_retrait_reg=:drr,redac=:r,statut_reg_retirer=:srr where wnupo=:wnupo and wnrgt=:wnrgt and domaine=:d ";  
+                        if(values.delreg){
+                            var rgtEx = values.delreg.match(/\d+/g).map(Number);
+                            query+="and wnrgt not in (";
+                            rgtEx.map((e,i)=>{
+                                if(i==rgtEx.length-1){
+                                    query+=e+')';
+                                }else{
+                                    query+=e+',';
+                                }
+                            });
+                            console.log(query);
+                           // query+="and wnrgt not in ()";
+                        }
                         rgtArray.forEach((e,i,arr)=>{
                             console.log("ligne de rgt: "+i);
                             Historique.insert({

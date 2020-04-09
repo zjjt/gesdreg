@@ -174,8 +174,10 @@ console.dir(this.state);
                             <TableHeaderColumn tooltip="Numéro de règlement">Règlement N°</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Nom du bénéficiaire">Bénéficiaire</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Numéro du bénéficiaire">Bénéficiaire N°</TableHeaderColumn>
+                                <TableHeaderColumn tooltip="Nom de la banque">Banque</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Numéro de police">Police N°</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Numéro de chèque">Chèque N°</TableHeaderColumn>
+                                <TableHeaderColumn tooltip="Numéro d'envoi">Envoi N°</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Date de naissance du bénéficiaire">Date de naissance</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Type de prestation">Type prestation</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Date de réception de la demande">Date de réception de la demande</TableHeaderColumn>
@@ -186,8 +188,7 @@ console.dir(this.state);
                                 <TableHeaderColumn tooltip="Validation de la banque">Accord Banque</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Commentaires de Nsia Vie Assurances">Commentaires Nsia Vie</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Commentaires de la banque">Commentaires</TableHeaderColumn>
-                                <TableHeaderColumn tooltip="Caissier">Traité par</TableHeaderColumn>
-                          
+                                <TableHeaderColumn tooltip="Caissier">Traité par</TableHeaderColumn>                        
                             </TableRow>
                         </TableHeader>
                         <TableBody
@@ -208,29 +209,47 @@ console.dir(this.state);
                                                </TableRowColumn>
                                             </TableRow>
                                            ):typeof consultDispoBank!=='undefined'?consultDispoBank.map((row,index)=>{
-                                            let statutClass='';
+                                            //on filtre que pour montreer les reglements NB
+                                                let statutClass='';
+                                                let prestation='';
+                                                let comments=row.Comments;
                                             if(row.ValBank=="")statutClass='animated bounceInRight ';
                                             if(row.ValBank==="OUI")statutClass='animated bounceInLeft greenBack';
                                             if(row.ValBank==="NON")statutClass='animated bounceInLeft redBack';
-                                            //console.dir(row);
+                                            if(row.Comments && row.Comments.includes("%MAN%")){
+                                                statutClass='animated fadeInInLeft kakiBack';
+                                                lineTitle="c'est un règlement manuel";
+                                                comments.replace("%MAN%"," ");
+                                                //recuperation du type de prestation
+                                                prestation = row.Comments.substring(
+                                                    row.Comments.lastIndexOf("$") + 1, 
+                                                    row.Comments.lastIndexOf("!")
+                                                );
+                                                comments.replace(`$${prestation}!`," ");
+                                            }
+                                            console.dir(row);
                                             return(<TableRow key={index} className={statutClass} selected={this.state.selectedRows.indexOf(index)!==-1} ref={`user${index}`}>
                                                 <TableRowColumn>{row.wnrgt}</TableRowColumn>
                                                 <TableRowColumn>{row.nom_beneficiaire}</TableRowColumn>
                                                 <TableRowColumn>{row.wasrg}</TableRowColumn>
+                                                <TableRowColumn>{row.banque}</TableRowColumn>
                                                 <TableRowColumn>{row.wnupo}</TableRowColumn>
                                                 <TableRowColumn>{row.infoSurRgt[0]?row.infoSurRgt[0].NUMERO_CHEQUE!=''?row.infoSurRgt[0].NUMERO_CHEQUE:'"NON DEFINI"':'"NON DEFINI"'}</TableRowColumn>
+                                                <TableRowColumn>{row.Num_envoi?row.Num_envoi:"AUCUN"}</TableRowColumn>
                                                 <TableRowColumn>{row.date_naiss?moment(row.date_naiss).format("DD-MM-YYYY"):"NON DEFINIE"}</TableRowColumn>
-                                                <TableRowColumn>{row.infoSurRgt[0]?row.infoSurRgt[0].TYPE_SINISTRE:"NON DEFINI"}</TableRowColumn>
+                                                <TableRowColumn>{row.infoSurRgt[0]&&!statutClass.includes("kakiBack")?row.infoSurRgt[0].TYPE_SINISTRE:statutClass.includes("kakiBack")?prestation:"NON DEFINI"}</TableRowColumn>
                                                 <TableRowColumn>{row.infoSurRgt[0]?englishDateToFr(row.infoSurRgt[0].DATE_RECEPTION):"NON DEFINI"}</TableRowColumn>
                                                 <TableRowColumn>{row.infoSurRgt[0]?englishDateToFr(row.infoSurRgt[0].DATE_REGLEMENT):"NON DEFINI"}</TableRowColumn>
                                                 <TableRowColumn>{row.infoSurRgt[0]?formatNumberInMoney(row.infoSurRgt[0].MONTANT_BRUT):"NON DISPONIBLE"}</TableRowColumn>
                                                 <TableRowColumn>{row.infoSurRgt[0]?formatNumberInMoney(row.infoSurRgt[0].MONTANT_NET_REGLEMENT):"NON DISPONIBLE"}</TableRowColumn>
                                                <TableRowColumn>{row.statut_reg_retirer==="SORTIE"?"DISPONIBLE":"NON DISPONIBLE"}</TableRowColumn>
                                                <TableRowColumn>{row.ValBank==null||row.ValBank==""?"A DEFINIR":row.ValBank}</TableRowColumn>
-                                               <TableRowColumn>{row.Comments?row.Comments:"R.A.S"}</TableRowColumn>
+                                               <TableRowColumn>{row.Comments?comments:"R.A.S"}</TableRowColumn>
                                                <TableRowColumn>{row.CommentsBank?row.CommentsBank:"RIEN"}</TableRowColumn>
                                                <TableRowColumn>{row.infosRedac[0].nom+' '+row.infosRedac[0].prenom}</TableRowColumn>
                                             </TableRow>);
+                                            
+                                            
                                         }):<TableRow>
                                                <TableRowColumn colSpan="14">
                                                     <div style={{textAlign:'center'}}>
@@ -256,11 +275,11 @@ console.dir(this.state);
                      Pour effectuer une recherche de règlement disponibles pour retrait:<br/>- Veuillez entrez la date de naissance du bénéficiaire selon le format indiqué <b>JJ/MM/AAAA</b>, ou le numéro de règlement figurant sur le chèque ou encore le nom complet du bénéficiaire.<br/>
                      Vous pouvez savoir si un règlement a été servi ou non en observant la couleur de fond de la ligne du tableau qu'il occupe<br/>
                       Ces couleurs sont:<br/>
-                        -<span style={{color:"white"}}>BLANC</span> pour un règlement disponible pour traitement<br/>
-                        -<span style={{color:"green"}}>VERT</span> pour un règlement qui a été servi <b>PRET</b><br/> 
-                        -<span style={{color:"red"}}>ROUGE</span> pour un règlement dont l'encaissement a été refusé<br/><br/>
+                        -<span style={{color:"white"}}>BLANC</span> pour un règlement en cours<br/>
+                        -<span style={{color:"green"}}>VERT</span> pour un règlement effectué <b>PRET</b><br/> 
+                        -<span style={{color:"red"}}>ROUGE</span> pour un règlement rejeté<br/><br/>
                      <br/>Les recherches sont complémentaires et peuvent être combinés pour un résultat plus précis.<br/>
-                     <b>NB:LES RECHERCHES SONT EXECUTEES DYNAMIQUEMENT.</b>
+                     <b>NB:LES RECHERCHES SONT EXECUTEES DYNAMIQUEMENT / AUTOMATIQUEMENT.</b>
                      </div>
                 </div>
             );
@@ -297,11 +316,12 @@ ConsultDispoTableBank.propTypes={
 };
 
 const checkDisponibleBank=gql`
-    query checkDisponibleBank($startDate:String,$endDate:String,$numrgt:Int,$nomtotal:String,$birthdate:String,$offset:Int,$limit:Int){
-        consultDispoBank(startDate:$startDate,endDate:$endDate,numrgt:$numrgt,nomtotal:$nomtotal,birthdate:$birthdate,offset:$offset,limit:$limit){
+    query checkDisponibleBank($numrgt:Int,$numcheque:Int,$numpol:Int,$banque:String,$numenv:Int,$nomtotal:String,$birthdate:String,$offset:Int,$limit:Int){
+        consultDispoBank(numrgt:$numrgt,numcheque:$numcheque,numpolice:$numpol,banque:$banque,numenv:$numenv,nomtotal:$nomtotal,birthdate:$birthdate,offset:$offset,limit:$limit){
             wasrg
             wnrgt
             wnupo
+            Num_envoi
             nom_beneficiaire
             date_naiss
             date_depot_treso
@@ -316,6 +336,7 @@ const checkDisponibleBank=gql`
             MRGGT
             dateRDV
             ValBank
+            banque
             Comments
             CommentsBank
             infosRedac {
@@ -349,14 +370,18 @@ const regUpdatedSub=gql`
     }
 `;
 export default graphql(checkDisponibleBank,{
-    options:({startDate,endDate,birthdate,numrgt,nomtotal}) => ({ 
+    options:({startDate,endDate,birthdate,numpol,banque,numrgt,nomtotal,numenv,numcheque}) => ({ 
         
         variables: {
             startDate,
             endDate,
             birthdate,
+            numpol,
+            banque,
             numrgt,
             nomtotal,
+            numenv,
+            numcheque,
             offset:0,
             limit:ITEMS_PER_PAGE          
     },fetchPolicy: 'cache-and-network' }),

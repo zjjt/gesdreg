@@ -51,8 +51,9 @@ export const pubsub = new PubSub();
             }
         },
         async listeDispo(_,args){
+            console.log("in list dispo");
             let query="exec info_reg_dispo :numero_reg,:domaine ";
-            
+            let chequeQuery="select Dbo.check_etat_cheq(:numcheque) as chequeState";   
            // let chainer=new Sequelize.Utils.QueryChainer();
             //si on a la date,et pas de statut,de domaine,de num_regl et on ne veut pas afficher seulment ceux kon a edite et non ordoner par num_regl
             if(args.typeDate && args.date && !args.statut && !args.domaine && !args.numenv && !args.numregl && !args.numpol && !args.nomtotal && !args.numreglStart && !args.numreglEnd ){
@@ -86,6 +87,18 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
+                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                        promises.push(
+                                            Promise.all([
+                                                DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
+                                                ]).spread((chequeState)=>{
+                                                    dispo=r.toJSON();
+                                                    dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;
+                                                    return dispo;
+                                                })
+                                           );
+                                       }
+                                    
                                 });
                                 return Promise.all(promises)
                                 
@@ -98,6 +111,9 @@ export const pubsub = new PubSub();
                                         e.infoSurRgt=[];
                                         e.infoSurRgt.push(goodelem);
                                     }
+                                    if(e.chequeState==null ||!e.cheque)
+                                        e.chequeState="INCONNU";
+                                    e.cheque=e.cheque==null?0:e.cheque;
                                     return e;
                                 });
                                 //console.dir(nd);
@@ -132,6 +148,17 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
+                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                        promises.push(
+                                            Promise.all([
+                                                DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
+                                                ]).spread((chequeState)=>{
+                                                    dispo=r.toJSON();
+                                                    dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;
+                                                    return dispo;
+                                                })
+                                           );
+                                       }
                                 });
                                 return Promise.all(promises)
                                 
@@ -144,6 +171,9 @@ export const pubsub = new PubSub();
                                         e.infoSurRgt=[];
                                         e.infoSurRgt.push(goodelem);
                                     }
+                                    if(e.chequeState==null ||!e.cheque)
+                                        e.chequeState="INCONNU";
+                                    e.cheque=e.cheque==null?0:e.cheque;
                                     return e;
                                 });
                                 //console.dir(nd);
@@ -175,6 +205,18 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
+                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                        promises.push(
+                                            Promise.all([
+                                                DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
+                                                ]).spread((chequeState)=>{
+                                                    dispo=r.toJSON();
+                                                    dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;
+                                                    return dispo;
+                                                })
+                                           );
+                                       }
+                                    /*promises.push(                                        Promise.all([                                            DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})                                            ]).spread((chequeState)=>{                                                dispo=r.toJSON();                                                dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;                                                return dispo;                                            })                                       );*/
                                 });
                                 return Promise.all(promises)
                                 
@@ -187,6 +229,8 @@ export const pubsub = new PubSub();
                                         e.infoSurRgt=[];
                                         e.infoSurRgt.push(goodelem);
                                     }
+                                    if(e.chequeState==null ||!e.cheque)
+                                        e.chequeState="INCONNU";
                                     return e;
                                 });
                                 //console.dir(nd);
@@ -218,6 +262,18 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
+                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                        promises.push(
+                                            Promise.all([
+                                                DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
+                                                ]).spread((chequeState)=>{
+                                                    dispo=r.toJSON();
+                                                    dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;
+                                                    return dispo;
+                                                })
+                                           );
+                                       }
+                                    /*promises.push(                                        Promise.all([                                            DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})                                            ]).spread((chequeState)=>{                                                dispo=r.toJSON();                                                dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;                                                return dispo;                                            })                                       );*/
                                 });
                                 return Promise.all(promises)
                                 
@@ -230,6 +286,8 @@ export const pubsub = new PubSub();
                                         e.infoSurRgt=[];
                                         e.infoSurRgt.push(goodelem);
                                     }
+                                    if(e.chequeState==null ||!e.cheque)
+                                        e.chequeState="INCONNU";
                                     return e;
                                 });
                                 //console.dir(nd);
@@ -261,6 +319,18 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
+                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                        promises.push(
+                                            Promise.all([
+                                                DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
+                                                ]).spread((chequeState)=>{
+                                                    dispo=r.toJSON();
+                                                    dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;
+                                                    return dispo;
+                                                })
+                                           );
+                                       }
+                                    /*promises.push(                                        Promise.all([                                            DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})                                            ]).spread((chequeState)=>{                                                dispo=r.toJSON();                                                dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;                                                return dispo;                                            })                                       );*/
                                 });
                                 return Promise.all(promises)
                                 
@@ -273,6 +343,8 @@ export const pubsub = new PubSub();
                                         e.infoSurRgt=[];
                                         e.infoSurRgt.push(goodelem);
                                     }
+                                    if(e.chequeState==null ||!e.cheque)
+                                        e.chequeState="INCONNU";
                                     return e;
                                 });
                                 //console.dir(nd);
@@ -305,6 +377,18 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
+                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                        promises.push(
+                                            Promise.all([
+                                                DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
+                                                ]).spread((chequeState)=>{
+                                                    dispo=r.toJSON();
+                                                    dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;
+                                                    return dispo;
+                                                })
+                                           );
+                                       }
+                                    /*promises.push(                                        Promise.all([                                            DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})                                            ]).spread((chequeState)=>{                                                dispo=r.toJSON();                                                dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;                                                return dispo;                                            })                                       );*/
                                 });
                                 return Promise.all(promises)
                                 
@@ -317,6 +401,8 @@ export const pubsub = new PubSub();
                                         e.infoSurRgt=[];
                                         e.infoSurRgt.push(goodelem);
                                     }
+                                    if(e.chequeState==null ||!e.cheque)
+                                        e.chequeState="INCONNU";
                                     return e;
                                 });
                                 //console.dir(nd);
@@ -349,6 +435,17 @@ export const pubsub = new PubSub();
                                                     return dispo;
                                                 })
                                             );
+                                            if(r.cheque && !r.Comments.includes("%MAN%")){
+                                                promises.push(
+                                                    Promise.all([
+                                                        DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
+                                                        ]).spread((chequeState)=>{
+                                                            dispo=r.toJSON();
+                                                            dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;
+                                                            return dispo;
+                                                        })
+                                                   );
+                                               }
                                         });
                                         return Promise.all(promises)
                                         
@@ -361,6 +458,8 @@ export const pubsub = new PubSub();
                                                 e.infoSurRgt=[];
                                                 e.infoSurRgt.push(goodelem);
                                             }
+                                            if(e.chequeState==null ||!e.cheque)
+                                                e.chequeState="INCONNU";
                                             return e;
                                         });
                                         //console.dir(nd);
@@ -398,6 +497,18 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
+                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                        promises.push(
+                                            Promise.all([
+                                                DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
+                                                ]).spread((chequeState)=>{
+                                                    dispo=r.toJSON();
+                                                    dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;
+                                                    return dispo;
+                                                })
+                                           );
+                                       }
+                                    /*promises.push(                                        Promise.all([                                            DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})                                            ]).spread((chequeState)=>{                                                dispo=r.toJSON();                                                dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;                                                return dispo;                                            })                                       );*/
                                 });
                                 return Promise.all(promises)
                                 
@@ -410,6 +521,8 @@ export const pubsub = new PubSub();
                                         e.infoSurRgt=[];
                                         e.infoSurRgt.push(goodelem);
                                     }
+                                    if(e.chequeState==null ||!e.cheque)
+                                        e.chequeState="INCONNU";
                                     return e;
                                 });
                                 //console.dir(nd);
@@ -442,6 +555,18 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
+                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                        promises.push(
+                                            Promise.all([
+                                                DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
+                                                ]).spread((chequeState)=>{
+                                                    dispo=r.toJSON();
+                                                    dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;
+                                                    return dispo;
+                                                })
+                                           );
+                                       }
+                                    /*promises.push(                                        Promise.all([                                            DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})                                            ]).spread((chequeState)=>{                                                dispo=r.toJSON();                                                dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;                                                return dispo;                                            })                                       );*/
                                 });
                                 return Promise.all(promises)
                                 
@@ -454,6 +579,8 @@ export const pubsub = new PubSub();
                                         e.infoSurRgt=[];
                                         e.infoSurRgt.push(goodelem);
                                     }
+                                    if(e.chequeState==null ||!e.cheque)
+                                        e.chequeState="INCONNU";
                                     return e;
                                 });
                                 //console.dir(nd);
@@ -486,6 +613,18 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
+                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                        promises.push(
+                                            Promise.all([
+                                                DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
+                                                ]).spread((chequeState)=>{
+                                                    dispo=r.toJSON();
+                                                    dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;
+                                                    return dispo;
+                                                })
+                                           );
+                                       }
+                                    /*promises.push(                                        Promise.all([                                            DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})                                            ]).spread((chequeState)=>{                                                dispo=r.toJSON();                                                dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;                                                return dispo;                                            })                                       );*/
                                 });
                                 return Promise.all(promises)
                                 
@@ -498,6 +637,8 @@ export const pubsub = new PubSub();
                                         e.infoSurRgt=[];
                                         e.infoSurRgt.push(goodelem);
                                     }
+                                    if(e.chequeState==null ||!e.cheque)
+                                        e.chequeState="INCONNU";
                                     return e;
                                 });
                                 //console.dir(nd);
@@ -530,6 +671,18 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
+                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                        promises.push(
+                                            Promise.all([
+                                                DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
+                                                ]).spread((chequeState)=>{
+                                                    dispo=r.toJSON();
+                                                    dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;
+                                                    return dispo;
+                                                })
+                                           );
+                                       }
+                                    /*promises.push(                                        Promise.all([                                            DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})                                            ]).spread((chequeState)=>{                                                dispo=r.toJSON();                                                dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;                                                return dispo;                                            })                                       );*/
                                 });
                                 return Promise.all(promises)
                                 
@@ -542,6 +695,8 @@ export const pubsub = new PubSub();
                                         e.infoSurRgt=[];
                                         e.infoSurRgt.push(goodelem);
                                     }
+                                    if(e.chequeState==null ||!e.cheque)
+                                        e.chequeState="INCONNU";
                                     return e;
                                 });
                                 //console.dir(nd);
@@ -574,6 +729,18 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
+                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                        promises.push(
+                                            Promise.all([
+                                                DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
+                                                ]).spread((chequeState)=>{
+                                                    dispo=r.toJSON();
+                                                    dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;
+                                                    return dispo;
+                                                })
+                                           );
+                                       }
+                                    /*promises.push(                                        Promise.all([                                            DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})                                            ]).spread((chequeState)=>{                                                dispo=r.toJSON();                                                dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;                                                return dispo;                                            })                                       );*/
                                 });
                                 return Promise.all(promises)
                                 
@@ -586,6 +753,8 @@ export const pubsub = new PubSub();
                                         e.infoSurRgt=[];
                                         e.infoSurRgt.push(goodelem);
                                     }
+                                    if(e.chequeState==null ||!e.cheque)
+                                        e.chequeState="INCONNU";
                                     return e;
                                 });
                                 //console.dir(nd);
@@ -618,6 +787,18 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
+                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                        promises.push(
+                                            Promise.all([
+                                                DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
+                                                ]).spread((chequeState)=>{
+                                                    dispo=r.toJSON();
+                                                    dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;
+                                                    return dispo;
+                                                })
+                                           );
+                                       }
+                                    /*promises.push(                                        Promise.all([                                            DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})                                            ]).spread((chequeState)=>{                                                dispo=r.toJSON();                                                dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;                                                return dispo;                                            })                                       );*/
                                 });
                                 return Promise.all(promises)
                                 
@@ -630,6 +811,8 @@ export const pubsub = new PubSub();
                                         e.infoSurRgt=[];
                                         e.infoSurRgt.push(goodelem);
                                     }
+                                    if(e.chequeState==null ||!e.cheque)
+                                        e.chequeState="INCONNU";
                                     return e;
                                 });
                                 //console.dir(nd);
@@ -662,6 +845,17 @@ export const pubsub = new PubSub();
                                                     return dispo;
                                                 })
                                             );
+                                            if(r.cheque && !r.Comments.includes("%MAN%")){
+                                                promises.push(
+                                                    Promise.all([
+                                                        DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
+                                                        ]).spread((chequeState)=>{
+                                                            dispo=r.toJSON();
+                                                            dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;
+                                                            return dispo;
+                                                        })
+                                                   );
+                                               }
                                         });
                                         return Promise.all(promises)
                                         
@@ -674,6 +868,8 @@ export const pubsub = new PubSub();
                                                 e.infoSurRgt=[];
                                                 e.infoSurRgt.push(goodelem);
                                             }
+                                            if(e.chequeState==null ||!e.cheque)
+                                                e.chequeState="INCONNU";
                                             return e;
                                         });
                                         //console.dir(nd);
@@ -713,6 +909,18 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
+                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                        promises.push(
+                                            Promise.all([
+                                                DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
+                                                ]).spread((chequeState)=>{
+                                                    dispo=r.toJSON();
+                                                    dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;
+                                                    return dispo;
+                                                })
+                                           );
+                                       }
+                                    /*promises.push(                                        Promise.all([                                            DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})                                            ]).spread((chequeState)=>{                                                dispo=r.toJSON();                                                dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;                                                return dispo;                                            })                                       );*/
                                 });
                                 return Promise.all(promises)
                                 
@@ -725,6 +933,8 @@ export const pubsub = new PubSub();
                                         e.infoSurRgt=[];
                                         e.infoSurRgt.push(goodelem);
                                     }
+                                    if(e.chequeState==null ||!e.cheque)
+                                        e.chequeState="INCONNU";
                                     return e;
                                 });
                                 //console.dir(nd);
@@ -757,6 +967,18 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
+                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                        promises.push(
+                                            Promise.all([
+                                                DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
+                                                ]).spread((chequeState)=>{
+                                                    dispo=r.toJSON();
+                                                    dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;
+                                                    return dispo;
+                                                })
+                                           );
+                                       }
+                                    /*promises.push(                                        Promise.all([                                            DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})                                            ]).spread((chequeState)=>{                                                dispo=r.toJSON();                                                dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;                                                return dispo;                                            })                                       );*/
                                 });
                                 return Promise.all(promises)
                                 
@@ -769,6 +991,8 @@ export const pubsub = new PubSub();
                                         e.infoSurRgt=[];
                                         e.infoSurRgt.push(goodelem);
                                     }
+                                    if(e.chequeState==null ||!e.cheque)
+                                        e.chequeState="INCONNU";
                                     return e;
                                 });
                                 //console.dir(nd);
@@ -801,6 +1025,18 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
+                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                        promises.push(
+                                            Promise.all([
+                                                DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
+                                                ]).spread((chequeState)=>{
+                                                    dispo=r.toJSON();
+                                                    dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;
+                                                    return dispo;
+                                                })
+                                           );
+                                       }
+                                    /*promises.push(                                        Promise.all([                                            DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})                                            ]).spread((chequeState)=>{                                                dispo=r.toJSON();                                                dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;                                                return dispo;                                            })                                       );*/
                                 });
                                 return Promise.all(promises)
                                 
@@ -813,6 +1049,8 @@ export const pubsub = new PubSub();
                                         e.infoSurRgt=[];
                                         e.infoSurRgt.push(goodelem);
                                     }
+                                    if(e.chequeState==null ||!e.cheque)
+                                        e.chequeState="INCONNU";
                                     return e;
                                 });
                                 //console.dir(nd);
@@ -845,6 +1083,18 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
+                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                        promises.push(
+                                            Promise.all([
+                                                DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
+                                                ]).spread((chequeState)=>{
+                                                    dispo=r.toJSON();
+                                                    dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;
+                                                    return dispo;
+                                                })
+                                           );
+                                       }
+                                    /*promises.push(                                        Promise.all([                                            DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})                                            ]).spread((chequeState)=>{                                                dispo=r.toJSON();                                                dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;                                                return dispo;                                            })                                       );*/
                                 });
                                 return Promise.all(promises)
                                 
@@ -857,6 +1107,8 @@ export const pubsub = new PubSub();
                                         e.infoSurRgt=[];
                                         e.infoSurRgt.push(goodelem);
                                     }
+                                    if(e.chequeState==null ||!e.cheque)
+                                        e.chequeState="INCONNU";
                                     return e;
                                 });
                                 //console.dir(nd);
@@ -889,6 +1141,18 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
+                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                        promises.push(
+                                            Promise.all([
+                                                DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
+                                                ]).spread((chequeState)=>{
+                                                    dispo=r.toJSON();
+                                                    dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;
+                                                    return dispo;
+                                                })
+                                           );
+                                       }
+                                    /*promises.push(                                        Promise.all([                                            DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})                                            ]).spread((chequeState)=>{                                                dispo=r.toJSON();                                                dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;                                                return dispo;                                            })                                       );*/
                                 });
                                 return Promise.all(promises)
                                 
@@ -901,6 +1165,8 @@ export const pubsub = new PubSub();
                                         e.infoSurRgt=[];
                                         e.infoSurRgt.push(goodelem);
                                     }
+                                    if(e.chequeState==null ||!e.cheque)
+                                        e.chequeState="INCONNU";
                                     return e;
                                 });
                                 //console.dir(nd);
@@ -934,6 +1200,18 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
+                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                        promises.push(
+                                            Promise.all([
+                                                DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
+                                                ]).spread((chequeState)=>{
+                                                    dispo=r.toJSON();
+                                                    dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;
+                                                    return dispo;
+                                                })
+                                           );
+                                       }
+                                    /*promises.push(                                        Promise.all([                                            DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})                                            ]).spread((chequeState)=>{                                                dispo=r.toJSON();                                                dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;                                                return dispo;                                            })                                       );*/
                                 });
                                 return Promise.all(promises)
                                 
@@ -947,6 +1225,8 @@ export const pubsub = new PubSub();
                                     e.infoSurRgt=[];
                                     e.infoSurRgt.push(goodelem);
                                 }
+                                if(e.chequeState==null ||!e.cheque)
+                                        e.chequeState="INCONNU";
                                 return e;
                             });
                             //console.dir(nd);
@@ -979,6 +1259,18 @@ export const pubsub = new PubSub();
                                                     return dispo;
                                                 })
                                             );
+                                            if(r.cheque && !r.Comments.includes("%MAN%")){
+                                                promises.push(
+                                                    Promise.all([
+                                                        DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
+                                                        ]).spread((chequeState)=>{
+                                                            dispo=r.toJSON();
+                                                            dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;
+                                                            return dispo;
+                                                        })
+                                                   );
+                                               }
+                                            
                                         });
                                         return Promise.all(promises)
                                         
@@ -992,6 +1284,8 @@ export const pubsub = new PubSub();
                                             e.infoSurRgt=[];
                                             e.infoSurRgt.push(goodelem);
                                         }
+                                        if(e.chequeState==null ||!e.cheque)
+                                            e.chequeState="INCONNU";
                                         return e;
                                     });
                                     //console.dir(nd);
@@ -1026,12 +1320,36 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
+                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                        promises.push(
+                                            Promise.all([
+                                                DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
+                                                ]).spread((chequeState)=>{
+                                                    dispo=r.toJSON();
+                                                    dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;
+                                                    return dispo;
+                                                })
+                                           );
+                                       }
+                                    /*promises.push(                                        Promise.all([                                            DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})                                            ]).spread((chequeState)=>{                                                dispo=r.toJSON();                                                dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;                                                return dispo;                                            })                                       );*/
                                 });
                                 return Promise.all(promises)
                                 
                             }).then((dispos)=>{
                                 console.dir(dispos);
-                                return dispos;
+                                let nd=dispos.map((e,i,arr)=>{
+                                    if(e.infoSurRgt.length>1){
+                                        let goodelem=e.infoSurRgt[0];
+                                        //console.log("reglement "+e.wnrgt);
+                                        //console.dir(e);
+                                        e.infoSurRgt=[];
+                                        e.infoSurRgt.push(goodelem);
+                                    }
+                                    if(e.chequeState==null ||!e.cheque)
+                                        e.chequeState="INCONNU";
+                                    return e;
+                                });
+                                return nd;
                             });
                             return l;
             }else if(!args.typeDate && !args.date && !args.statut && !args.domaine && !args.numenv && args.numregl && !args.numpol && !args.nomtotal && !args.numreglStart && !args.numreglEnd){
@@ -1059,12 +1377,36 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
+                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                        promises.push(
+                                            Promise.all([
+                                                DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
+                                                ]).spread((chequeState)=>{
+                                                    dispo=r.toJSON();
+                                                    dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;
+                                                    return dispo;
+                                                })
+                                           );
+                                       }
+                                    /*promises.push(                                        Promise.all([                                            DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})                                            ]).spread((chequeState)=>{                                                dispo=r.toJSON();                                                dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;                                                return dispo;                                            })                                       );*/
                                 });
                                 return Promise.all(promises)
                                 
                             }).then((dispos)=>{
                                 console.dir(dispos);
-                                return dispos;
+                                let nd=dispos.map((e,i,arr)=>{
+                                    if(e.infoSurRgt.length>1){
+                                        let goodelem=e.infoSurRgt[0];
+                                        //console.log("reglement "+e.wnrgt);
+                                        //console.dir(e);
+                                        e.infoSurRgt=[];
+                                        e.infoSurRgt.push(goodelem);
+                                    }
+                                    if(e.chequeState==null ||!e.cheque)
+                                        e.chequeState="INCONNU";
+                                    return e;
+                                });
+                                return nd;
                             });
                             return l;
             }else if(!args.typeDate && !args.date && !args.statut && !args.domaine && !args.numenv && !args.numregl && args.numpol && !args.nomtotal && !args.numreglStart && !args.numreglEnd){
@@ -1091,12 +1433,36 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
+                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                        promises.push(
+                                            Promise.all([
+                                                DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
+                                                ]).spread((chequeState)=>{
+                                                    dispo=r.toJSON();
+                                                    dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;
+                                                    return dispo;
+                                                })
+                                           );
+                                       }
+                                    /*promises.push(                                        Promise.all([                                            DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})                                            ]).spread((chequeState)=>{                                                dispo=r.toJSON();                                                dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;                                                return dispo;                                            })                                       );*/
                                 });
                                 return Promise.all(promises)
                                 
                             }).then((dispos)=>{
                               //  console.dir(dispos);
-                                return dispos;
+                              let nd=dispos.map((e,i,arr)=>{
+                                if(e.infoSurRgt.length>1){
+                                    let goodelem=e.infoSurRgt[0];
+                                    //console.log("reglement "+e.wnrgt);
+                                    //console.dir(e);
+                                    e.infoSurRgt=[];
+                                    e.infoSurRgt.push(goodelem);
+                                }
+                                if(e.chequeState==null ||!e.cheque)
+                                    e.chequeState="INCONNU";
+                                return e;
+                            });
+                            return nd;
                             });
                             return l;
             }else if(!args.typeDate && !args.date && !args.statut && !args.domaine && !args.numenv && !args.numregl && !args.numpol && args.nomtotal && !args.numreglStart && !args.numreglEnd){
@@ -1123,12 +1489,37 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
+                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                        promises.push(
+                                            Promise.all([
+                                                DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
+                                                ]).spread((chequeState)=>{
+                                                    dispo=r.toJSON();
+                                                    dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;
+                                                    return dispo;
+                                                })
+                                           );
+                                       }
+                                    /*promises.push(                                        Promise.all([                                            DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})                                            ]).spread((chequeState)=>{                                                dispo=r.toJSON();                                                dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;                                                return dispo;                                            })                                       );*/
+                                    
                                 });
                                 return Promise.all(promises)
                                 
                             }).then((dispos)=>{
                                // console.dir(dispos);
-                                return dispos;
+                               let nd=dispos.map((e,i,arr)=>{
+                                if(e.infoSurRgt.length>1){
+                                    let goodelem=e.infoSurRgt[0];
+                                    //console.log("reglement "+e.wnrgt);
+                                    //console.dir(e);
+                                    e.infoSurRgt=[];
+                                    e.infoSurRgt.push(goodelem);
+                                }
+                                if(e.chequeState==null ||!e.cheque)
+                                    e.chequeState="INCONNU";
+                                return e;
+                            });
+                            return nd;
                             });
                             return l;
             }
@@ -1156,12 +1547,36 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
+                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                        promises.push(
+                                            Promise.all([
+                                                DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
+                                                ]).spread((chequeState)=>{
+                                                    dispo=r.toJSON();
+                                                    dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;
+                                                    return dispo;
+                                                })
+                                           );
+                                       }
+                                    /*promises.push(                                        Promise.all([                                            DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})                                            ]).spread((chequeState)=>{                                                dispo=r.toJSON();                                                dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;                                                return dispo;                                            })                                       );*/
                                 });
                                 return Promise.all(promises).catch(reason=>{console.log(reason)})
                                 
                             }).then((dispos)=>{
                                 console.dir(dispos);
-                                return dispos;
+                                let nd=dispos.map((e,i,arr)=>{
+                                    if(e.infoSurRgt.length>1){
+                                        let goodelem=e.infoSurRgt[0];
+                                        //console.log("reglement "+e.wnrgt);
+                                        //console.dir(e);
+                                        e.infoSurRgt=[];
+                                        e.infoSurRgt.push(goodelem);
+                                    }
+                                    if(e.chequeState==null ||!e.cheque)
+                                        e.chequeState="INCONNU";
+                                    return e;
+                                });
+                                return nd;
                             });
                             return l;
             }
@@ -1192,6 +1607,17 @@ export const pubsub = new PubSub();
                                 return dispo;
                             })
                         );
+                        if(r.cheque && !r.Comments.includes("%MAN%")){
+                            promises.push(
+                                Promise.all([
+                                    DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
+                                    ]).spread((chequeState)=>{
+                                        dispo=r.toJSON();
+                                        dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;
+                                        return dispo;
+                                    })
+                               );
+                           }
                     });
                     return Promise.all(promises)
                     
@@ -1206,11 +1632,11 @@ export const pubsub = new PubSub();
                         e.infoSurRgt=[];
                         e.infoSurRgt.push(goodelem);
                     }
+                    if(e.chequeState==null ||!e.cheque)
+                        e.chequeState="INCONNU";
                     return e;
                 });
-                //console.dir(nd);
-                
-                    return nd;
+                return nd;
                 });
                 return l;
             }
@@ -1245,6 +1671,17 @@ export const pubsub = new PubSub();
                                 return dispo;
                             })
                         );
+                        if(r.cheque && !r.Comments.includes("%MAN%")){
+                            promises.push(
+                                Promise.all([
+                                    DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
+                                    ]).spread((chequeState)=>{
+                                        dispo=r.toJSON();
+                                        dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;
+                                        return dispo;
+                                    })
+                               );
+                           }
                     });
                     return Promise.all(promises)
                     
@@ -1259,15 +1696,16 @@ export const pubsub = new PubSub();
                         e.infoSurRgt=[];
                         e.infoSurRgt.push(goodelem);
                     }
+                    if(e.chequeState==null ||!e.cheque)
+                        e.chequeState="INCONNU";
                     return e;
                 });
-                //console.dir(nd);
-                
-                    return nd;
+                return nd;
                 });
                 return l;
             }
             else{
+                console.log("in list dispo else");
                 //on affiche tout et on ordonne par date de la demande
                let l= await dispoSQL.findAll({
                                         attributes:{exclude:['id']},
@@ -1277,6 +1715,7 @@ export const pubsub = new PubSub();
                                 let promises=[];
                                 let dispo;
                                 res.forEach((r)=>{
+                                    
                                     promises.push(
                                         Promise.all([
                                         DBSQLSERVER.query(query,{ replacements:{numero_reg:r.wnrgt,domaine:r.domaine},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -1294,6 +1733,18 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
+                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                        promises.push(
+                                            Promise.all([
+                                                DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
+                                                ]).spread((chequeState)=>{
+                                                    dispo=r.toJSON();
+                                                    dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;
+                                                    return dispo;
+                                                })
+                                           );
+                                       }
+                                    /*promises.push(                                        Promise.all([                                            DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})                                            ]).spread((chequeState)=>{                                                dispo=r.toJSON();                                                dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;                                                return dispo;                                            })                                       );*/
                                 });
                                 return Promise.all(promises)
                                 
@@ -1301,28 +1752,30 @@ export const pubsub = new PubSub();
                                // console.dir(dispos);
                                //on enleve les doublons dans l'array de inforeg dispo
                                let nd=dispos.map((e,i,arr)=>{
-                                   if(e.infoSurRgt.length>1){
-                                       let goodelem=e.infoSurRgt[0];
-                                       //console.log("reglement "+e.wnrgt);
-                                       //console.dir(e);
-                                       e.infoSurRgt=[];
-                                       e.infoSurRgt.push(goodelem);
-                                   }
-                                   return e;
-                               });
-                               //console.dir(nd);
-                               
-                                return nd;
+                                if(e.infoSurRgt.length>1){
+                                    let goodelem=e.infoSurRgt[0];
+                                    //console.log("reglement "+e.wnrgt);
+                                    //console.dir(e);
+                                    e.infoSurRgt=[];
+                                    e.infoSurRgt.push(goodelem);
+                                }
+                                if(e.chequeState==null ||!e.cheque)
+                                    e.chequeState="INCONNU";
+                                return e;
+                            });
+                            return nd;
                             });
                return l;
             }
             
         },
         consultDispo(_,args){
+            console.log("in consult dispo");
             let query="exec info_reg_dispo :numero_reg,:domaine ";
-            let uquery="select * from exp.reguser where redac like :red";    
+            let uquery="select * from exp.reguser where redac like :red"; 
+            let chequeQuery="select Dbo.check_etat_cheq(:numcheque) as chequeState";   
             //Avec une restriction sur lq date de rgt
-            if(args.startDate && args.endDate && !args.numpolice && !args.nomtotal && !args.birthdate){
+            if(args.startDate && args.endDate && !args.numpolice && !args.numrgt && !args.numenv && !args.numcheque && !args.nomtotal && !args.birthdate){
                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                     date_depot_treso:{
                            $between:[args.startDate,args.endDate]
@@ -1340,6 +1793,17 @@ export const pubsub = new PubSub();
                                 return dispo;
                             })
                         );
+                        if(r.cheque && !r.Comments.includes("%MAN%")){
+                            promises.push(
+                                Promise.all([
+                                    DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
+                                    ]).spread((chequeState)=>{
+                                        dispo=r.toJSON();
+                                        dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;
+                                        return dispo;
+                                    })
+                               );
+                           }
                            promises.push(
                                Promise.all([
                                DBSQLSERVER.query(query,{ replacements:{numero_reg:r.wnrgt,domaine:r.domaine},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -1361,22 +1825,22 @@ export const pubsub = new PubSub();
                        return Promise.all(promises)
                        
                    }).then((dispos)=>{
-                       let nd=dispos.map((e,i,arr)=>{
-                           if(e.infoSurRgt.length>1){
-                               let goodelem=e.infoSurRgt[0];
-                               //console.log("reglement "+e.wnrgt);
-                               //console.dir(e);
-                               e.infoSurRgt=[];
-                               e.infoSurRgt.push(goodelem);
-                           }
-                           return e;
-                       });
-                       //console.dir(nd);
-                       
-                        return uniq(nd);
+                    let nd=dispos.map((e,i,arr)=>{
+                        if(e.infoSurRgt.length>1){
+                            let goodelem=e.infoSurRgt[0];
+                            //console.log("reglement "+e.wnrgt);
+                            //console.dir(e);
+                            e.infoSurRgt=[];
+                            e.infoSurRgt.push(goodelem);
+                        }
+                        if(e.chequeState==null ||!e.cheque)
+                            e.chequeState="INCONNU";
+                        return e;
+                    });
+                    return nd;
                    });
             }
-            else if(args.startDate && args.endDate && args.numpolice && !args.birthdate && !args.nomtotal){
+            else if(args.startDate && args.endDate && args.numpolice && !args.numrgt && !args.numenv && !args.numcheque && !args.birthdate && !args.nomtotal){
                 
                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                     wnupo:parseInt(args.numpolice),
@@ -1396,6 +1860,18 @@ export const pubsub = new PubSub();
                                 return dispo;
                             })
                         );
+                        
+                        if(r.cheque && !r.Comments.includes("%MAN%")){
+                            promises.push(
+                                Promise.all([
+                                    DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
+                                    ]).spread((chequeState)=>{
+                                        dispo=r.toJSON();
+                                        dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;
+                                        return dispo;
+                                    })
+                               );
+                           }
                            promises.push(
                                Promise.all([
                                DBSQLSERVER.query(query,{ replacements:{numero_reg:r.wnrgt,domaine:r.domaine},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -1417,23 +1893,23 @@ export const pubsub = new PubSub();
                        return Promise.all(promises)
                        
                    }).then((dispos)=>{
-                       let nd=dispos.map((e,i,arr)=>{
-                           if(e.infoSurRgt.length>1){
-                               let goodelem=e.infoSurRgt[0];
-                               //console.log("reglement "+e.wnrgt);
-                               //console.dir(e);
-                               e.infoSurRgt=[];
-                               e.infoSurRgt.push(goodelem);
-                           }
-                           return e;
-                       });
-                       //console.dir(nd);
-                       
-                        return uniq(nd);
+                    let nd=dispos.map((e,i,arr)=>{
+                        if(e.infoSurRgt.length>1){
+                            let goodelem=e.infoSurRgt[0];
+                            //console.log("reglement "+e.wnrgt);
+                            //console.dir(e);
+                            e.infoSurRgt=[];
+                            e.infoSurRgt.push(goodelem);
+                        }
+                        if(e.chequeState==null ||!e.cheque)
+                            e.chequeState="INCONNU";
+                        return e;
+                    });
+                    return nd;
                    });
  
             }
-            else if(args.startDate && args.endDate && args.numpolice && args.birthdate && !args.nomtotal){
+            else if(args.startDate && args.endDate && args.numpolice && !args.numrgt && !args.numenv && !args.numcheque && args.birthdate && !args.nomtotal){
                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                     wnupo:parseInt(args.numpolice),
                     date_naiss:args.birthdate,
@@ -1453,6 +1929,17 @@ export const pubsub = new PubSub();
                                 return dispo;
                             })
                         );
+                        if(r.cheque && !r.Comments.includes("%MAN%")){
+                            promises.push(
+                                Promise.all([
+                                    DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
+                                    ]).spread((chequeState)=>{
+                                        dispo=r.toJSON();
+                                        dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;
+                                        return dispo;
+                                    })
+                               );
+                           }
                            promises.push(
                                Promise.all([
                                DBSQLSERVER.query(query,{ replacements:{numero_reg:r.wnrgt,domaine:r.domaine},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -1474,23 +1961,23 @@ export const pubsub = new PubSub();
                        return Promise.all(promises)
                        
                    }).then((dispos)=>{
-                       let nd=dispos.map((e,i,arr)=>{
-                           if(e.infoSurRgt.length>1){
-                               let goodelem=e.infoSurRgt[0];
-                               //console.log("reglement "+e.wnrgt);
-                               //console.dir(e);
-                               e.infoSurRgt=[];
-                               e.infoSurRgt.push(goodelem);
-                           }
-                           return e;
-                       });
-                       //console.dir(nd);
-                       
-                        return uniq(nd);
+                    let nd=dispos.map((e,i,arr)=>{
+                        if(e.infoSurRgt.length>1){
+                            let goodelem=e.infoSurRgt[0];
+                            //console.log("reglement "+e.wnrgt);
+                            //console.dir(e);
+                            e.infoSurRgt=[];
+                            e.infoSurRgt.push(goodelem);
+                        }
+                        if(e.chequeState==null ||!e.cheque)
+                            e.chequeState="INCONNU";
+                        return e;
+                    });
+                    return nd;
                    });
  
             }
-            else if(args.startDate && args.endDate && args.numpolice && args.birthdate && args.nomtotal){
+            else if(args.startDate && args.endDate && args.numpolice && args.birthdate && args.nomtotal && !args.numrgt && !args.numenv && !args.numcheque){
                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                     wnupo:parseInt(args.numpolice),
                     nom_beneficiaire:{
@@ -1513,6 +2000,17 @@ export const pubsub = new PubSub();
                                 return dispo;
                             })
                         );
+                        if(r.cheque && !r.Comments.includes("%MAN%")){
+                            promises.push(
+                                Promise.all([
+                                    DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
+                                    ]).spread((chequeState)=>{
+                                        dispo=r.toJSON();
+                                        dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;
+                                        return dispo;
+                                    })
+                               );
+                           }
                            promises.push(
                                Promise.all([
                                DBSQLSERVER.query(query,{ replacements:{numero_reg:r.wnrgt,domaine:r.domaine},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -1534,23 +2032,23 @@ export const pubsub = new PubSub();
                        return Promise.all(promises)
                        
                    }).then((dispos)=>{
-                       let nd=dispos.map((e,i,arr)=>{
-                           if(e.infoSurRgt.length>1){
-                               let goodelem=e.infoSurRgt[0];
-                               //console.log("reglement "+e.wnrgt);
-                               //console.dir(e);
-                               e.infoSurRgt=[];
-                               e.infoSurRgt.push(goodelem);
-                           }
-                           return e;
-                       });
-                       //console.dir(nd);
-                       
-                        return uniq(nd);
+                    let nd=dispos.map((e,i,arr)=>{
+                        if(e.infoSurRgt.length>1){
+                            let goodelem=e.infoSurRgt[0];
+                            //console.log("reglement "+e.wnrgt);
+                            //console.dir(e);
+                            e.infoSurRgt=[];
+                            e.infoSurRgt.push(goodelem);
+                        }
+                        if(e.chequeState==null ||!e.cheque)
+                            e.chequeState="INCONNU";
+                        return e;
+                    });
+                    return nd;
                    });
  
             }
-            else if(!args.startDate && !args.endDate && args.numpolice && args.birthdate && !args.nomtotal){
+            else if(!args.startDate && !args.endDate && args.numpolice && args.birthdate && !args.numrgt && !args.numenv && !args.nomtotal && !args.numcheque){
                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                     wnupo:parseInt(args.numpolice),
                     date_naiss:args.birthdate,
@@ -1568,6 +2066,17 @@ export const pubsub = new PubSub();
                                 return dispo;
                             })
                         );
+                        if(r.cheque && !r.Comments.includes("%MAN%")){
+                            promises.push(
+                                Promise.all([
+                                    DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
+                                    ]).spread((chequeState)=>{
+                                        dispo=r.toJSON();
+                                        dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;
+                                        return dispo;
+                                    })
+                               );
+                           }
                         promises.push(
                             Promise.all([
                             DBSQLSERVER.query(query,{ replacements:{numero_reg:r.wnrgt,domaine:r.domaine},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -1597,14 +2106,14 @@ export const pubsub = new PubSub();
                             e.infoSurRgt=[];
                             e.infoSurRgt.push(goodelem);
                         }
+                        if(e.chequeState==null ||!e.cheque)
+                            e.chequeState="INCONNU";
                         return e;
                     });
-                    //console.dir(nd);
-                    
-                     return uniq(nd);
+                    return nd;
                 });
  
-            }else if(!args.startDate && !args.endDate && args.numpolice && !args.birthdate && args.nomtotal){
+            }else if(!args.startDate && !args.endDate && args.numpolice && !args.birthdate && !args.numrgt && !args.numenv && args.nomtotal && !args.numcheque){
                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                     wnupo:parseInt(args.numpolice),
                     nom_beneficiaire:{
@@ -1624,6 +2133,17 @@ export const pubsub = new PubSub();
                                 return dispo;
                             })
                         );
+                        if(r.cheque && !r.Comments.includes("%MAN%")){
+                            promises.push(
+                                Promise.all([
+                                    DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
+                                    ]).spread((chequeState)=>{
+                                        dispo=r.toJSON();
+                                        dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;
+                                        return dispo;
+                                    })
+                               );
+                           }
                         promises.push(
                             Promise.all([
                             DBSQLSERVER.query(query,{ replacements:{numero_reg:r.wnrgt,domaine:r.domaine},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -1653,14 +2173,14 @@ export const pubsub = new PubSub();
                             e.infoSurRgt=[];
                             e.infoSurRgt.push(goodelem);
                         }
+                        if(e.chequeState==null ||!e.cheque)
+                            e.chequeState="INCONNU";
                         return e;
                     });
-                    //console.dir(nd);
-                    
-                     return uniq(nd);
+                    return nd;
                 });
  
-            }else if(!args.startDate && !args.endDate && !args.numpolice && args.birthdate && !args.nomtotal){
+            }else if(!args.startDate && !args.endDate && !args.numpolice && args.birthdate && !args.nomtotal && !args.numrgt && !args.numenv && !args.numcheque){
                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                     date_naiss:args.birthdate,
                     // statut_reg_retirer:'PRET'
@@ -1677,6 +2197,17 @@ export const pubsub = new PubSub();
                             return dispo;
                         })
                     );
+                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                        promises.push(
+                            Promise.all([
+                                DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
+                                ]).spread((chequeState)=>{
+                                    dispo=r.toJSON();
+                                    dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;
+                                    return dispo;
+                                })
+                           );
+                       }
                     promises.push(
                         Promise.all([
                         DBSQLSERVER.query(query,{ replacements:{numero_reg:r.wnrgt,domaine:r.domaine},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -1706,14 +2237,14 @@ export const pubsub = new PubSub();
                         e.infoSurRgt=[];
                         e.infoSurRgt.push(goodelem);
                     }
+                    if(e.chequeState==null ||!e.cheque)
+                        e.chequeState="INCONNU";
                     return e;
                 });
-                //console.dir(nd);
-                
-                 return uniq(nd);
+                return nd;
             });
  
-            }else if(!args.startDate && !args.endDate && !args.numpolice && args.birthdate && args.nomtotal){
+            }else if(!args.startDate && !args.endDate && !args.numpolice && args.birthdate && args.nomtotal && !args.numrgt && !args.numenv && !args.numcheque){
                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                     date_naiss:args.birthdate,
                     nom_beneficiaire:{
@@ -1733,6 +2264,17 @@ export const pubsub = new PubSub();
                                 return dispo;
                             })
                         );
+                        if(r.cheque && !r.Comments.includes("%MAN%")){
+                            promises.push(
+                                Promise.all([
+                                    DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
+                                    ]).spread((chequeState)=>{
+                                        dispo=r.toJSON();
+                                        dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;
+                                        return dispo;
+                                    })
+                               );
+                           }
                         promises.push(
                             Promise.all([
                             DBSQLSERVER.query(query,{ replacements:{numero_reg:r.wnrgt,domaine:r.domaine},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -1762,14 +2304,14 @@ export const pubsub = new PubSub();
                             e.infoSurRgt=[];
                             e.infoSurRgt.push(goodelem);
                         }
+                        if(e.chequeState==null ||!e.cheque)
+                            e.chequeState="INCONNU";
                         return e;
                     });
-                    //console.dir(nd);
-                    
-                     return uniq(nd);
+                    return nd;
                 });
  
-            }else if(!args.startDate && !args.endDate && !args.numpolice && !args.birthdate && args.nomtotal){
+            }else if(!args.startDate && !args.endDate && !args.numpolice && !args.birthdate && args.nomtotal && !args.numrgt && !args.numenv && !args.numcheque){
                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                     nom_beneficiaire:{
                                     $like:'%'+args.nomtotal+'%'
@@ -1788,6 +2330,17 @@ export const pubsub = new PubSub();
                                 return dispo;
                             })
                         );
+                        if(r.cheque && !r.Comments.includes("%MAN%")){
+                            promises.push(
+                                Promise.all([
+                                    DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
+                                    ]).spread((chequeState)=>{
+                                        dispo=r.toJSON();
+                                        dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;
+                                        return dispo;
+                                    })
+                               );
+                           }
                         promises.push(
                             Promise.all([
                             DBSQLSERVER.query(query,{ replacements:{numero_reg:r.wnrgt,domaine:r.domaine},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -1817,14 +2370,14 @@ export const pubsub = new PubSub();
                             e.infoSurRgt=[];
                             e.infoSurRgt.push(goodelem);
                         }
+                        if(e.chequeState==null ||!e.cheque)
+                            e.chequeState="INCONNU";
                         return e;
                     });
-                    //console.dir(nd);
-                    
-                     return uniq(nd);
+                    return nd;
                 });
  
-            }else if(!args.startDate && !args.endDate && args.numpolice && args.birthdate && args.nomtotal){
+            }else if(!args.startDate && !args.endDate && args.numpolice && args.birthdate && args.nomtotal && !args.numrgt && !args.numenv && !args.numcheque){
                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                     wnupo:parseInt(args.numpolice),
                     date_naiss:args.birthdate,
@@ -1845,6 +2398,17 @@ export const pubsub = new PubSub();
                                 return dispo;
                             })
                         );
+                        if(r.cheque && !r.Comments.includes("%MAN%")){
+                            promises.push(
+                                Promise.all([
+                                    DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
+                                    ]).spread((chequeState)=>{
+                                        dispo=r.toJSON();
+                                        dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;
+                                        return dispo;
+                                    })
+                               );
+                           }
                         promises.push(
                             Promise.all([
                             DBSQLSERVER.query(query,{ replacements:{numero_reg:r.wnrgt,domaine:r.domaine},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -1874,14 +2438,14 @@ export const pubsub = new PubSub();
                             e.infoSurRgt=[];
                             e.infoSurRgt.push(goodelem);
                         }
+                        if(e.chequeState==null ||!e.cheque)
+                            e.chequeState="INCONNU";
                         return e;
                     });
-                    //console.dir(nd);
-                    
-                     return uniq(nd);
+                    return nd;
                 });
  
-            }else if(!args.startDate && !args.endDate && args.numpolice && !args.birthdate && !args.nomtotal){
+            }else if(!args.startDate && !args.endDate && args.numpolice && !args.birthdate && !args.nomtotal && !args.numrgt && !args.numenv && !args.numcheque){
                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                     wnupo:parseInt(args.numpolice),
                      //statut_reg_retirer:'PRET'
@@ -1898,6 +2462,17 @@ export const pubsub = new PubSub();
                                 return dispo;
                             })
                         );
+                        if(r.cheque && !r.Comments.includes("%MAN%")){
+                            promises.push(
+                                Promise.all([
+                                    DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
+                                    ]).spread((chequeState)=>{
+                                        dispo=r.toJSON();
+                                        dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;
+                                        return dispo;
+                                    })
+                               );
+                           }
                         promises.push(
                             Promise.all([
                             DBSQLSERVER.query(query,{ replacements:{numero_reg:r.wnrgt,domaine:r.domaine},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -1926,26 +2501,22 @@ export const pubsub = new PubSub();
                             //console.dir(e);
                             e.infoSurRgt=[];
                             e.infoSurRgt.push(goodelem);
-                           
                         }
+                        if(e.chequeState==null ||!e.cheque)
+                            e.chequeState="INCONNU";
                         return e;
                     });
-                    //console.dir(nd);
-                    
-                     return uniq(nd);
+                    return nd;
                 });
  
-            }else{
-                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
-                    //statut_reg_retirer:'PRET'
-                    redac:{
-                        $not:"ADM"
-                    }
+            }else if(!args.startDate && !args.endDate && !args.numpolice && !args.birthdate && !args.nomtotal && args.numrgt && !args.numenv && !args.numcheque){
+                return dispoSQL.findAll({attributes:{exclude:['id']},where:{
+                    wnrgt:parseInt(args.numrgt),
+                     //statut_reg_retirer:'PRET'
                 },order:[['wnrgt','DESC']],offset:args.offset,limit:args.limit}).then((res)=>{
                     let promises=[];
                     let dispo;
                     res.forEach((r)=>{
-                        
                         promises.push(
                             Promise.all([
                             DBSQLSERVER.query(uquery,{ replacements:{red:r.redac},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -1955,6 +2526,17 @@ export const pubsub = new PubSub();
                                 return dispo;
                             })
                         );
+                        if(r.cheque && !r.Comments.includes("%MAN%")){
+                            promises.push(
+                                Promise.all([
+                                    DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
+                                    ]).spread((chequeState)=>{
+                                        dispo=r.toJSON();
+                                        dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;
+                                        return dispo;
+                                    })
+                               );
+                           }
                         promises.push(
                             Promise.all([
                             DBSQLSERVER.query(query,{ replacements:{numero_reg:r.wnrgt,domaine:r.domaine},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -1984,24 +2566,225 @@ export const pubsub = new PubSub();
                             e.infoSurRgt=[];
                             e.infoSurRgt.push(goodelem);
                         }
+                        if(e.chequeState==null ||!e.cheque)
+                            e.chequeState="INCONNU";
                         return e;
                     });
-                    //console.dir(nd);
-                     return uniq(nd);
+                    return nd;
                 });
-            }
+ 
+            }else if(!args.startDate && !args.endDate && !args.numpolice && !args.birthdate && !args.nomtotal && !args.numrgt && args.numenv && !args.numcheque){
+                return dispoSQL.findAll({attributes:{exclude:['id']},where:{
+                    Num_envoi:parseInt(args.numenv),
+                     //statut_reg_retirer:'PRET'
+                },order:[['wnrgt','DESC']],offset:args.offset,limit:args.limit}).then((res)=>{
+                    let promises=[];
+                    let dispo;
+                    res.forEach((r)=>{
+                        promises.push(
+                            Promise.all([
+                            DBSQLSERVER.query(uquery,{ replacements:{red:r.redac},type:DBSQLSERVER.QueryTypes.SELECT})
+                            ]).spread((redac)=>{
+                                dispo=r.toJSON();
+                                dispo.infosRedac=redac;
+                                return dispo;
+                            })
+                        );
+                        if(r.cheque && !r.Comments.includes("%MAN%")){
+                            promises.push(
+                                Promise.all([
+                                    DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
+                                    ]).spread((chequeState)=>{
+                                        dispo=r.toJSON();
+                                        dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;
+                                        return dispo;
+                                    })
+                               );
+                           }
+                        promises.push(
+                            Promise.all([
+                            DBSQLSERVER.query(query,{ replacements:{numero_reg:r.wnrgt,domaine:r.domaine},type:DBSQLSERVER.QueryTypes.SELECT})
+                            ]).spread((infosurrgt)=>{
+                                dispo=r.toJSON();
+                                infosurrgt.MONTANT_BRUT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_BRUT,10));
+                                infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
+                                dispo.infoSurRgt=infosurrgt;
+                                dispo.etat=checkRdvDate(dispo);
+                                if(typeof dispo.etat == "undefined")
+                                    dispo.etat={
+                                        nbj:-1,
+                                        alerte:"ERROR"
+                                        };
+                                return dispo;
+                            })
+                        );
+                    });
+                    return Promise.all(promises)
+                    
+                }).then((dispos)=>{
+                    let nd=dispos.map((e,i,arr)=>{
+                        if(e.infoSurRgt.length>1){
+                            let goodelem=e.infoSurRgt[0];
+                            //console.log("reglement "+e.wnrgt);
+                            //console.dir(e);
+                            e.infoSurRgt=[];
+                            e.infoSurRgt.push(goodelem);
+                        }
+                        if(e.chequeState==null ||!e.cheque)
+                            e.chequeState="INCONNU";
+                        return e;
+                    });
+                    return nd;
+                });
+ 
+            }else if(!args.startDate && !args.endDate && !args.numpolice && !args.birthdate && !args.nomtotal && !args.numrgt && !args.numenv && args.numcheque){
+                return dispoSQL.findAll({attributes:{exclude:['id']},where:{
+                    cheque:parseInt(args.numcheque),
+                     //statut_reg_retirer:'PRET'
+                },order:[['wnrgt','DESC']],offset:args.offset,limit:args.limit}).then((res)=>{
+                    let promises=[];
+                    let dispo;
+                    res.forEach((r)=>{
+                        promises.push(
+                            Promise.all([
+                            DBSQLSERVER.query(uquery,{ replacements:{red:r.redac},type:DBSQLSERVER.QueryTypes.SELECT})
+                            ]).spread((redac)=>{
+                                dispo=r.toJSON();
+                                dispo.infosRedac=redac;
+                                return dispo;
+                            })
+                        );
+                        if(r.cheque && !r.Comments.includes("%MAN%")){
+                            promises.push(
+                                Promise.all([
+                                    DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
+                                    ]).spread((chequeState)=>{
+                                        dispo=r.toJSON();
+                                        dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;
+                                        return dispo;
+                                    })
+                               );
+                           }
+                        promises.push(
+                            Promise.all([
+                            DBSQLSERVER.query(query,{ replacements:{numero_reg:r.wnrgt,domaine:r.domaine},type:DBSQLSERVER.QueryTypes.SELECT})
+                            ]).spread((infosurrgt)=>{
+                                dispo=r.toJSON();
+                                infosurrgt.MONTANT_BRUT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_BRUT,10));
+                                infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
+                                dispo.infoSurRgt=infosurrgt;
+                                dispo.etat=checkRdvDate(dispo);
+                                if(typeof dispo.etat == "undefined")
+                                    dispo.etat={
+                                        nbj:-1,
+                                        alerte:"ERROR"
+                                        };
+                                return dispo;
+                            })
+                        );
+                    });
+                    return Promise.all(promises)
+                    
+                }).then((dispos)=>{
+                    let nd=dispos.map((e,i,arr)=>{
+                        if(e.infoSurRgt.length>1){
+                            let goodelem=e.infoSurRgt[0];
+                            //console.log("reglement "+e.wnrgt);
+                            //console.dir(e);
+                            e.infoSurRgt=[];
+                            e.infoSurRgt.push(goodelem);
+                        }
+                        if(e.chequeState==null ||!e.cheque)
+                            e.chequeState="INCONNU";
+                        return e;
+                    });
+                    return nd;
+                });
+ 
+            }else{
+                console.log("in consult dispo else");
+                return dispoSQL.findAll({attributes:{exclude:['id']},where:{
+                   //statut_reg_retirer:'PRET'
+                   redac:{
+                       $not:"ADM"
+                   }
+               },order:[['wnrgt','DESC']],offset:args.offset,limit:args.limit}).then((res)=>{
+                   let promises=[];
+                   let dispo;
+                   res.forEach((r)=>{
+                       
+                       promises.push(
+                           Promise.all([
+                           DBSQLSERVER.query(uquery,{ replacements:{red:r.redac},type:DBSQLSERVER.QueryTypes.SELECT})
+                           ]).spread((redac)=>{
+                               dispo=r.toJSON();
+                               dispo.infosRedac=redac;
+                               return dispo;
+                           })
+                       );
+                       if(r.cheque && !r.Comments.includes("%MAN%")){
+                        promises.push(
+                            Promise.all([
+                                DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
+                                ]).spread((chequeState)=>{
+                                    dispo=r.toJSON();
+                                    dispo.chequeState=chequeState[0].chequeState==null?"INCONNU":chequeState[0].chequeState;
+                                    return dispo;
+                                })
+                           );
+                       }
+                       
+                       promises.push(
+                           Promise.all([
+                           DBSQLSERVER.query(query,{ replacements:{numero_reg:r.wnrgt,domaine:r.domaine},type:DBSQLSERVER.QueryTypes.SELECT})
+                           ]).spread((infosurrgt)=>{
+                               dispo=r.toJSON();
+                               infosurrgt.MONTANT_BRUT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_BRUT,10));
+                               infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
+                               dispo.infoSurRgt=infosurrgt;
+                               dispo.etat=checkRdvDate(dispo);
+                               if(typeof dispo.etat == "undefined")
+                                   dispo.etat={
+                                       nbj:-1,
+                                       alerte:"ERROR"
+                                       };
+                               return dispo;
+                           })
+                       );
+                   });
+                   return Promise.all(promises)
+                   
+               }).then((dispos)=>{
+                let nd=dispos.map((e,i,arr)=>{
+                    if(e.infoSurRgt.length>1){
+                        let goodelem=e.infoSurRgt[0];
+                        //console.log("reglement "+e.wnrgt);
+                        //console.dir(e);
+                        e.infoSurRgt=[];
+                        e.infoSurRgt.push(goodelem);
+                    }
+                    if(e.chequeState==null ||!e.cheque)
+                        e.chequeState="INCONNU";
+                    return e;
+                });
+                return nd;
+               });
+           }
         },
+
+        
         consultDispoBank(_,args){
+            console.log("in consultDispoBank");
             let query="exec info_reg_dispo :numero_reg,:domaine ";
             let uquery="select * from exp.reguser where redac like :red"; 
             //Avec une restriction sur lq date de rgt
-            if(args.startDate && args.endDate && !args.numrgt && !args.nomtotal && !args.birthdate){
+            if(args.startDate && args.endDate && !args.numrgt && !args.nomtotal && !args.birthdate && !args.numpolice && args.banque && !args.numenv && !args.numcheque){
                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                     date_retrait_reg:{
                            $between:[args.startDate,args.endDate]
                         },
-                        MRGGT:'C',
-                        statut_reg_retirer:'SORTIE'
+                        statut_reg_retirer:'SORTIE',
+                        banque:args.banque,
                         /*$or:[
                             {
                                 statut_reg_retirer:'SORTIE'
@@ -2060,15 +2843,52 @@ export const pubsub = new PubSub();
                         return nd;
                    });
             }
-            else if(args.startDate && args.endDate && args.numrgt && !args.birthdate && !args.nomtotal){
+            else if(args.startDate && args.endDate && args.numrgt && !args.birthdate && args.banque && !args.nomtotal && !args.numpolice && !args.numenv && !args.numcheque){
 
                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                     wnupo:parseInt(args.numrgt),
                     date_retrait_reg:{
                            $between:[args.startDate,args.endDate]
                         },
-                        MRGGT:'C',
-                        statut_reg_retirer:'SORTIE'
+                        statut_reg_retirer:'SORTIE',
+                        banque:args.banque,
+                        /*$or:[
+                            {
+                                wnupo:{
+                                    $like:'731%'
+                                }
+                            },
+                            {
+                                wnupo:{
+                                    $like:'732%'
+                                }
+                            },
+                            {
+                                wnupo:{
+                                    $like:'724%'
+                                }
+                            },
+                            {
+                                wnupo:{
+                                    $like:'7245%'
+                                }
+                            },
+                            {
+                                wnupo:{
+                                    $like:'784%'
+                                }
+                            },
+                            {
+                                wnupo:{
+                                    $like:'7845%'
+                                }
+                            },
+                            {
+                                wnupo:{
+                                    $like:'760%'
+                                }
+                            },
+                        ]*/
                        /* $or:[
                             {
                                 statut_reg_retirer:'SORTIE'
@@ -2127,12 +2947,12 @@ export const pubsub = new PubSub();
                    });
  
             }
-            else if(args.startDate && args.endDate && args.numrgt && args.birthdate && !args.nomtotal){
+            else if(args.startDate && args.endDate && args.numrgt && args.banque && args.birthdate && !args.nomtotal && !args.numpolice && !args.numenv && !args.numcheque){
                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                     wnrgt:parseInt(args.numrgt),
-                    MRGGT:'C',
                     date_naiss:args.birthdate,
                     statut_reg_retirer:'SORTIE',
+                    banque:args.banque,
                    /* $or:[
                         {
                             statut_reg_retirer:'SORTIE'
@@ -2143,7 +2963,44 @@ export const pubsub = new PubSub();
                     ],*/
                     date_retrait_reg:{
                            $between:[args.startDate,args.endDate]
-                        }
+                        },
+                        /*$or:[
+                            {
+                                wnupo:{
+                                    $like:'731%'
+                                }
+                            },
+                            {
+                                wnupo:{
+                                    $like:'732%'
+                                }
+                            },
+                            {
+                                wnupo:{
+                                    $like:'724%'
+                                }
+                            },
+                            {
+                                wnupo:{
+                                    $like:'7245%'
+                                }
+                            },
+                            {
+                                wnupo:{
+                                    $like:'784%'
+                                }
+                            },
+                            {
+                                wnupo:{
+                                    $like:'7845%'
+                                }
+                            },
+                            {
+                                wnupo:{
+                                    $like:'760%'
+                                }
+                            },
+                        ]*/
                },order:[['wnrgt','DESC']]}).then((res)=>{
                        let promises=[];
                        let dispo;
@@ -2194,18 +3051,55 @@ export const pubsub = new PubSub();
                    });
  
             }
-            else if(args.startDate && args.endDate && args.numrgt && args.birthdate && args.nomtotal){
+            else if(args.startDate && args.endDate && args.banque && args.numrgt && args.birthdate && args.nomtotal && !args.numpolice && !args.numenv && !args.numcheque){
                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                     wnrgt:parseInt(args.numrgt),
                     nom_beneficiaire:{
                         $like:'%'+args.nomtotal+'%'
                     },
-                    MRGGT:'C',
                     date_naiss:args.birthdate,
                     date_retrait_reg:{
                            $between:[args.startDate,args.endDate]
                         },
                         statut_reg_retirer:'SORTIE',
+                        banque:args.banque,
+                        /*$or:[
+                            {
+                                wnupo:{
+                                    $like:'731%'
+                                }
+                            },
+                            {
+                                wnupo:{
+                                    $like:'732%'
+                                }
+                            },
+                            {
+                                wnupo:{
+                                    $like:'724%'
+                                }
+                            },
+                            {
+                                wnupo:{
+                                    $like:'7245%'
+                                }
+                            },
+                            {
+                                wnupo:{
+                                    $like:'784%'
+                                }
+                            },
+                            {
+                                wnupo:{
+                                    $like:'7845%'
+                                }
+                            },
+                            {
+                                wnupo:{
+                                    $like:'760%'
+                                }
+                            },
+                        ]*/
                         /*$or:[
                             {
                                 statut_reg_retirer:'SORTIE'
@@ -2264,12 +3158,49 @@ export const pubsub = new PubSub();
                    });
  
             }
-            else if(!args.startDate && !args.endDate && args.numrgt && args.birthdate && !args.nomtotal){
+            else if(!args.startDate && !args.endDate && args.numrgt && args.banque && args.birthdate && !args.nomtotal && !args.numpolice && !args.numenv && !args.numcheque){
                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                     wnrgt:parseInt(args.numrgt),
-                    MRGGT:'C',
                     date_naiss:args.birthdate,
                     statut_reg_retirer:'SORTIE',
+                    banque:args.banque,
+                    /*$or:[
+                        {
+                            wnupo:{
+                                $like:'731%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'732%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'724%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'7245%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'784%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'7845%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'760%'
+                            }
+                        },
+                    ]*/
                     /*$or:[
                         {
                             statut_reg_retirer:'SORTIE'
@@ -2328,14 +3259,51 @@ export const pubsub = new PubSub();
                      return nd;
                 });
  
-            }else if(!args.startDate && !args.endDate && args.numrgt && !args.birthdate && args.nomtotal){
+            }else if(!args.startDate && !args.endDate && args.numrgt && args.banque && !args.birthdate && args.nomtotal && !args.numpolice && !args.numenv && !args.numcheque){
                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                     wnrgt:parseInt(args.numrgt),
-                    MRGGT:'C',
                     statut_reg_retirer:'SORTIE',
+                    banque:args.banque,
                     nom_beneficiaire:{
                                     $like:'%'+args.nomtotal+'%'
                                  },
+                                 /*$or:[
+                                    {
+                                        wnupo:{
+                                            $like:'731%'
+                                        }
+                                    },
+                                    {
+                                        wnupo:{
+                                            $like:'732%'
+                                        }
+                                    },
+                                    {
+                                        wnupo:{
+                                            $like:'724%'
+                                        }
+                                    },
+                                    {
+                                        wnupo:{
+                                            $like:'7245%'
+                                        }
+                                    },
+                                    {
+                                        wnupo:{
+                                            $like:'784%'
+                                        }
+                                    },
+                                    {
+                                        wnupo:{
+                                            $like:'7845%'
+                                        }
+                                    },
+                                    {
+                                        wnupo:{
+                                            $like:'760%'
+                                        }
+                                    },
+                                 ]*/
                    /* $or:[
                             {
                                 statut_reg_retirer:'SORTIE'
@@ -2394,11 +3362,48 @@ export const pubsub = new PubSub();
                      return nd;
                 });
  
-            }else if(!args.startDate && !args.endDate && args.numrgt && !args.birthdate && !args.nomtotal){
+            }else if(!args.startDate && !args.endDate && args.numrgt && args.banque && !args.birthdate && !args.nomtotal && !args.numpolice && !args.numenv && !args.numcheque){
                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                     wnrgt:parseInt(args.numrgt),
-                    MRGGT:'C',
                     statut_reg_retirer:'SORTIE',
+                    banque:args.banque,
+                    /*$or:[
+                        {
+                            wnupo:{
+                                $like:'731%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'732%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'724%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'7245%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'784%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'7845%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'760%'
+                            }
+                        },
+                    ]*/
                    /* $or:[
                             {
                                 statut_reg_retirer:'SORTIE'
@@ -2457,11 +3462,48 @@ export const pubsub = new PubSub();
                      return nd;
                 });
  
-            }else if(!args.startDate && !args.endDate && !args.numrgt && args.birthdate && !args.nomtotal){
+            }else if(!args.startDate && !args.endDate && !args.numrgt && args.birthdate && args.banque && !args.nomtotal && !args.numpolice && !args.numenv && !args.numcheque){
                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                     date_naiss:args.birthdate,
-                    MRGGT:'C',
                     statut_reg_retirer:'SORTIE',
+                    banque:args.banque,
+                    /*$or:[
+                        {
+                            wnupo:{
+                                $like:'731%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'732%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'724%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'7245%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'784%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'7845%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'760%'
+                            }
+                        },
+                    ]*/
                     /*$or:[
                         {
                             statut_reg_retirer:'SORTIE'
@@ -2520,14 +3562,51 @@ export const pubsub = new PubSub();
                  return nd;
             });
  
-            }else if(!args.startDate && !args.endDate && !args.numrgt && args.birthdate && args.nomtotal){
+            }else if(!args.startDate && !args.endDate && !args.numrgt && args.birthdate && args.banque && args.nomtotal && !args.numpolice && !args.numenv && !args.numcheque){
                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                     date_naiss:args.birthdate,
-                    MRGGT:'C',
                     statut_reg_retirer:'SORTIE',
+                    banque:args.banque,
                     nom_beneficiaire:{
                                     $like:'%'+args.nomtotal+'%'
                                  },
+                                 /*$or:[
+                                    {
+                                        wnupo:{
+                                            $like:'731%'
+                                        }
+                                    },
+                                    {
+                                        wnupo:{
+                                            $like:'732%'
+                                        }
+                                    },
+                                    {
+                                        wnupo:{
+                                            $like:'724%'
+                                        }
+                                    },
+                                    {
+                                        wnupo:{
+                                            $like:'7245%'
+                                        }
+                                    },
+                                    {
+                                        wnupo:{
+                                            $like:'784%'
+                                        }
+                                    },
+                                    {
+                                        wnupo:{
+                                            $like:'7845%'
+                                        }
+                                    },
+                                    {
+                                        wnupo:{
+                                            $like:'760%'
+                                        }
+                                    },
+                                ]*/
                                  /*$or:[
                                     {
                                         statut_reg_retirer:'SORTIE'
@@ -2586,13 +3665,50 @@ export const pubsub = new PubSub();
                      return nd;
                 });
  
-            }else if(!args.startDate && !args.endDate && !args.numrgt && !args.birthdate && args.nomtotal){
+            }else if(!args.startDate && !args.endDate && !args.numrgt && !args.birthdate && args.nomtotal && args.banque && !args.numpolice && !args.numenv && !args.numcheque){
                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                     nom_beneficiaire:{
                                     $like:'%'+args.nomtotal+'%'
                                  },
-                                 MRGGT:'C',
                                  statut_reg_retirer:'SORTIE',
+                                 banque:args.banque,
+                       /* $or:[
+                        {
+                            wnupo:{
+                                $like:'731%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'732%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'724%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'7245%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'784%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'7845%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'760%'
+                            }
+                        },
+                    ]*/
                                  /*$or:[
                                     {
                                         statut_reg_retirer:'SORTIE'
@@ -2651,15 +3767,52 @@ export const pubsub = new PubSub();
                      return nd;
                 });
  
-            }else if(!args.startDate && !args.endDate && args.numrgt && args.birthdate && args.nomtotal){
+            }else if(!args.startDate && !args.endDate && args.numrgt && args.banque && args.birthdate && args.nomtotal && !args.numpolice && !args.numenv && !args.numcheque){
                 return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                     wnrgt:parseInt(args.numrgt),
                     date_naiss:args.birthdate,
-                    MRGGT:'C',
                     statut_reg_retirer:'SORTIE',
                     nom_beneficiaire:{
                                     $like:'%'+args.nomtotal+'%'
                                  },
+                    banque:args.banque,
+                    /*$or:[
+                    {
+                        wnupo:{
+                            $like:'731%'
+                        }
+                    },
+                    {
+                        wnupo:{
+                            $like:'732%'
+                        }
+                    },
+                    {
+                        wnupo:{
+                            $like:'724%'
+                        }
+                    },
+                    {
+                        wnupo:{
+                            $like:'7245%'
+                        }
+                    },
+                    {
+                        wnupo:{
+                            $like:'784%'
+                        }
+                    },
+                    {
+                        wnupo:{
+                            $like:'7845%'
+                        }
+                    },
+                    {
+                        wnupo:{
+                            $like:'760%'
+                        }
+                    },
+                ]*/
                                 /* $or:[
                                     {
                                         statut_reg_retirer:'SORTIE'
@@ -2718,11 +3871,349 @@ export const pubsub = new PubSub();
                      return nd;
                 });
  
-            }else{
+            }else if(!args.startDate && !args.endDate && !args.numrgt && !args.birthdate && !args.nomtotal && args.numpolice && args.banque && !args.numenv && !args.numcheque){
+                return dispoSQL.findAll({attributes:{exclude:['id']},where:{
+                    wnupo:parseInt(args.numpolice),
+                    statut_reg_retirer:'SORTIE',
+                    banque:args.banque,
+                    /*$or:[
+                        {
+                            wnupo:{
+                                $like:'731%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'732%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'724%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'7245%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'784%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'7845%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'760%'
+                            }
+                        },
+                    ]*/
+                                /* $or:[
+                                    {
+                                        statut_reg_retirer:'SORTIE'
+                                    },
+                                    {
+                                        statut_reg_retirer:'REFUSER'
+                                    }
+                                 ]*/
+                     //statut_reg_retirer:'PRET'
+                },order:[['wnupo','DESC']],offset:args.offset,limit:args.limit}).then((res)=>{
+                    let promises=[];
+                    let dispo;
+                    res.forEach((r)=>{
+                        promises.push(
+                            Promise.all([
+                            DBSQLSERVER.query(uquery,{ replacements:{red:r.redac},type:DBSQLSERVER.QueryTypes.SELECT})
+                            ]).spread((redac)=>{
+                                dispo=r.toJSON();
+                                dispo.infosRedac=redac;
+                                return dispo;
+                            })
+                        );
+                        promises.push(
+                            Promise.all([
+                            DBSQLSERVER.query(query,{ replacements:{numero_reg:r.wnrgt,domaine:r.domaine},type:DBSQLSERVER.QueryTypes.SELECT})
+                            ]).spread((infosurrgt)=>{
+                                dispo=r.toJSON();
+                                infosurrgt.MONTANT_BRUT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_BRUT,10));
+                                infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
+                                dispo.infoSurRgt=infosurrgt;
+                                dispo.etat=checkRdvDate(dispo);
+                                if(typeof dispo.etat == "undefined")
+                                    dispo.etat={
+                                        nbj:-1,
+                                        alerte:"ERROR"
+                                        };
+                                return dispo;
+                            })
+                        );
+                    });
+                    return Promise.all(promises)
+                    
+                }).then((dispos)=>{
+                    let nd=dispos.map((e,i,arr)=>{
+                        if(e.infoSurRgt.length>1){
+                            let goodelem=e.infoSurRgt[0];
+                            //console.log("reglement "+e.wnrgt);
+                            //console.dir(e);
+                            e.infoSurRgt=[];
+                            e.infoSurRgt.push(goodelem);
+                        }
+                        return e;
+                    });
+                    //console.dir(nd);
+                    
+                     return nd;
+                });
+ 
+            }else if(!args.startDate && !args.endDate && !args.numrgt && !args.birthdate && !args.nomtotal && !args.numpolice && args.numenv && args.banque && !args.numcheque){
+                return dispoSQL.findAll({attributes:{exclude:['id']},where:{
+                    Num_envoi:parseInt(args.numenv),
+                    statut_reg_retirer:'SORTIE',
+                    banque:args.banque,
+                    /*$or:[
+                        {
+                            wnupo:{
+                                $like:'731%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'732%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'724%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'7245%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'784%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'7845%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'760%'
+                            }
+                        },
+                    ]*/
+                                /* $or:[
+                                    {
+                                        statut_reg_retirer:'SORTIE'
+                                    },
+                                    {
+                                        statut_reg_retirer:'REFUSER'
+                                    }
+                                 ]*/
+                     //statut_reg_retirer:'PRET'
+                },order:[['wnupo','DESC']],offset:args.offset,limit:args.limit}).then((res)=>{
+                    let promises=[];
+                    let dispo;
+                    res.forEach((r)=>{
+                        promises.push(
+                            Promise.all([
+                            DBSQLSERVER.query(uquery,{ replacements:{red:r.redac},type:DBSQLSERVER.QueryTypes.SELECT})
+                            ]).spread((redac)=>{
+                                dispo=r.toJSON();
+                                dispo.infosRedac=redac;
+                                return dispo;
+                            })
+                        );
+                        promises.push(
+                            Promise.all([
+                            DBSQLSERVER.query(query,{ replacements:{numero_reg:r.wnrgt,domaine:r.domaine},type:DBSQLSERVER.QueryTypes.SELECT})
+                            ]).spread((infosurrgt)=>{
+                                dispo=r.toJSON();
+                                infosurrgt.MONTANT_BRUT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_BRUT,10));
+                                infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
+                                dispo.infoSurRgt=infosurrgt;
+                                dispo.etat=checkRdvDate(dispo);
+                                if(typeof dispo.etat == "undefined")
+                                    dispo.etat={
+                                        nbj:-1,
+                                        alerte:"ERROR"
+                                        };
+                                return dispo;
+                            })
+                        );
+                    });
+                    return Promise.all(promises)
+                    
+                }).then((dispos)=>{
+                    let nd=dispos.map((e,i,arr)=>{
+                        if(e.infoSurRgt.length>1){
+                            let goodelem=e.infoSurRgt[0];
+                            //console.log("reglement "+e.wnrgt);
+                            //console.dir(e);
+                            e.infoSurRgt=[];
+                            e.infoSurRgt.push(goodelem);
+                        }
+                        return e;
+                    });
+                    //console.dir(nd);
+                    
+                     return nd;
+                });
+ 
+            }else if(!args.startDate && !args.endDate && !args.numrgt && !args.birthdate && !args.nomtotal && !args.numpolice && !args.numenv && args.numcheque && args.banque){
+                return dispoSQL.findAll({attributes:{exclude:['id']},where:{
+                    cheque:parseInt(args.numcheque),
+                    statut_reg_retirer:'SORTIE',
+                    banque:args.banque,
+                    /*$or:[
+                        {
+                            wnupo:{
+                                $like:'731%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'732%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'724%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'7245%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'784%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'7845%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'760%'
+                            }
+                        },
+                    ]*/
+                                /* $or:[
+                                    {
+                                        statut_reg_retirer:'SORTIE'
+                                    },
+                                    {
+                                        statut_reg_retirer:'REFUSER'
+                                    }
+                                 ]*/
+                     //statut_reg_retirer:'PRET'
+                },order:[['wnupo','DESC']],offset:args.offset,limit:args.limit}).then((res)=>{
+                    let promises=[];
+                    let dispo;
+                    res.forEach((r)=>{
+                        promises.push(
+                            Promise.all([
+                            DBSQLSERVER.query(uquery,{ replacements:{red:r.redac},type:DBSQLSERVER.QueryTypes.SELECT})
+                            ]).spread((redac)=>{
+                                dispo=r.toJSON();
+                                dispo.infosRedac=redac;
+                                return dispo;
+                            })
+                        );
+                        promises.push(
+                            Promise.all([
+                            DBSQLSERVER.query(query,{ replacements:{numero_reg:r.wnrgt,domaine:r.domaine},type:DBSQLSERVER.QueryTypes.SELECT})
+                            ]).spread((infosurrgt)=>{
+                                dispo=r.toJSON();
+                                infosurrgt.MONTANT_BRUT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_BRUT,10));
+                                infosurrgt.MONTANT_NET_REGLEMENT=formatNumberInMoney(parseInt(infosurrgt.MONTANT_NET_REGLEMENT,10));
+                                dispo.infoSurRgt=infosurrgt;
+                                dispo.etat=checkRdvDate(dispo);
+                                if(typeof dispo.etat == "undefined")
+                                    dispo.etat={
+                                        nbj:-1,
+                                        alerte:"ERROR"
+                                        };
+                                return dispo;
+                            })
+                        );
+                    });
+                    return Promise.all(promises)
+                    
+                }).then((dispos)=>{
+                    let nd=dispos.map((e,i,arr)=>{
+                        if(e.infoSurRgt.length>1){
+                            let goodelem=e.infoSurRgt[0];
+                            //console.log("reglement "+e.wnrgt);
+                            //console.dir(e);
+                            e.infoSurRgt=[];
+                            e.infoSurRgt.push(goodelem);
+                        }
+                        return e;
+                    });
+                    //console.dir(nd);
+                    
+                     return nd;
+                });
+ 
+            }else if(args.banque!=""){
                  return dispoSQL.findAll({attributes:{exclude:['id']},where:{
                     //statut_reg_retirer:'PRET'
-                    MRGGT:'C',
+                    //MRGGT:'C',
                     statut_reg_retirer:'SORTIE',
+                    banque:args.banque,
+                    /*$or:[
+                        {
+                            wnupo:{
+                                $like:'731%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'732%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'724%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'7245%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'784%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'7845%'
+                            }
+                        },
+                        {
+                            wnupo:{
+                                $like:'760%'
+                            }
+                        },
+                    ]*/
                     /*$or:[
                         {
                             statut_reg_retirer:'SORTIE'

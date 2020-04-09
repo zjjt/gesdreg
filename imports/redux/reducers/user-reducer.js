@@ -6,6 +6,7 @@ const initialState={
     isUserConnected:false,
     selectedWnrgt:0,
     isBigDialogUp:true,
+    isFileUploadDialogUp:true,
     user:null
 };
 
@@ -48,6 +49,11 @@ export default function userReducer(state=initialState,action){
         return{
             ...state,
             isBigDialogUp:false
+        };
+        case actions.CLOSEFILEUPLOADDIALOG:
+        return{
+            ...state,
+            isFileUploadDialogUp:false
         };
         case actions.USERCONNECTED:
        // alert(action.user);

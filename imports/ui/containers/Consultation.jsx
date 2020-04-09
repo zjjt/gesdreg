@@ -59,6 +59,7 @@ class ConsultDispo extends Component {
             endDate={this.props.endDate?moment(convertInTextFromFrenchDate(this.props.endDate)).format("YYYY-MM-DD"):null}
             nomtotal={this.props.nomtotal}
             numrgt={this.props.numrgt}
+            banque={this.props.banque!=null||this.props.banque!=""?this.props.banque:"NSIA BANQUE"}
             selectedRgt={this.props.selectedReg}
             birthdate={this.props.birthdate?moment(convertInTextFromFrenchDate(this.props.birthdate)).format("YYYY-MM-DD"):null} 
             />
@@ -67,6 +68,9 @@ class ConsultDispo extends Component {
             startDate={this.props.startDate?moment(convertInTextFromFrenchDate(this.props.startDate)).format("YYYY-MM-DD"):null}
             endDate={this.props.endDate?moment(convertInTextFromFrenchDate(this.props.endDate)).format("YYYY-MM-DD"):null}
             nomtotal={this.props.nomtotal}
+            numrgt={this.props.numrgt}
+            numenv={this.props.numenv}
+            numcheque={this.props.numcheque}
             numpol={this.props.numpolice}
             birthdate={this.props.birthdate?moment(convertInTextFromFrenchDate(this.props.birthdate)).format("YYYY-MM-DD"):null} 
             />
@@ -87,21 +91,7 @@ class ConsultDispo extends Component {
             />
             </div>
         ):(<span style={{display:"none"}}></span>);
-        let champ=this.props.userRole==="B"?(
-            <Field
-                name="numrgt" 
-                component={TextField}
-                hintText="Entrez le numéro de règlement"
-                floatingLabelFixed={true}
-             />
-        ):(
-            <Field
-                name="numpolice" 
-                component={TextField}
-                hintText="Entrez le numéro de police"
-                floatingLabelFixed={true}
-             />
-        );
+       
         return(
             <div className="centeredContentSingle">
                 <div className="contentWrapper fadeInUp animated">
@@ -126,9 +116,30 @@ class ConsultDispo extends Component {
                                         ...chamSearchPeriode
                                     }
                                     
-                                    {
-                                        ...champ
-                                    }
+                                    <Field
+                                        name="numrgt" 
+                                        component={TextField}
+                                        hintText="Entrez le numéro de règlement"
+                                        floatingLabelFixed={true}
+                                    />
+                                    <Field
+                                        name="numcheque" 
+                                        component={TextField}
+                                        hintText="Entrez le numéro de chèque"
+                                        floatingLabelFixed={true}
+                                    />
+                                    <Field
+                                        name="numenv" 
+                                        component={TextField}
+                                        hintText="Entrez le numéro d'envoi"
+                                        floatingLabelFixed={true}
+                                    />
+                                    <Field
+                                        name="numpolice" 
+                                        component={TextField}
+                                        hintText="Entrez le numéro de police"
+                                        floatingLabelFixed={true}
+                                    />
                                     <Field
                                         name="nomtotal" 
                                         component={TextField}
@@ -170,7 +181,7 @@ const selector = formValueSelector('searchConsultDispo');
 ConsultDispo=connect(
     state => {
     // or together as a group
-    const { debutdate,findate,nomtotal,numpolice,numrgt,birthdate } = selector(state, 'debutdate','findate', 'nomtotal', 'numpolice','numrgt','birthdate');
+    const { debutdate,findate,nomtotal,numpolice,numrgt,numenv,numcheque,birthdate } = selector(state, 'debutdate','findate', 'nomtotal', 'numpolice','numrgt','numenv','numcheque','birthdate');
    
     return {
         startDate:debutdate,
@@ -178,6 +189,8 @@ ConsultDispo=connect(
       nomtotal,
       numpolice,
       numrgt,
+      numcheque,
+      numenv,
       birthdate,
       selectedReg:state.userActions.selectedWnrgt
     }

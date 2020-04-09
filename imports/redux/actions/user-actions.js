@@ -4,6 +4,8 @@ export const DONTMAJDISPOBANK='DONTMAJDISPOBANK';
 export const CLOSEBIGDIALOG='CLOSEBIGDIALOG';
 export const CLOSEBIGDIALOGBANK='CLOSEBIGDIALOGBANK';
 export const OPENBIGDIALOG='OPENBIGDIALOG';
+export const OPENFILEUPLOADDIALOG='OPENFILEUPLOADDIALOG';
+export const CLOSEFILEUPLOADDIALOG='CLOSEFILEUPLOADDIALOG';
 export const OPENBIGDIALOGBANK='OPENBIGDIALOGBANK';
 export const SELECTREG='SELECTREG';
 
@@ -36,6 +38,20 @@ export function openBigDialog(who){
 		}
 	}
 	
+}
+export function openFileUploadDialog(){
+	
+		return{
+			type:OPENBIGDIALOG
+		}
+	
+	
+}
+
+export function closeFileUploadDialog(){
+	return{
+		type:CLOSEFILEUPLOADDIALOG
+	}
 }
 export function selectedReg(wnrgt){
 	//alert(wnrgt);
