@@ -396,6 +396,9 @@ export default ()=>{
             // Generate the JSON like so:
             var workbookJson = excel.utils.sheet_to_json( sheet, options );
             //console.dir(workbookJson);
+            //before inserting we should check to see if this pqrticulqr rgt and police and domaine
+            //already exists if it does we update the line else we insert a new one
+            let queryU="update exp.regdispo set ";
             let query="insert into exp.regdispo (date_depot_treso,date_sort_treso,date_depot_sign,date_recep_sign_reg,date_retrait_reg,redac,statut_reg_retirer,wnupo,wnrgt,MNTGT,nom_beneficiaire,domaine,Num_envoi,cheque,MRGGT,banque,Comments) values (:ddt,:dst,:dds,:drsr,:drr,:r,:srr,:p,:rgt,:mnt,:nb,:dom,:nenv,:c,:mrggt,:ban,:com)";
             workbookJson.map((e,i)=>{
                 console.log("in the loop");
@@ -449,6 +452,9 @@ export default ()=>{
                     actions:"Insertion des reglements manuel",
                     par:redac.codeRedac
                 });
+                // check if rgt exists already
+                let checkQ="select count(*) from exp.regdispo where wnrgt=:rgt and wnupo=:p and domaine=:dom";
+                
                 DBSQLSERVER.query(query,{
                     replacements:{
                        
