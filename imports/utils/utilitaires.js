@@ -6,6 +6,10 @@ momentBusiness.locale('us', {
     workingWeekdays: [1,2,3,4,5] 
  });
 
+ export const arrayUnique = function (arr) {
+	return arr.filter((elem, index, self) => self.findIndex(
+        (t) => {return (t.nom_beneficiaire === elem.nom_beneficiaire && t.wnupo === elem.wnupo && t.domaine===elem.domaine && t.Comments===elem.Comments)}) === index)
+};
 export const englishDateToFr=(date)=>{
     if(typeof date=="undefined"||date==null)
     return "NON DEFINI";

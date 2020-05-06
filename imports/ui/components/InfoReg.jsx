@@ -218,5 +218,5 @@ const voirInfoDispo=gql`
 
     
 export default graphql(voirInfoDispo,{
-    options:({ wnrgt,domaine }) => ({ variables: {wnrgt,domaine},fetchPolicy: 'cache-and-network' }),
+    options:({ wnrgt,domaine }) => ({ variables: {wnrgt,domaine},fetchPolicy: 'network-only' }),
 })(InfoReg);

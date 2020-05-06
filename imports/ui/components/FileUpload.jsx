@@ -145,7 +145,7 @@ const styles={
                                                     console.dir(res);
                                                     //call flow router vers l'inventaire total
                                                     if(err){
-                                                        if(err.error==="bad-date"||err.error==="bad-coderej"){
+                                                        if(err.error==="bad-date"||err.error==="bad-coderej"||err.error==="bad-rgt"){
                                                             this.setState({
                                                             errorMsg:err.reason
                                                             });

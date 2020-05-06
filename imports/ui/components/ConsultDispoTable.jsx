@@ -12,7 +12,7 @@ import Divider from 'material-ui/Divider';
 import CircularProgress from 'material-ui/CircularProgress';
 import {Table, TableBody, TableFooter, TableHeader, TableHeaderColumn, TableRow, TableRowColumn} from 'material-ui/Table';
 import {graphql} from 'react-apollo';
-import {isEmptyObjectProps,formatNumberInMoney} from '../../utils/utilitaires';
+import {isEmptyObjectProps,formatNumberInMoney,arrayUnique} from '../../utils/utilitaires';
 import gql from 'graphql-tag';
 import areIntlLocalesSupported from 'intl-locales-supported';
 import MenuItem from 'material-ui/MenuItem';
@@ -204,7 +204,7 @@ class ConsultDispoTable extends Component{
                                                     </div>
                                                </TableRowColumn>
                                             </TableRow>
-                                           ):typeof consultDispo!=='undefined'?consultDispo.map((row,index)=>{
+                                           ):typeof consultDispo!=='undefined'?arrayUnique(consultDispo).map((row,index)=>{
                                                console.log("1 reglement");
                                                console.dir(row);
                                             let domaine='';
@@ -417,7 +417,7 @@ export default graphql(checkDisponible,{
             nomtotal,
             offset:0,
             limit:ITEMS_PER_PAGE          
-    },fetchPolicy: 'cache-and-network' }),
+    },fetchPolicy: 'network-only' }),
         props:({data:{loading,consultDispo,fetchMore}})=>{
             return{
                 loading,

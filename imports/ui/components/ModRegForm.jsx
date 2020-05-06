@@ -188,7 +188,7 @@ class ModRegForm extends Component{
                             });
                         }
                      break;
-                     case "REFUSER":
+                     case "REJET":
                      console.dir(values);
                             Meteor.call('updateDispos',values,this.props.regSelected,(err)=>{
                                 if(err){
@@ -299,8 +299,8 @@ class ModRegForm extends Component{
             component={DatePicker}
             className="datepicker"
             DateTimeFormat={DateTimeFormat}
-            hintText="Entrez la date de retour de la signature"
-            floatingLabelText="Date de retour de la signature"
+            hintText="Entrez la date de retour de la signature/ date de décharge OV"
+            floatingLabelText="Date de retour de la signature/ date de décharge OV"
             fullWidth={true}
             okLabel="OK"
             cancelLabel="Annuler"
@@ -369,14 +369,14 @@ class ModRegForm extends Component{
                     floatingLabelFixed={true}
                 />
             </div>
-        ):this.state.formchoice==="REFUSER"?(
+        ):this.state.formchoice==="REJET"?(
             <div>
                 <p>* Rappelez vous!!! cette modification est irreversible.Veuillez contacter un administrateur en cas d'erreur</p>
                 <p>Veuillez indiquer ci-dessous le motif du refus de ce règlement (255 caractères maximum)</p>
                         <Field
                             name="comment" 
                             component={TextField}
-                            hintText="motif du refus"
+                            hintText="motif du rejet"
                             floatingLabelText="Pourquoi ?"
                             fullWidth={true}
                             style={this.state.textAreaDisabled?{"diaplay":"none"}:{"display":"block"}}
@@ -454,9 +454,9 @@ class ModRegForm extends Component{
                                     this.setState({
                                         formchoice:"MODIFIERDV" 
                                     });
-                                }else if(v=="REFUSER"){
+                                }else if(v=="REJET"){
                                     this.setState({
-                                        formchoice:"REFUSER" 
+                                        formchoice:"REJET" 
                                     });
                                 }else if(v=="ANNULER"){
                                     this.setState({
@@ -467,7 +467,7 @@ class ModRegForm extends Component{
                         >
                             <RadioButton value="MODIFIER" label="Modifier les différentes dates" title="vous permet de modifier la date de dépot à la trésorerie,et les autres dates de procédure normale sur un ou plusieurs règlements"/>
                             <RadioButton value="MODIFIERDV" label="Modifier la date de rendez-vous calculées" disabled={this.props.regSelected.length>1?true:false} title="vous permet de modifier la date de rendez-vous précalculé par le système sur un ou plusieurs règlements"/>
-                            <RadioButton value="REFUSER" label="Refuser ce  règlement" disabled={this.props.regSelected.length>1?true:false} title="vous permet de refuser un règlement en donnant le motif du refus.Attention cette action est irréversible."/>
+                            <RadioButton value="REJET" label="Rejetter ce  règlement" disabled={this.props.regSelected.length>1?true:false} title="vous permet de rejetter un règlement en donnant le motif du refus.Attention cette action est irréversible."/>
                             <RadioButton value="ANNULER" label="Annuler ce règlement" disabled={this.props.regSelected.length>1?true:false} title="vous permet d'annuler un règlement"/>
                         </Field>
                             <hr/>
@@ -521,5 +521,5 @@ const voirInfoDispo=gql`
 
     
 export default graphql(voirInfoDispo,{
-    options:({ wnrgt,domaine }) => ({ variables: {wnrgt,domaine},fetchPolicy: 'cache-and-network' }),
+    options:({ wnrgt,domaine }) => ({ variables: {wnrgt,domaine},fetchPolicy: 'network-only' }),
 })(ModRegForm);

@@ -398,10 +398,11 @@ export default ()=>{
             //console.dir(workbookJson);
             //before inserting we should check to see if this pqrticulqr rgt and police and domaine
             //already exists if it does we update the line else we insert a new one
-            let queryU="update exp.regdispo set ";
+            
             let query="insert into exp.regdispo (date_depot_treso,date_sort_treso,date_depot_sign,date_recep_sign_reg,date_retrait_reg,redac,statut_reg_retirer,wnupo,wnrgt,MNTGT,nom_beneficiaire,domaine,Num_envoi,cheque,MRGGT,banque,Comments) values (:ddt,:dst,:dds,:drsr,:drr,:r,:srr,:p,:rgt,:mnt,:nb,:dom,:nenv,:c,:mrggt,:ban,:com)";
             workbookJson.map((e,i)=>{
-                console.log("in the loop");
+                let queryU="update exp.regdispo set";
+                console.log("in the loop manuel");
                 if(!e.DOMAINE){
                     throw new Meteor.Error("bad-coderej","Veuillez vérifier la ligne "+(i+2)+" du fichier des règlements manuels.le domaine n'est pas renseigné.");
                     return;
@@ -446,6 +447,9 @@ export default ()=>{
                    if(e.DATE_RETRAIT){
                        statut="SORTIE"
                    }
+                   if(e.COMMENTAIRE.includes("REJET")){
+                    statut="REJET"
+                    }
                 Historique.insert({
                     dateConnexion:new Date(),
                     heure:moment(Date.now()).format("HH:mm:ss"),
@@ -453,35 +457,148 @@ export default ()=>{
                     par:redac.codeRedac
                 });
                 // check if rgt exists already
-                let checkQ="select count(*) from exp.regdispo where wnrgt=:rgt and wnupo=:p and domaine=:dom";
-                
-                DBSQLSERVER.query(query,{
+                let checkQ="select * from exp.regdispo where wnrgt=:rgt and wnupo=:p and domaine=:dom";
+                let countRes=Promise.await(DBSQLSERVER.query(checkQ,{
                     replacements:{
-                       
-                        ddt:e.DATE_ENTREE_TRESO?moment(frenchDateToEn(e.DATE_ENTREE_TRESO)).format("YYYY-MM-DD"):null,
-                        dst:e.DATE_SORTIE_TRESO?moment(frenchDateToEn(e.DATE_SORTIE_TRESO)).format("YYYY-MM-DD"):null,
-                        dds:e.DATE_ENTREE_SIGNATURE?moment(frenchDateToEn(e.DATE_ENTREE_SIGNATURE)).format("YYYY-MM-DD"):null,
-                        drsr:e.DATE_SORTIE_SIGNATURE?moment(frenchDateToEn(e.DATE_SORTIE_SIGNATURE)).format("YYYY-MM-DD"):null,
-                        drr:e.DATE_RETRAIT?moment(frenchDateToEn(e.DATE_RETRAIT)).format("YYYY-MM-DD"):null,
-                        r:redac.codeRedac,
-                        srr:statut,
-                        p:e.POLICE,
                         rgt:e.REGLEMENT,
-                        mnt:e.MONTANT,
-                        nb:e.BENEFICIAIRE,
-                        dom:e.DOMAINE,
-                        nenv:e.ENVOI?parseInt(e.ENVOI):null,
-                        c:e.CHEQUE?parseInt(e.CHEQUE):null,
-                        mrggt:e.MODE_REGLEMENT,
-                        ban:e.BANQUE?e.BANQUE:null,
-                        com:e.COMMENTAIRE+'%MAN%$'+e.PRESTATION+'!',
+                        p:e.POLICE,
+                        dom:e.DOMAINE
                     },
-                    type:DBSQLSERVER.QueryTypes.INSERT
-                }).catch((err)=>{
-                    console.log(err);
-                    throw new Meteor.Error("bad-coderej","Une erreur est survenue lors de la mise à jour veuillez vérifier votre fichier");
-                    return err.reason;
-                });
+                    type:DBSQLSERVER.QueryTypes.SELECT
+                }).then((resultat)=>{
+                    console.dir(resultat);
+                    console.log("the rgt exists "+resultat.length+" times");
+                    if(resultat.length>0 && resultat[resultat.length-1].statut_reg_retirer!=="REJET"){
+                        if(!e.COMMENTAIRE.includes("MAJ")){
+                            throw new Meteor.Error("bad-rgt","Veuillez vérifier la ligne "+(i+2)+" du fichier des règlements manuels.la ligne a déjà été intégrée.");
+                            return;
+                        }
+                       
+
+                        //update the rgt here we build the query and the updateoptions
+                        let updateOptions={};
+                        if(e.BENEFICIAIRE!=""){
+                            queryU+=" nom_beneficiaire=:nb,";
+                            updateOptions['nb']=e.BENEFICIAIRE!=""?e.BENEFICIAIRE:resultat[0].nom_beneficiaire?resultat[0].nom_beneficiaire:null;
+                        }
+                        if(e.ENVOI!=""){
+                            queryU+=" Num_envoi=:nenv,";
+                            updateOptions['nenv']=e.ENVOI?parseInt(e.ENVOI):resultat[0].Num_envoi?resultat[0].Num_envoi:null;
+                        }       
+                        if(e.CHEQUE!=""){
+                            queryU+=" cheque=:c,";
+                            updateOptions['c']=e.CHEQUE?parseInt(e.CHEQUE):resultat[0].cheque?resultat[0].cheque:null;
+                        }
+                        if(e.MONTANT!=""){
+                            queryU+=" MNTGT=:mnt,";
+                            updateOptions['mnt']=e.MONTANT?parseInt(e.MONTANT):resultat[0].MNTGT?resultat[0].MNTGT:null;
+                        }
+                        if(e.BANQUE!=""){
+                            queryU+=" banque=:ban,";
+                            updateOptions['ban']=e.BANQUE?e.BANQUE:resultat[0].banque?resultat[0].banque:null;
+                        }
+                        if(e.MODE_REGLEMENT!=""){
+                            queryU+=" MRGGT=:mrggt,";
+                            updateOptions['mrggt']=e.MODE_REGLEMENT?e.MODE_REGLEMENT:resultat[0].MRGGT?resultat[0].MRGGT:null;
+                        }
+                        if(e.POLICE!=""){
+                            queryU+=" wnupo=:p,";
+                            updateOptions['p']=e.POLICE?parseInt(e.POLICE):resultat[0].wnupo?resultat[0].wnupo:null;
+                        }
+                        if(e.REGLEMENT!=""){
+                            queryU+=" wnrgt=:rgt,";
+                            updateOptions['rgt']=e.REGLEMENT?parseInt(e.REGLEMENT):resultat[0].wnrgt?resultat[0].wnrgt:null;
+                        }
+                        if(e.DOMAINE!=""){
+                            queryU+=" domaine=:dom,";
+                            updateOptions['dom']=e.DOMAINE?e.DOMAINE:resultat[0].domaine?resultat[0].domaine:null;
+                        }
+                        if(e.DATE_ENTREE_TRESO!=""){
+                            queryU+=" date_depot_treso=:ddt,";
+                            updateOptions['ddt']=e.DATE_ENTREE_TRESO?moment(frenchDateToEn(e.DATE_ENTREE_TRESO)).format("YYYY-MM-DD"):resultat[0].date_depot_treso?resultat[0].date_depot_treso:null;
+                        }
+                        if(e.DATE_SORT_TRESO!=""){
+                            queryU+=" date_sort_treso=:dst,";
+                            updateOptions['dst']=e.DATE_SORT_TRESO?moment(frenchDateToEn(e.DATE_SORT_TRESO)).format("YYYY-MM-DD"):resultat[0].date_sort_treso?resultat[0].date_sort_treso:null;
+                        }
+                        if(e.DATE_ENTREE_SIGNATURE!=""){
+                            queryU+=" date_depot_sign=:dds,";
+                            updateOptions['dds']=e.DATE_ENTREE_SIGNATURE?moment(frenchDateToEn(e.DATE_ENTREE_SIGNATURE)).format("YYYY-MM-DD"):resultat[0].date_depot_sign?resultat[0].date_depot_sign:null;
+                        }
+                        if(e.DATE_SORTIE_SIGNATURE!=""){
+                            queryU+=" date_recep_sign_reg=:drsr,";
+                            updateOptions['drsr']=e.DATE_SORTIE_SIGNATURE?moment(frenchDateToEn(e.DATE_SORTIE_SIGNATURE)).format("YYYY-MM-DD"):resultat[0].date_recep_sign_reg?resultat[0].date_recep_sign_reg:null;
+                        }
+                        if(e.DATE_RETRAIT!=""){
+                            queryU+=" date_retrait_reg=:drr,";
+                            updateOptions['drr']=e.DATE_RETRAIT?moment(frenchDateToEn(e.DATE_RETRAIT)).format("YYYY-MM-DD"):resultat[0].date_retrait_reg?resultat[0].date_retrait_reg:null;
+                        }
+                        if(e.COMMENTAIRE!=""){
+                            if(e.COMMENTAIRE.includes("REJET")){
+                                statut="REJET";
+                                queryU+=" statut_reg_retirer=:srr,Comments='"+e.COMMENTAIRE+'%MAN%$'+e.PRESTATION+"!',";
+                                updateOptions['srr']=e.COMMENTAIRE.includes("REJET")?statut:resultat[0].statut_reg_retirer;
+
+                            }else{
+                                updateOptions['srr']= statut; 
+                                queryU+=" statut_reg_retirer=:srr,Comments='"+e.COMMENTAIRE+'%MAN%$'+e.PRESTATION+"!',";
+                            }
+                            
+
+                        }
+                        //suprrime la derniere virgule avant le where
+                        queryU=queryU.replace(/.$/,"");
+                        queryU+=` where wnrgt=:rgt and domaine=:dom and wnupo=:p`;
+                        updateOptions['r']=redac.codeRedac;
+                        
+                        console.log("about to update rgt manuel");
+                        DBSQLSERVER.query(queryU,{
+                            replacements:updateOptions,
+                            type:DBSQLSERVER.QueryTypes.UPDATE
+                        }).catch((err)=>{
+                            console.log(err);
+                            throw new Meteor.Error("bad-coderej","Une erreur est survenue lors de la mise à jour veuillez vérifier votre fichier");
+                            return err.reason;
+                        });
+                    }else{
+                        console.log("about to insert rgt manuel");
+                            if(resultat.length<2){
+                                DBSQLSERVER.query(query,{
+                                    replacements:{
+                                    
+                                        ddt:e.DATE_ENTREE_TRESO?moment(frenchDateToEn(e.DATE_ENTREE_TRESO)).format("YYYY-MM-DD"):null,
+                                        dst:e.DATE_SORTIE_TRESO?moment(frenchDateToEn(e.DATE_SORTIE_TRESO)).format("YYYY-MM-DD"):null,
+                                        dds:e.DATE_ENTREE_SIGNATURE?moment(frenchDateToEn(e.DATE_ENTREE_SIGNATURE)).format("YYYY-MM-DD"):null,
+                                        drsr:e.DATE_SORTIE_SIGNATURE?moment(frenchDateToEn(e.DATE_SORTIE_SIGNATURE)).format("YYYY-MM-DD"):null,
+                                        drr:e.DATE_RETRAIT?moment(frenchDateToEn(e.DATE_RETRAIT)).format("YYYY-MM-DD"):null,
+                                        r:redac.codeRedac,
+                                        srr:statut,
+                                        p:e.POLICE,
+                                        rgt:e.REGLEMENT,
+                                        mnt:e.MONTANT,
+                                        nb:e.BENEFICIAIRE,
+                                        dom:e.DOMAINE,
+                                        nenv:e.ENVOI?parseInt(e.ENVOI):null,
+                                        c:e.CHEQUE?parseInt(e.CHEQUE):null,
+                                        mrggt:e.MODE_REGLEMENT,
+                                        ban:e.BANQUE?e.BANQUE:null,
+                                        com:e.COMMENTAIRE+'%MAN%$'+e.PRESTATION+'!',
+                                    },
+                                    type:DBSQLSERVER.QueryTypes.INSERT
+                                }).catch((err)=>{
+                                    console.log(err);
+                                    throw new Meteor.Error("bad-coderej","Une erreur est survenue lors de la mise à jour veuillez vérifier votre fichier");
+                                    return err.reason;
+                                });
+                            }else{
+                                throw new Meteor.Error("bad-coderej","Veuillez vérifier la ligne "+(i+2)+" du fichier des règlements manuels.le règlement existe déjà");
+
+                            }
+                    }
+
+                }));
+                return countRes;
+                
             });
 
 
@@ -494,6 +611,7 @@ export default ()=>{
             let prom;
             let query;
             let comment;
+            let getPoliceQuery="select wnupo from exp.regdispo";
             const redac=Meteor.users.findOne({_id:Meteor.user()._id});
             //console.log(typeof values.date_sort_treso);
             switch(values.choixForm){
@@ -514,6 +632,12 @@ export default ()=>{
                    if(values.date_retrait_reg){
                        statut="SORTIE"
                    }
+                   if(values.coderej){
+                    if(values.coderej.includes("REJET")){
+                        statut="REJET"
+                    }
+                   }
+                   
                    /*if(values.delreg){
                        console.log("contents of delreg");
                        console.dir(values.delreg);
@@ -542,6 +666,18 @@ export default ()=>{
                             query+=`,Comments=:cdr`;
                         }
                         query+=" where Num_envoi=:n";
+                        query+=" and wnrgt in (";
+                        getPoliceQuery+=" where Num_envoi=:n and wnrgt in (";
+
+                        rgtArray.map((e,i,arr)=>{
+                            if(i==arr.length-1){
+                                query+=`${e.wnrgt})`;
+                                getPoliceQuery+=`${e.wnrgt})`;
+                                return;
+                            }
+                            query+=`${e.wnrgt},`;
+                            getPoliceQuery+=`${e.wnrgt},`;
+                        });
                         if(values.delreg){
                             var rgtEx = values.delreg.match(/\d+/g).map(Number);
                             query+="and wnrgt not in (";
@@ -562,7 +698,9 @@ export default ()=>{
                             actions:"Mise a jour de date sur les reglements de l'envoi "+numenv,
                             par:redac.codeRedac
                         });
-                        //faire l'envoi des sms et mail ici
+                        //faire l'envoi des sms et mail ici pour les numeros d'envois
+                        
+
                         DBSQLSERVER.query(query,{
                             replacements:{
                                
@@ -807,9 +945,9 @@ export default ()=>{
                         });
                     return prom;
                 break;
-                case "REFUSER":
+                case "REJET":
                      query="update exp.regdispo set statut_reg_retirer=:stat, Comments=:com where wnupo=:wnupo and wnrgt=:wnrgt and domaine=:d "; 
-                    comment=values.comments===""||!values.comments?"Refuser par le gestionnaire "+redac.codeRedac:values.comments;
+                    comment=values.comments===""||!values.comments?"REJET par le gestionnaire "+redac.codeRedac:values.comments;
                     rgtArray.forEach((e,i,arr)=>{
                         console.log("ligne de rgt: "+i);
                         Historique.insert({
@@ -830,7 +968,7 @@ export default ()=>{
                                         wnrgt:e.wnrgt,
                                         wnupo:e.wnupo,
                                         d:e.domaine,
-                                        stat:"REFUSER",
+                                        stat:"REJET",
                                         com:comment
                                     },
                                     type:DBSQLSERVER.QueryTypes.UPDATE

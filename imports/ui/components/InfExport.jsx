@@ -16,7 +16,7 @@ import areIntlLocalesSupported from 'intl-locales-supported';
 import MenuItem from 'material-ui/MenuItem';
 import ModRegForm from './ModRegForm.jsx';
 import {miseajourDispo} from '../../redux/actions/user-actions.js'
-import {englishDateToFr} from '../../utils/utilitaires.js';
+import {englishDateToFr,arrayUnique} from '../../utils/utilitaires.js';
 import Baby from 'babyparse';
 import * as FileSaver from 'file-saver';
 import {$} from 'meteor/jquery';
@@ -163,7 +163,7 @@ class InfExport extends Component{
                             showRowHover={this.state.table.showRowHover}
                             stripedRows={this.state.table.stripedRows}
                         >
-                    {data.loading?( ''):typeof data.dataToExport!=="undefined"?fullEXL.map((row,index)=>{
+                    {data.loading?( ''):typeof data.dataToExport!=="undefined"?arrayUnique(fullEXL).map((row,index)=>{
                                             let domaine='';
                                             if(row.domaine==="I")domaine="INDIVIDUEL";
                                             if(row.domaine==="G")domaine="GROUPE";
@@ -251,5 +251,5 @@ const exportdata=gql`
     }`;
 
    export default graphql(exportdata,{
-    options:({ typeDate,startDate,endDate,domaine}) => ({ variables: { typeDate,startDate,endDate,domaine},fetchPolicy: 'cache-and-network'}),
+    options:({ typeDate,startDate,endDate,domaine}) => ({ variables: { typeDate,startDate,endDate,domaine},fetchPolicy: 'network-only'}),
 })(InfExport)

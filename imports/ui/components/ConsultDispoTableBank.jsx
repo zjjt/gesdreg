@@ -16,7 +16,7 @@ import areIntlLocalesSupported from 'intl-locales-supported';
 import MenuItem from 'material-ui/MenuItem';
 import ServRegBankForm from './ServRegBankForm';
 import {$} from 'meteor/jquery';
-import {englishDateToFr,formatNumberInMoney} from '../../utils/utilitaires.js';
+import {englishDateToFr,formatNumberInMoney,arrayUnique} from '../../utils/utilitaires.js';
 import {miseajourDispoBank,openBigDialog,selectedReg} from '../../redux/actions/user-actions.js'
 
 
@@ -208,7 +208,7 @@ console.dir(this.state);
                                                     </div>
                                                </TableRowColumn>
                                             </TableRow>
-                                           ):typeof consultDispoBank!=='undefined'?consultDispoBank.map((row,index)=>{
+                                           ):typeof consultDispoBank!=='undefined'?arrayUnique(consultDispoBank).map((row,index)=>{
                                             //on filtre que pour montreer les reglements NB
                                                 let statutClass='';
                                                 let prestation='';
@@ -384,7 +384,7 @@ export default graphql(checkDisponibleBank,{
             numcheque,
             offset:0,
             limit:ITEMS_PER_PAGE          
-    },fetchPolicy: 'cache-and-network' }),
+    },fetchPolicy: 'network-only' }),
         props:({data:{loading,consultDispoBank,fetchMore,subscribeToMore,refetch},selectedRgt})=>{
             return{
                 loading,

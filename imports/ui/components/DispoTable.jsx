@@ -17,7 +17,7 @@ import areIntlLocalesSupported from 'intl-locales-supported';
 import MenuItem from 'material-ui/MenuItem';
 import ModRegForm from './ModRegForm.jsx';
 import {miseajourDispo,openBigDialog,openFileUploadDialog} from '../../redux/actions/user-actions.js'
-import {englishDateToFr, formatNumberInMoney} from '../../utils/utilitaires.js';
+import {englishDateToFr, formatNumberInMoney,arrayUnique} from '../../utils/utilitaires.js';
 import LinearProgress from 'material-ui/LinearProgress';
 import {$} from 'meteor/jquery';
 import Icon from 'react-icons-kit';
@@ -293,7 +293,7 @@ class DispoTable extends Component{
                                 <TableHeaderColumn tooltip="Date de dépot à la trésorerie">Dépot Tréso</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Date de sortie de la trésorerie / Date d'envoi à la banque">Sortie Tréso / Envoyer à la banque</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Date de dépot pour la signature">Dépot Signature</TableHeaderColumn>
-                                <TableHeaderColumn tooltip="Date de réception du règlement après signature">Sortie Signature</TableHeaderColumn>
+                                <TableHeaderColumn tooltip="Date de réception du règlement après signature / date de décharge de l'OV">Sortie Signature / Décharge OV</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Date de retrait du règlement / Date d'execution du virement">Retrait Règlement / Execution du virement</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Statut du règlement dans le système">Statut règlement</TableHeaderColumn>
                                 <TableHeaderColumn tooltip="Domaine du règlement">Domaine</TableHeaderColumn>
@@ -320,7 +320,7 @@ class DispoTable extends Component{
                                                     </div>
                                                </TableRowColumn>
                                             </TableRow>
-                                           ): typeof this.state.listeDispo!=="undefined" && this.state.listeDispo.length?this.state.listeDispo.map((row,index)=>{
+                                           ): typeof this.state.listeDispo!=="undefined" && this.state.listeDispo.length?arrayUnique(this.state.listeDispo).map((row,index)=>{
                                             let domaine='';
                                             let lineTitle="";
                                             let prestation="";
@@ -359,28 +359,29 @@ class DispoTable extends Component{
                                                 statutClass='animated bounceInLeft redBack';
                                                 lineTitle=row.ValBank?"ce règlement a été retiré par le client et a été traité à la banque ":"ce règlement a été retiré par le client";
                                             }
-                                            if(row.statut_reg_retirer==="REFUSER"){
+                                            if(row.statut_reg_retirer==="REJET"){
                                                 statutClass='animated fadeInInLeft brownBack';
-                                                lineTitle="ce règlement a été refusé";
+                                                lineTitle="ce règlement a été rejetté";
                                             }
                                             if(row.statut_reg_retirer==="ANNULER"){
                                                 statutClass='animated fadeInInLeft grayBack';
                                                 lineTitle="ce règlement a été annulé";
                                             }
-                                            if(row.Comments && row.Comments.includes("%MAN%")){
+                                            
+                                            if((row.MRGGT=="C" && row.chequeState && row.chequeState!="CHEQUE VALIDE")&& !row.Comments.includes("%MAN%")){
+                                                statutClass='animated fadeInInLeft darkBack';
+                                                lineTitle="Le chèque de ce règlement a été annulé";
+                                            }
+                                            if(row.Comments &&!row.Comments.includes("REJET")&& row.Comments.includes("%MAN%")){
                                                 statutClass='animated fadeInInLeft kakiBack';
                                                 lineTitle="c'est un règlement manuel";
-                                                comments.replace("%MAN%"," ");
+                                                comments= comments.replace("%MAN%"," ");
                                                 //recuperation du type de prestation
                                                 prestation = row.Comments.substring(
                                                     row.Comments.lastIndexOf("$") + 1, 
                                                     row.Comments.lastIndexOf("!")
                                                 );
-                                                comments.replace(`$${prestation}!`," ");
-                                            }
-                                            if((row.MRGGT=="C" && row.chequeState && row.chequeState!="CHEQUE VALIDE")){
-                                                statutClass='animated fadeInInLeft darkBack';
-                                                lineTitle="Le chèque de ce règlement a été annulé";
+                                               comments= comments.replace(`$${prestation}!`," ");
                                             }
                                             console.dir(row);
                                             return(<TableRow key={index} className={ statutClass } selected={this.state.selectedRows.length?true:false} ref={`ligne${index}`} title={lineTitle}>
@@ -484,7 +485,7 @@ class DispoTable extends Component{
                         -<span style={{color:"pink"}}>ROSE</span> pour le statut <b>A LA SIGNATURE</b><br/> 
                         -<span style={{color:"green"}}>VERT</span> pour le statut <b>PRET</b><br/> 
                         -<span style={{color:"red"}}>ROUGE</span> pour le statut <b>SORTIE</b><br/><br/>
-                        -<span style={{color:"brown"}}>MARRON</span> pour le statut <b>REFUSER</b><br/><br/>
+                        -<span style={{color:"brown"}}>MARRON</span> pour le statut <b>REJET</b><br/><br/>
                         -<span style={{color:"#63600a"}}>JAUNE VOMI</span> pour le statut <b>ANNULER</b>dans <b>GESDREG</b><br/><br/>
                         -<span style={{color:"#eddb9f"}}>KAKI</span> pour les reglements manuels <b>MANUELS</b><br/><br/>
                         -<span style={{color:"#1a1918"}}>NOIR SOMBRE</span> pour les reglements dont les chèques / envois sont annulés depuis <b>SUNSHINE</b><br/><br/>
@@ -590,7 +591,7 @@ export default graphql(listeDisponibilities,{
             numreglEnd,
             offset:0,
             limit:parseInt(numenv,10)?10:ITEMS_PER_PAGE          
-    },fetchPolicy: 'cache-and-network' }),
+    },fetchPolicy: 'network-only' }),
         props:({data:{loading,error,listeDispo,fetchMore,refetch}})=>{
             //alert(JSON.stringify(error));
             
