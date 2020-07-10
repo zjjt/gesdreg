@@ -148,7 +148,7 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
-                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                    if(r.cheque ){
                                         promises.push(
                                             Promise.all([
                                                 DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -205,7 +205,7 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
-                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                    if(r.cheque ){
                                         promises.push(
                                             Promise.all([
                                                 DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -262,7 +262,7 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
-                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                    if(r.cheque ){
                                         promises.push(
                                             Promise.all([
                                                 DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -319,7 +319,7 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
-                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                    if(r.cheque ){
                                         promises.push(
                                             Promise.all([
                                                 DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -377,7 +377,7 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
-                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                    if(r.cheque ){
                                         promises.push(
                                             Promise.all([
                                                 DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -435,7 +435,7 @@ export const pubsub = new PubSub();
                                                     return dispo;
                                                 })
                                             );
-                                            if(r.cheque && !r.Comments.includes("%MAN%")){
+                                            if(r.cheque ){
                                                 promises.push(
                                                     Promise.all([
                                                         DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -497,7 +497,7 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
-                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                    if(r.cheque ){
                                         promises.push(
                                             Promise.all([
                                                 DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -555,7 +555,7 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
-                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                    if(r.cheque ){
                                         promises.push(
                                             Promise.all([
                                                 DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -613,7 +613,7 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
-                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                    if(r.cheque ){
                                         promises.push(
                                             Promise.all([
                                                 DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -671,7 +671,7 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
-                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                    if(r.cheque ){
                                         promises.push(
                                             Promise.all([
                                                 DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -729,7 +729,7 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
-                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                    if(r.cheque ){
                                         promises.push(
                                             Promise.all([
                                                 DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -787,7 +787,7 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
-                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                    if(r.cheque ){
                                         promises.push(
                                             Promise.all([
                                                 DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -845,7 +845,7 @@ export const pubsub = new PubSub();
                                                     return dispo;
                                                 })
                                             );
-                                            if(r.cheque && !r.Comments.includes("%MAN%")){
+                                            if(r.cheque ){
                                                 promises.push(
                                                     Promise.all([
                                                         DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -909,7 +909,7 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
-                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                    if(r.cheque ){
                                         promises.push(
                                             Promise.all([
                                                 DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -967,7 +967,7 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
-                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                    if(r.cheque ){
                                         promises.push(
                                             Promise.all([
                                                 DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -1025,7 +1025,7 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
-                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                    if(r.cheque ){
                                         promises.push(
                                             Promise.all([
                                                 DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -1083,7 +1083,7 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
-                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                    if(r.cheque ){
                                         promises.push(
                                             Promise.all([
                                                 DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -1141,7 +1141,7 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
-                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                    if(r.cheque ){
                                         promises.push(
                                             Promise.all([
                                                 DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -1200,7 +1200,7 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
-                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                    if(r.cheque ){
                                         promises.push(
                                             Promise.all([
                                                 DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -1259,7 +1259,7 @@ export const pubsub = new PubSub();
                                                     return dispo;
                                                 })
                                             );
-                                            if(r.cheque && !r.Comments.includes("%MAN%")){
+                                            if(r.cheque ){
                                                 promises.push(
                                                     Promise.all([
                                                         DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -1320,7 +1320,7 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
-                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                    if(r.cheque ){
                                         promises.push(
                                             Promise.all([
                                                 DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -1353,7 +1353,9 @@ export const pubsub = new PubSub();
                             });
                             return l;
             }else if(!args.typeDate && !args.date && !args.statut && !args.domaine && !args.numenv && args.numregl && !args.numpol && !args.nomtotal && !args.numreglStart && !args.numreglEnd){
-                console.log("son type est "+typeof args.numregl);
+                console.log("son type est "+typeof args.numregl+" length is "+args.numregl.toString().length);
+
+                
                let l= await dispoSQL.findAll({attributes:{exclude:['id']},where:{
                              wnrgt:parseInt(args.numregl,10)
                         },offset:args.offset,limit:args.limit}).then((res)=>{
@@ -1377,7 +1379,7 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
-                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                    if(r.cheque ){
                                         promises.push(
                                             Promise.all([
                                                 DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -1393,6 +1395,7 @@ export const pubsub = new PubSub();
                                 return Promise.all(promises)
                                 
                             }).then((dispos)=>{
+                                console.log("in listeDispo rgt search")
                                 console.dir(dispos);
                                 let nd=dispos.map((e,i,arr)=>{
                                     if(e.infoSurRgt.length>1){
@@ -1408,6 +1411,7 @@ export const pubsub = new PubSub();
                                 });
                                 return nd;
                             });
+                            console.dir(l);
                             return l;
             }else if(!args.typeDate && !args.date && !args.statut && !args.domaine && !args.numenv && !args.numregl && args.numpol && !args.nomtotal && !args.numreglStart && !args.numreglEnd){
                 let l=await dispoSQL.findAll({attributes:{exclude:['id']},where:{
@@ -1433,7 +1437,7 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
-                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                    if(r.cheque ){
                                         promises.push(
                                             Promise.all([
                                                 DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -1489,7 +1493,7 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
-                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                    if(r.cheque ){
                                         promises.push(
                                             Promise.all([
                                                 DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -1547,7 +1551,7 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
-                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                    if(r.cheque ){
                                         promises.push(
                                             Promise.all([
                                                 DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -1607,7 +1611,7 @@ export const pubsub = new PubSub();
                                 return dispo;
                             })
                         );
-                        if(r.cheque && !r.Comments.includes("%MAN%")){
+                        if(r.cheque ){
                             promises.push(
                                 Promise.all([
                                     DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -1671,7 +1675,7 @@ export const pubsub = new PubSub();
                                 return dispo;
                             })
                         );
-                        if(r.cheque && !r.Comments.includes("%MAN%")){
+                        if(r.cheque ){
                             promises.push(
                                 Promise.all([
                                     DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -1793,7 +1797,7 @@ export const pubsub = new PubSub();
                                 return dispo;
                             })
                         );
-                        if(r.cheque && !r.Comments.includes("%MAN%")){
+                        if(r.cheque ){
                             promises.push(
                                 Promise.all([
                                     DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -1861,7 +1865,7 @@ export const pubsub = new PubSub();
                             })
                         );
                         
-                        if(r.cheque && !r.Comments.includes("%MAN%")){
+                        if(r.cheque ){
                             promises.push(
                                 Promise.all([
                                     DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -1929,7 +1933,7 @@ export const pubsub = new PubSub();
                                 return dispo;
                             })
                         );
-                        if(r.cheque && !r.Comments.includes("%MAN%")){
+                        if(r.cheque ){
                             promises.push(
                                 Promise.all([
                                     DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -2000,7 +2004,7 @@ export const pubsub = new PubSub();
                                 return dispo;
                             })
                         );
-                        if(r.cheque && !r.Comments.includes("%MAN%")){
+                        if(r.cheque ){
                             promises.push(
                                 Promise.all([
                                     DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -2066,7 +2070,7 @@ export const pubsub = new PubSub();
                                 return dispo;
                             })
                         );
-                        if(r.cheque && !r.Comments.includes("%MAN%")){
+                        if(r.cheque ){
                             promises.push(
                                 Promise.all([
                                     DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -2133,7 +2137,7 @@ export const pubsub = new PubSub();
                                 return dispo;
                             })
                         );
-                        if(r.cheque && !r.Comments.includes("%MAN%")){
+                        if(r.cheque ){
                             promises.push(
                                 Promise.all([
                                     DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -2197,7 +2201,7 @@ export const pubsub = new PubSub();
                             return dispo;
                         })
                     );
-                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                    if(r.cheque ){
                         promises.push(
                             Promise.all([
                                 DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -2264,7 +2268,7 @@ export const pubsub = new PubSub();
                                 return dispo;
                             })
                         );
-                        if(r.cheque && !r.Comments.includes("%MAN%")){
+                        if(r.cheque ){
                             promises.push(
                                 Promise.all([
                                     DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -2330,7 +2334,7 @@ export const pubsub = new PubSub();
                                 return dispo;
                             })
                         );
-                        if(r.cheque && !r.Comments.includes("%MAN%")){
+                        if(r.cheque ){
                             promises.push(
                                 Promise.all([
                                     DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -2398,7 +2402,7 @@ export const pubsub = new PubSub();
                                 return dispo;
                             })
                         );
-                        if(r.cheque && !r.Comments.includes("%MAN%")){
+                        if(r.cheque ){
                             promises.push(
                                 Promise.all([
                                     DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -2462,7 +2466,7 @@ export const pubsub = new PubSub();
                                 return dispo;
                             })
                         );
-                        if(r.cheque && !r.Comments.includes("%MAN%")){
+                        if(r.cheque ){
                             promises.push(
                                 Promise.all([
                                     DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -2526,7 +2530,7 @@ export const pubsub = new PubSub();
                                 return dispo;
                             })
                         );
-                        if(r.cheque && !r.Comments.includes("%MAN%")){
+                        if(r.cheque ){
                             promises.push(
                                 Promise.all([
                                     DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -2590,7 +2594,7 @@ export const pubsub = new PubSub();
                                 return dispo;
                             })
                         );
-                        if(r.cheque && !r.Comments.includes("%MAN%")){
+                        if(r.cheque ){
                             promises.push(
                                 Promise.all([
                                     DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -2654,7 +2658,7 @@ export const pubsub = new PubSub();
                                 return dispo;
                             })
                         );
-                        if(r.cheque && !r.Comments.includes("%MAN%")){
+                        if(r.cheque ){
                             promises.push(
                                 Promise.all([
                                     DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
@@ -2722,7 +2726,7 @@ export const pubsub = new PubSub();
                                return dispo;
                            })
                        );
-                       if(r.cheque && !r.Comments.includes("%MAN%")){
+                       if(r.cheque ){
                         promises.push(
                             Promise.all([
                                 DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})

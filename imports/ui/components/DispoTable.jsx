@@ -79,9 +79,10 @@ class DispoTable extends Component{
                 this.props.refetch();
             }
             if(!isFileUploadDialogUp && this.state.dialogFIsOpen){
+                
+                this.props.refetch();
                 this._dialogTClose();
                 this._dialogFClose();
-                this.props.refetch();
             }
           if(this.props.listeDispo!=this.state.listeDispo && typeof this.props.listeDispo!="undefined"){
             this.setState({listeDispo:this.props.listeDispo})
@@ -153,14 +154,20 @@ class DispoTable extends Component{
        
 
         _onRowSelection(selectedRows){
+            console.log("selected rows");
+            console.dir(selectedRows);
             let regarray=[];
             if(Array.isArray(selectedRows)){
                 selectedRows.map((r)=>{
-                regarray.push(this.props.listeDispo[r]);
+                    console.log("value of the r");
+                    console.dir(r)
+                    console.log("content of liste dispo");
+                    console.dir(this.props.listeDispo);
+                regarray.push(arrayUnique(this.state.listeDispo)[r]);
                 //console.dir(this.props.data.userSQL[r])
              });
             }else{
-                regarray=this.props.listeDispo; 
+                regarray=arrayUnique(this.state.listeDispo); 
                 //alert("Afin de minimiser la memoire utilisé")
             }
             switch(regarray[0].domaine){
@@ -181,6 +188,7 @@ class DispoTable extends Component{
                 //dialogTIsOpen:true
             });
             //this.props.dispatch(openBigDialog("MOD"));
+            console.log("regarray");
             console.dir(regarray);
             
         }
@@ -367,22 +375,23 @@ class DispoTable extends Component{
                                                 statutClass='animated fadeInInLeft grayBack';
                                                 lineTitle="ce règlement a été annulé";
                                             }
-                                            
-                                            if((row.MRGGT=="C" && row.chequeState && row.chequeState!="CHEQUE VALIDE")&& !row.Comments.includes("%MAN%")){
+                                            if(row.MRGGT=="C" && row.chequeState && row.chequeState!="CHEQUE VALIDE" && row.infoSurRgt[0].NUMERO_CHEQUE==""){
                                                 statutClass='animated fadeInInLeft darkBack';
                                                 lineTitle="Le chèque de ce règlement a été annulé";
                                             }
-                                            if(row.Comments &&!row.Comments.includes("REJET")&& row.Comments.includes("%MAN%")){
-                                                statutClass='animated fadeInInLeft kakiBack';
-                                                lineTitle="c'est un règlement manuel";
-                                                comments= comments.replace("%MAN%"," ");
-                                                //recuperation du type de prestation
-                                                prestation = row.Comments.substring(
-                                                    row.Comments.lastIndexOf("$") + 1, 
-                                                    row.Comments.lastIndexOf("!")
-                                                );
-                                               comments= comments.replace(`$${prestation}!`," ");
-                                            }
+                                               
+                                                if(row.Comments &&!row.Comments.includes("REJET")&& row.Comments.includes("%MAN%")){
+                                                    statutClass='animated fadeInInLeft kakiBack';
+                                                    lineTitle="c'est un règlement manuel";
+                                                    comments= comments.replace("%MAN%"," ");
+                                                    //recuperation du type de prestation
+                                                    prestation = row.Comments.substring(
+                                                        row.Comments.lastIndexOf("$") + 1, 
+                                                        row.Comments.lastIndexOf("!")
+                                                    );
+                                                   comments= comments.replace(`$${prestation}!`," ");
+                                                }
+                                            
                                             console.dir(row);
                                             return(<TableRow key={index} className={ statutClass } selected={this.state.selectedRows.length?true:false} ref={`ligne${index}`} title={lineTitle}>
                                                 <TableRowColumn>{statutClass.includes("kakiBack")?"M":etat}</TableRowColumn>

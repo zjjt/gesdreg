@@ -16,6 +16,7 @@ import Snackbar from 'material-ui/Snackbar';
 import { RadioButton } from 'material-ui/RadioButton';
 import {miseajourDispo,closeBigDialog} from '../../redux/actions/user-actions.js';
 import {$} from 'meteor/jquery';
+import {formatNumberInMoney} from '../../utils/utilitaires.js';
 
 let DateTimeFormat;
 if(areIntlLocalesSupported(['fr'])){
@@ -97,6 +98,7 @@ class ModRegForm extends Component{
              if(!values.choixForm){
                  alert("Veuillez choisir une option de formulaire parmis celles proposées");
              }else{
+                // alert("in choix form");
                  switch(values.choixForm){
                      case "MODIFIER":
                         if((values.date_depot_treso===''||!values.date_depot_treso)
@@ -116,9 +118,15 @@ class ModRegForm extends Component{
 
                             //console.log(this.props.data.voirInfoReg[0].DATE_SURVENANCE_SINISTRE);
                                 
-                        // alert( );
+                       // alert("ici");
+                       console.log("values entered\n");
                             console.dir(values);
-                            Meteor.call('updateDispos',values,this.props.regSelected,this.props.numenv,(err)=>{
+                            console.log("reg selected\n");
+                            console.dir(this.props.regSelected);
+                            Meteor.call('updateDispos',values,this.props.regSelected,this.props.numenv,(err,res)=>{
+                                console.log("values of res");
+                                console.dir(res);
+                                console.log(err);
                                 if(err){
                                     console.dir(err);
                                     if(err.error==="bad-date"||err.error==="bad-coderej"){
@@ -131,12 +139,18 @@ class ModRegForm extends Component{
                                         
                                     this._dialogOpen();
                                 }else{
+                                    console.log("resultat updatesDispos numenv");
+                                    console.dir(res);
+                                    alert(`Nombre de lignes impactées:${res[0].lignes},montant total:${formatNumberInMoney(res[0].montant)} F CFA` );
+
                                     this.setState({
-                                    snackMsg:`Mise à jour éffectuée`,
+                                    snackMsg:`Mise à jour éffectuée.`,
                                     snackOpen:true
                                     });
                                     //dispatch(miseajourDispo());
                                     setTimeout(()=>{
+                                        //alert(`Nombre de lignes impactées:${res.lignes},montant total:${formatNumberInMoney(res.montant)}` );
+
                                         dispatch(closeBigDialog("MOD"));
                                     },5500);
                                 }
@@ -322,6 +336,26 @@ class ModRegForm extends Component{
             format={(value,name)=>value===''?null:value}
             floatingLabelFixed={true}
         />
+        <Divider/>
+            <div style={{textAlign:"center",color:"1e2c67",backgroundColor:"#cc992c"}}>METTRE A JOUR LE STATUT</div>
+        <Divider/>
+        <Field
+            name="statut" 
+            component={SelectField}
+            hintText="Mettre à jour le statut manuellement"
+            floatingLabelFixed={true}
+            value={this.props.statut}
+            maxHeight={300}
+        >
+            <MenuItem value="EN COURS" primaryText="EN COURS"/>
+            <MenuItem value="A LA TRESO" primaryText="A LA TRESO"/>
+            <MenuItem value="SORTIE DE TRESO" primaryText="SORTIE DE TRESO"/>
+            <MenuItem value="A LA SIGNATURE" primaryText="A LA SIGNATURE"/>
+            <MenuItem value="PRET" primaryText="PRET"/>
+            <MenuItem value="SORTIE" primaryText="SORTIE"/>
+            <MenuItem value="REJET" primaryText="REJET"/>
+            <MenuItem value="ANNULER" primaryText="ANNULER"/>
+        </Field>
         <Divider/>
             <div style={{textAlign:"center",color:"1e2c67",backgroundColor:"#cc992c"}}>ENTREZ LES NUMEROS DE REGLEMENTS A EXCLURE DE LA MISE A JOUR</div>
         <Divider/>

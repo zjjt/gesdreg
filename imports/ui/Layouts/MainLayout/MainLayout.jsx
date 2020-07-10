@@ -89,7 +89,10 @@ export default class MainLayout extends Component{
 		if(Meteor.user()){
 			setTimeout(()=>{
 				if(Session.get("userRole")==="G"){
-					setInterval(async ()=>{
+					console.log("normaly launching checkdelaiparrapport a client");
+
+					//cette requete prend trop de temps a executer
+					/*setInterval(async ()=>{
 						Meteor.call("checkDelaiParRapportAuClient",(res,err)=>{
 							if(err){
 								//alert(err);
@@ -118,8 +121,8 @@ export default class MainLayout extends Component{
 								
 							}
 						});
-					},500000)
-					setInterval( async ()=>{
+					},500000)*/
+					/*setInterval( async ()=>{
 						 Meteor.call("checkDelai",(res,err)=>{
 							 if(err){
 								 let nbHorsDelaiS=err.horsDelaiS.length;
@@ -143,9 +146,10 @@ export default class MainLayout extends Component{
 							 }
 						 });
 						
-					},200000);
+					},200000);*/
 				}else if(Session.get("userRole")==="C"){
-					setInterval(async ()=>{
+					console.log("normaly launching checkdelaiparrapport a client");
+				/*	setInterval(async ()=>{
 						Meteor.call("checkDelaiParRapportAuClient",(res,err)=>{
 							if(err){
 								//alert(err);
@@ -173,7 +177,7 @@ export default class MainLayout extends Component{
 								// console.dir(err);
 							}
 						});
-					},500000)
+					},500000)*/
 				}
 			},10000);
 		}	

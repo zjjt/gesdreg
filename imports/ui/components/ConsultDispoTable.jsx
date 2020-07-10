@@ -261,7 +261,7 @@ class ConsultDispoTable extends Component{
                                                 );
                                                 comments.replace(`$${prestation}!`," ");
                                             }
-                                            if((row.MRGGT=="C" && row.chequeState && row.chequeState!="CHEQUE VALIDE")){
+                                            if((row.MRGGT=="C" && row.chequeState && row.chequeState!="CHEQUE VALIDE")&& row.infoSurRgt[0].NUMERO_CHEQUE==""){
                                                 statutClass='animated fadeInInLeft darkBack';
                                                 lineTitle="Le chèque de ce règlement a été annulé";
                                             }
