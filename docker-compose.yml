@@ -11,7 +11,7 @@ services:
     restart: always
     image: gesdregtest:latest
     ports:
-      - 83:3000
+      - 82:3000
     links:
       - mongo
     environment:
@@ -19,8 +19,16 @@ services:
       ROOT_URL: http://gesdreg.app
       MONGO_URL: mongodb://mongo:27017/meteor
       # MONGO_OPLOG_URL: mongodb://USERNAME:PASSWORD@mongo:27017/local
-      # MAIL_URL: smtp://info@meteor.click:PASSWORD@mail.server.net:465/
+      #MAIL_URL: smtp://thibaut.zehi:ZjjTEnt%401988@10.10.4.15:25/
       NODE_ENV: production
       PORT: 3000
+      SENDERMAIL: 'thibaut.zehi@groupensia.com'
+      SENDERPASS: 'ZjjTEnt@1988'
+      SMTP_HOST: 10.10.4.15
+      SMTP_PORT: 25
+      #CCMAIL: "Exploitation_VIECI@groupensia.com,anastasie.assale@groupensia.com"
+      #BCCMAIL: "" 
       METEOR_SETTINGS: '{"DBSQLSERVER_HOST":"10.8.3.29", "DBSQLSERVER_PORT":"57055", "DBSQLSERVER_USER":"reportvie", "DBSQLSERVER_PASSWORD":"reportvie","DBSQLSERVER_DATABASE":"SUN_COTEDIVOIRE","ADMINLOGMDP":"Nsia@RGT2018","ADMINMAIL":"thibaut.zehi@groupensia.com","RUNMAJ":"00 17 * * *"}' # paste meteor settings.json here in one line!
       #METEOR_SETTINGS: '{"DBSQLSERVER_HOST":"10.10.3.70", "DBSQLSERVER_PORT":"63960", "DBSQLSERVER_USER":"reportvie", "DBSQLSERVER_PASSWORD":"reportvie","DBSQLSERVER_DATABASE":"SUNDB_RCI","ADMINLOGMDP":"Nsia@RGT2018","ADMINMAIL":"thibaut.zehi@groupensia.com","RUNMAJ":"00 12 * * *"}' # paste meteor settings.json here in one line!
+      CCMAIL: "thibaut.zehi@groupensia.com"
+      BCCMAIL: "" 

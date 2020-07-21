@@ -141,6 +141,7 @@ class ModRegForm extends Component{
                                 }else{
                                     console.log("resultat updatesDispos numenv");
                                     console.dir(res);
+                                    if(typeof res !="undefined" && this.props.numenv!="")
                                     alert(`Nombre de lignes impactées:${res[0].lignes},montant total:${formatNumberInMoney(res[0].montant)} F CFA` );
 
                                     this.setState({
@@ -371,12 +372,12 @@ class ModRegForm extends Component{
                 validate={this.state.textAreaDisabled?[]:[maxLength(255)]}
             />
         <Divider/>
-            <div style={{textAlign:"center",color:"1e2c67",backgroundColor:"#cc992c"}}>DANS LE CAS D'ENVOI DE VIREMENT,VEUILLEZ PRECISER LE CODE REJET DANS LE CHAMPS CI-DESSOUS</div>
+            <div style={{textAlign:"center",color:"1e2c67",backgroundColor:"#cc992c"}}>POUR REJETTER LE/LES REGLEMENTS ECRIRE "REJET",POUR PRECISER LE LIEU DE RETRAIT ECRIRE "LIEU:" SUIVI DU LIEU DANS LE CHAMPS CI-DESSOUS</div>
         <Divider/>
         <Field
                 name="coderej" 
                 component={TextField}
-                hintText="exemple: 123"
+                hintText="exemple: REJET/LIEU: siège immeuble sianne vallon"
                 floatingLabelText="Code de rejet de l'envoi sélectionné"
                 fullWidth={true}
                 style={this.state.textAreaDisabled?{"diaplay":"none"}:{"display":"block"}}
