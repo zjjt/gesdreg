@@ -261,7 +261,7 @@ class ConsultDispoTable extends Component{
                                                 );
                                                 comments.replace(`$${prestation}!`," ");
                                             }
-                                            if((row.MRGGT=="C" && row.chequeState && row.chequeState!="CHEQUE VALIDE")&& row.infoSurRgt[0].NUMERO_CHEQUE==""){
+                                            if((row.MRGGT=="C" && row.chequeState && row.chequeState!="CHEQUE VALIDE")/*&& row.infoSurRgt[0].NUMERO_CHEQUE==""*/){
                                                 statutClass='animated fadeInInLeft darkBack';
                                                 lineTitle="Le chèque de ce règlement a été annulé";
                                             }
@@ -276,12 +276,12 @@ class ConsultDispoTable extends Component{
                                                 <TableRowColumn>{row.banque?row.banque:"AUCUNE"}</TableRowColumn>
                                                 <TableRowColumn>{row.cheque?row.cheque:row.infoSurRgt[0]?row.infoSurRgt[0].NUMERO_CHEQUE:"AUCUN"}</TableRowColumn>
                                                 <TableRowColumn>{row.wnupo}</TableRowColumn>
-                                                <TableRowColumn>{row.infoSurRgt[0]?row.infoSurRgt[0].DECOMPTE:"NON DEFINI"}</TableRowColumn>
+                                                <TableRowColumn>{typeof row.infoSurRgt[0]!="undefined"?row.infoSurRgt[0].DECOMPTE:"NON DEFINI"}</TableRowColumn>
                                                 <TableRowColumn>{typeSinistre!=""?typeSinistre:"NON DEFINI"}</TableRowColumn>
                                                 <TableRowColumn>{dateRecep!=""?dateRecep:"NON DEFINIE"}</TableRowColumn>
                                                 <TableRowColumn>{dateRgt!=""?dateRgt:"NON DEFINIE"}</TableRowColumn>
-                                                <TableRowColumn>{row.infoSurRgt[0]?formatNumberInMoney(row.infoSurRgt[0].MONTANT_BRUT):"NON DEFINI"}</TableRowColumn>
-                                                <TableRowColumn>{row.infoSurRgt[0]?formatNumberInMoney(row.infoSurRgt[0].MONTANT_NET_REGLEMENT):"NON DEFINI"}</TableRowColumn>
+                                                <TableRowColumn>{typeof row.infoSurRgt[0]!="undefined"?formatNumberInMoney(row.infoSurRgt[0].MONTANT_BRUT):"NON DEFINI"}</TableRowColumn>
+                                                <TableRowColumn>{typeof row.infoSurRgt[0]!="undefined"?formatNumberInMoney(row.infoSurRgt[0].MONTANT_NET_REGLEMENT):"NON DEFINI"}</TableRowColumn>
                                                 <TableRowColumn>{row.nom_beneficiaire}</TableRowColumn>
                                                 <TableRowColumn>{row.date_naiss?moment(row.date_naiss).format("DD-MM-YYYY"):"NON DEFINIE"}</TableRowColumn>
                                                 <TableRowColumn>{row.dateRDV?moment(row.dateRDV).format("DD-MM-YYYY"):"NON DEFINIE"}</TableRowColumn>

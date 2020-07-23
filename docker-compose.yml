@@ -9,7 +9,7 @@ services:
     container_name: gesdregApp
     hostname: gesdreg.app
     restart: always
-    image: gesdregtest:latest
+    image: gesdregofficial:latest
     ports:
       - 82:3000
     links:

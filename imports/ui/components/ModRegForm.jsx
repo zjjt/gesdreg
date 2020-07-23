@@ -142,7 +142,15 @@ class ModRegForm extends Component{
                                     console.log("resultat updatesDispos numenv");
                                     console.dir(res);
                                     if(typeof res !="undefined" && this.props.numenv!="")
-                                    alert(`Nombre de lignes impactées:${res[0].lignes},montant total:${formatNumberInMoney(res[0].montant)} F CFA` );
+                                    {
+                                        let resu=res.filter(function (el) {
+                                            return el.lignes>0;
+                                          });
+                                          console.log("apres filtrage");
+                                          console.dir(resu);
+                                        alert(`Nombre de lignes impactées:${resu[0].lignes},montant total:${formatNumberInMoney(resu[0].montant)} F CFA` );
+
+                                    }
 
                                     this.setState({
                                     snackMsg:`Mise à jour éffectuée.`,
@@ -151,7 +159,6 @@ class ModRegForm extends Component{
                                     //dispatch(miseajourDispo());
                                     setTimeout(()=>{
                                         //alert(`Nombre de lignes impactées:${res.lignes},montant total:${formatNumberInMoney(res.montant)}` );
-
                                         dispatch(closeBigDialog("MOD"));
                                     },5500);
                                 }

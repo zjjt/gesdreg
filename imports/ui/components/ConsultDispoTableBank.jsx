@@ -237,11 +237,11 @@ console.dir(this.state);
                                                 <TableRowColumn>{row.infoSurRgt[0]?row.infoSurRgt[0].NUMERO_CHEQUE!=''?row.infoSurRgt[0].NUMERO_CHEQUE:'"NON DEFINI"':'"NON DEFINI"'}</TableRowColumn>
                                                 <TableRowColumn>{row.Num_envoi?row.Num_envoi:"AUCUN"}</TableRowColumn>
                                                 <TableRowColumn>{row.date_naiss?moment(row.date_naiss).format("DD-MM-YYYY"):"NON DEFINIE"}</TableRowColumn>
-                                                <TableRowColumn>{row.infoSurRgt[0]&&!statutClass.includes("kakiBack")?row.infoSurRgt[0].TYPE_SINISTRE:statutClass.includes("kakiBack")?prestation:"NON DEFINI"}</TableRowColumn>
-                                                <TableRowColumn>{row.infoSurRgt[0]?englishDateToFr(row.infoSurRgt[0].DATE_RECEPTION):"NON DEFINI"}</TableRowColumn>
-                                                <TableRowColumn>{row.infoSurRgt[0]?englishDateToFr(row.infoSurRgt[0].DATE_REGLEMENT):"NON DEFINI"}</TableRowColumn>
-                                                <TableRowColumn>{row.infoSurRgt[0]?formatNumberInMoney(row.infoSurRgt[0].MONTANT_BRUT):"NON DISPONIBLE"}</TableRowColumn>
-                                                <TableRowColumn>{row.infoSurRgt[0]?formatNumberInMoney(row.infoSurRgt[0].MONTANT_NET_REGLEMENT):"NON DISPONIBLE"}</TableRowColumn>
+                                                <TableRowColumn>{typeof row.infoSurRgt[0]!="undefined"&&!statutClass.includes("kakiBack")?row.infoSurRgt[0].TYPE_SINISTRE:statutClass.includes("kakiBack")?prestation:"NON DEFINI"}</TableRowColumn>
+                                                <TableRowColumn>{typeof row.infoSurRgt[0]!="undefined"?englishDateToFr(row.infoSurRgt[0].DATE_RECEPTION):"NON DEFINI"}</TableRowColumn>
+                                                <TableRowColumn>{typeof row.infoSurRgt[0]!="undefined"?englishDateToFr(row.infoSurRgt[0].DATE_REGLEMENT):"NON DEFINI"}</TableRowColumn>
+                                                <TableRowColumn>{typeof row.infoSurRgt[0]!="undefined"?formatNumberInMoney(row.infoSurRgt[0].MONTANT_BRUT):"NON DISPONIBLE"}</TableRowColumn>
+                                                <TableRowColumn>{typeof row.infoSurRgt[0]!="undefined"?formatNumberInMoney(row.infoSurRgt[0].MONTANT_NET_REGLEMENT):"NON DISPONIBLE"}</TableRowColumn>
                                                <TableRowColumn>{row.statut_reg_retirer==="SORTIE"?"DISPONIBLE":"NON DISPONIBLE"}</TableRowColumn>
                                                <TableRowColumn>{row.ValBank==null||row.ValBank==""?"A DEFINIR":row.ValBank}</TableRowColumn>
                                                <TableRowColumn>{row.Comments?comments:"R.A.S"}</TableRowColumn>

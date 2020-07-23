@@ -26,6 +26,7 @@ export const frenchDateToEn=(date)=>{
     return yy+"-"+mm+"-"+dd;
 } 
 
+
 export let formatNumberInMoney=(x)=>{
     console.log(x);
     let parts=x.toString().split(".");

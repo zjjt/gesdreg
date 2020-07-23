@@ -375,7 +375,7 @@ class DispoTable extends Component{
                                                 statutClass='animated fadeInInLeft grayBack';
                                                 lineTitle="ce règlement a été annulé";
                                             }
-                                            if(row.MRGGT=="C" && row.chequeState && row.chequeState!="CHEQUE VALIDE" && row.infoSurRgt[0].NUMERO_CHEQUE==""){
+                                        if(row.MRGGT=="C" && row.chequeState && row.chequeState!="CHEQUE VALIDE" /*&& row.infoSurRgt[0].NUMERO_CHEQUE==""*/){
                                                 statutClass='animated fadeInInLeft darkBack';
                                                 lineTitle="Le chèque de ce règlement a été annulé";
                                             }
@@ -399,18 +399,18 @@ class DispoTable extends Component{
                                                 <TableRowColumn>{row.date_naiss?moment(row.date_naiss).format("DD-MM-YYYY"):"NON DEFINI"}</TableRowColumn>
                                                 <TableRowColumn>{row.wasrg}</TableRowColumn>
                                                 <TableRowColumn>{row.wnupo}</TableRowColumn>
-                                                <TableRowColumn>{row.infoSurRgt[0]?row.infoSurRgt[0].DECOMPTE:"NON DEFINI"}</TableRowColumn>
+                                                <TableRowColumn>{typeof row.infoSurRgt[0]!="undefined"?row.infoSurRgt[0].DECOMPTE:"NON DEFINI"}</TableRowColumn>
                                                 <TableRowColumn>{row.wnrgt}</TableRowColumn>
                                                 <TableRowColumn>{row.Num_envoi?row.Num_envoi:"AUCUN"}</TableRowColumn>
                                                 <TableRowColumn>{row.MRGGT}</TableRowColumn>
                                                 <TableRowColumn>{row.banque?row.banque:"AUCUNE"}</TableRowColumn>
-                                                <TableRowColumn>{row.infoSurRgt[0]&&!statutClass.includes("kakiBack")?row.infoSurRgt[0].TYPE_SINISTRE:statutClass.includes("kakiBack")?prestation:"NON DEFINI"}</TableRowColumn>
-                                                <TableRowColumn>{row.infoSurRgt[0]&&!statutClass.includes("kakiBack")?row.infoSurRgt[0].LIBELLE_SINISTRE:statutClass.includes("kakiBack")?prestation:"NON DEFINI"}</TableRowColumn>
-                                                <TableRowColumn>{row.infoSurRgt[0]&&!statutClass.includes("kakiBack")?row.infoSurRgt[0].CAUSE_SINISTRE:statutClass.includes("kakiBack")?prestation:"NON DEFINI"}</TableRowColumn>
-                                                <TableRowColumn>{row.infoSurRgt[0]?englishDateToFr(row.infoSurRgt[0].DATE_RECEPTION):"NON DEFINI"}</TableRowColumn>
-                                                <TableRowColumn>{row.infoSurRgt[0]?englishDateToFr(row.infoSurRgt[0].DATE_REGLEMENT):"NON DEFINI"}</TableRowColumn>
-                                                <TableRowColumn>{row.infoSurRgt[0]?formatNumberInMoney(row.infoSurRgt[0].MONTANT_NET_REGLEMENT):row.MNTGT?formatNumberInMoney(row.MNTGT):"NON DEFINI"}</TableRowColumn>
-                                                <TableRowColumn>{row.infoSurRgt[0]?row.infoSurRgt[0].NUMERO_CHEQUE!=''?row.infoSurRgt[0].NUMERO_CHEQUE:row.cheque?row.cheque:'NON DEFINI':'NON DEFINI'}</TableRowColumn>
+                                                <TableRowColumn>{typeof row.infoSurRgt[0]!="undefined"&&!statutClass.includes("kakiBack")?row.infoSurRgt[0].TYPE_SINISTRE:statutClass.includes("kakiBack")?prestation:"NON DEFINI"}</TableRowColumn>
+                                                <TableRowColumn>{typeof row.infoSurRgt[0]!="undefined"&&!statutClass.includes("kakiBack")?row.infoSurRgt[0].LIBELLE_SINISTRE:statutClass.includes("kakiBack")?prestation:"NON DEFINI"}</TableRowColumn>
+                                                <TableRowColumn>{typeof row.infoSurRgt[0]!="undefined"&&!statutClass.includes("kakiBack")?row.infoSurRgt[0].CAUSE_SINISTRE:statutClass.includes("kakiBack")?prestation:"NON DEFINI"}</TableRowColumn>
+                                                <TableRowColumn>{typeof row.infoSurRgt[0]!="undefined"?englishDateToFr(row.infoSurRgt[0].DATE_RECEPTION):"NON DEFINI"}</TableRowColumn>
+                                                <TableRowColumn>{typeof row.infoSurRgt[0]!="undefined"?englishDateToFr(row.infoSurRgt[0].DATE_REGLEMENT):"NON DEFINI"}</TableRowColumn>
+                                                <TableRowColumn>{typeof row.infoSurRgt[0]!="undefined"?formatNumberInMoney(row.infoSurRgt[0].MONTANT_NET_REGLEMENT):row.MNTGT?formatNumberInMoney(row.MNTGT):"NON DEFINI"}</TableRowColumn>
+                                                <TableRowColumn>{typeof row.infoSurRgt[0]!="undefined"?row.infoSurRgt[0].NUMERO_CHEQUE!=''?row.infoSurRgt[0].NUMERO_CHEQUE:row.cheque?row.cheque:'NON DEFINI':'NON DEFINI'}</TableRowColumn>
                                                 <TableRowColumn>{row.dateRDV?moment(row.dateRDV).format("DD-MM-YYYY"):"NON DEFINIE"}</TableRowColumn>
                                                 <TableRowColumn>{row.date_depot_treso?moment(row.date_depot_treso).format("DD-MM-YYYY"):"NON DEFINIE"}</TableRowColumn>
                                                 <TableRowColumn >{row.date_sort_treso?moment(row.date_sort_treso).format("DD-MM-YYYY"):"NON DEFINIE"}</TableRowColumn> 

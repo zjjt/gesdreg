@@ -421,7 +421,7 @@ export default ()=>{
             //console.dir(workbookJson);
             //before inserting we should check to see if this pqrticulqr rgt and police and domaine
             //already exists if it does we update the line else we insert a new one
-            let message=`<p>Bonjour cher tous, <br/>Veuillez trouver ci-dessous le rapport des envois de sms de disponibilités des règlements effectués ce jour via GESDREG suite à une mise à jour de ${redac.codeRedac}</p>`;
+            let message=`<p>Bonjour cher tous, <br/>Les envois de sms de disponibilités des règlements ont été effectués ce jour via GESDREG suite à une mise à jour de ${redac.codeRedac}</p>`;
             let nbrgt4sms=0;
             let query="insert into exp.regdispo (date_depot_treso,date_sort_treso,date_depot_sign,date_recep_sign_reg,date_retrait_reg,redac,statut_reg_retirer,wnupo,wnrgt,MNTGT,nom_beneficiaire,domaine,Num_envoi,cheque,MRGGT,banque,Comments) values (:ddt,:dst,:dds,:drsr,:drr,:r,:srr,:p,:rgt,:mnt,:nb,:dom,:nenv,:c,:mrggt,:ban,:com)";
             workbookJson.map((e,i)=>{
@@ -437,6 +437,13 @@ export default ()=>{
                     throw new Meteor.Error("bad-coderej","Veuillez vérifier la ligne "+(i+2)+" du fichier des règlements manuels.le numéro de chèque est mal renseigné.");
                     return;
                 }
+                //pour l'envoi de sms il faut verifier que la date de reception est renseignee pour les chèques
+                //en fonction du modèle des feedbacks reçu de la DRCP
+                if(e.MODE_REGLEMENT=='C' && e.DATE_SORTIE_SIGNATURE!="" && typeof e.DATE_RECEPTION_DEMANDE=="undefined"){
+                    throw new Meteor.Error("bad-coderej","Veuillez vérifier la ligne "+(i+2)+" du fichier des règlements manuels.la date de réception de la demande doit être renseignés pour l'envoi du sms.");
+                    return;
+                }
+
                 if(e.MODE_REGLEMENT=='B' && (e.ENVOI==""||isNaN(e.ENVOI))){
                     throw new Meteor.Error("bad-coderej","Veuillez vérifier la ligne "+(i+2)+" du fichier des règlements manuels.le numéro d'envoi est mal renseigné.");
                     return;
@@ -459,18 +466,23 @@ export default ()=>{
                 }
                 let statut="EN COURS";
                     if(e.DATE_ENTREE_TRESO){
+                        
                         statut="A LA TRESO";
                     }
                    if(e.DATE_SORTIE_TRESO){
+                       
                     statut="SORTIE DE TRESO";
                    }
                    if(e.DATE_ENTREE_SIGNATURE){
+                    
                     statut="A LA SIGNATURE";
                    }
                    if(e.DATE_SORTIE_SIGNATURE){
+                    
                     statut="PRET";
                    }
                    if(e.DATE_RETRAIT){
+                    
                        statut="SORTIE"
                    }
                    if(typeof e.COMMENTAIRE!="undefined" && e.COMMENTAIRE.includes("REJET")){
@@ -503,72 +515,72 @@ export default ()=>{
 
                         //update the rgt here we build the query and the updateoptions
                         let updateOptions={};
-                        if(e.BENEFICIAIRE!=""){
+                        if(typeof e.BENEFICIAIRE!="undefined"||e.BENEFICIAIRE!=""){
                             queryU+=" nom_beneficiaire=:nb,";
                             updateOptions['nb']=e.BENEFICIAIRE!=""?e.BENEFICIAIRE:resultat[0].nom_beneficiaire?resultat[0].nom_beneficiaire:null;
                         }
-                        if(e.ENVOI!=""){
+                        if(typeof e.ENVOI!="undefined"||e.ENVOI!=""){
                             queryU+=" Num_envoi=:nenv,";
                             updateOptions['nenv']=e.ENVOI?parseInt(e.ENVOI):resultat[0].Num_envoi?resultat[0].Num_envoi:null;
                         }       
-                        if(e.CHEQUE!=""){
+                        if(typeof e.CHEQUE!="undefined"||e.CHEQUE!=""){
                             queryU+=" cheque=:c,";
                             updateOptions['c']=e.CHEQUE?parseInt(e.CHEQUE):resultat[0].cheque?resultat[0].cheque:null;
                         }
-                        if(e.MONTANT!=""){
+                        if(typeof e.MONTANT!="undefined"||e.MONTANT!=""){
                             queryU+=" MNTGT=:mnt,";
                             updateOptions['mnt']=e.MONTANT?parseInt(e.MONTANT):resultat[0].MNTGT?resultat[0].MNTGT:null;
                         }
-                        if(e.BANQUE!=""){
+                        if(typeof e.BANQUE!="undefined"||e.BANQUE!=""){
                             queryU+=" banque=:ban,";
                             updateOptions['ban']=e.BANQUE?e.BANQUE:resultat[0].banque?resultat[0].banque:null;
                         }
-                        if(e.MODE_REGLEMENT!=""){
+                        if(typeof e.MODE_REGLEMENT!="undefined"||e.MODE_REGLEMENT!=""){
                             queryU+=" MRGGT=:mrggt,";
                             updateOptions['mrggt']=e.MODE_REGLEMENT?e.MODE_REGLEMENT:resultat[0].MRGGT?resultat[0].MRGGT:null;
                         }
-                        if(e.POLICE!=""){
+                        if(typeof e.POLICE!="undefined"||e.POLICE!=""){
                             queryU+=" wnupo=:p,";
                             updateOptions['p']=e.POLICE?parseInt(e.POLICE):resultat[0].wnupo?resultat[0].wnupo:null;
                         }
-                        if(e.REGLEMENT!=""){
+                        if(typeof e.REGLEMENT!="undefined"||e.REGLEMENT!=""){
                             queryU+=" wnrgt=:rgt,";
                             updateOptions['rgt']=e.REGLEMENT?parseInt(e.REGLEMENT):resultat[0].wnrgt?resultat[0].wnrgt:null;
                         }
-                        if(e.DOMAINE!=""){
+                        if(typeof e.DOMAINE!="undefined"||e.DOMAINE!=""){
                             queryU+=" domaine=:dom,";
                             updateOptions['dom']=e.DOMAINE?e.DOMAINE:resultat[0].domaine?resultat[0].domaine:null;
                         }
-                        if(e.DATE_ENTREE_TRESO!=""){
+                        if(typeof e.DATE_ENTREE_TRESO!="undefined"||e.DATE_ENTREE_TRESO!=""){
                             queryU+=" date_depot_treso=:ddt,";
                             console.log("date depot treso du fichier");
-                            console.log(moment(new Date(e.DATE_ENTREE_TRESO)).format("YYYY-MM-DD"));
-                            updateOptions['ddt']=typeof e.DATE_ENTREE_TRESO!="undefined"?moment(new Date(e.DATE_ENTREE_TRESO)).format("YYYY-MM-DD"):resultat[0].date_depot_treso?resultat[0].date_depot_treso:null;
+                            console.log(moment(e.DATE_ENTREE_TRESO, "DD/MM/YYYY").format("YYYY-MM-DD"));
+                            updateOptions['ddt']=typeof e.DATE_ENTREE_TRESO!="undefined"?moment(e.DATE_ENTREE_TRESO, "DD/MM/YYYY").format("YYYY-MM-DD"):resultat[0].date_depot_treso?resultat[0].date_depot_treso:null;
                         }
-                        if(e.DATE_SORTIE_TRESO!=""){
+                        if(typeof e.DATE_SORTIE_TRESO!="undefined"||e.DATE_SORTIE_TRESO!=""){
                             queryU+=" date_sort_treso=:dst,";
                             console.log("date sortie treso du fichier");
-                            console.log(moment(new Date(e.DATE_SORTIE_TRESO)).format("YYYY-MM-DD"));
-                            updateOptions['dst']=typeof e.DATE_SORTIE_TRESO!="undefined"?moment(new Date(e.DATE_SORTIE_TRESO)).format("YYYY-MM-DD"):resultat[0].date_sort_treso?resultat[0].date_sort_treso:null;
+                            console.log(moment(e.DATE_SORTIE_TRESO, "DD/MM/YYYY").format("YYYY-MM-DD"));
+                            updateOptions['dst']=typeof e.DATE_SORTIE_TRESO!="undefined"?moment(e.DATE_SORTIE_TRESO, "DD/MM/YYYY").format("YYYY-MM-DD"):resultat[0].date_sort_treso?resultat[0].date_sort_treso:null;
                         }
-                        if(e.DATE_ENTREE_SIGNATURE!=""){
+                        if(typeof e.DATE_ENTREE_SIGNATURE!="undefined"||e.DATE_ENTREE_SIGNATURE!=""){
                             queryU+=" date_depot_sign=:dds,";
                             console.log("date entree signature du fichier");
-                            console.log(moment(new Date(e.DATE_ENTREE_SIGNATURE)).format("YYYY-MM-DD"));
-                            updateOptions['dds']=typeof e.DATE_ENTREE_SIGNATURE!="undefined"?moment(new Date(e.DATE_ENTREE_SIGNATURE)).format("YYYY-MM-DD"):resultat[0].date_depot_sign?resultat[0].date_depot_sign:null;
+                            console.log(moment(e.DATE_ENTREE_SIGNATURE, "DD/MM/YYYY").format("YYYY-MM-DD"));
+                            updateOptions['dds']=typeof e.DATE_ENTREE_SIGNATURE!="undefined"?moment(e.DATE_ENTREE_SIGNATURE, "DD/MM/YYYY").format("YYYY-MM-DD"):resultat[0].date_depot_sign?resultat[0].date_depot_sign:null;
                         }
-                        if(e.DATE_SORTIE_SIGNATURE!=""){
+                        if(typeof e.DATE_SORTIE_SIGNATURE!="undefined"||e.DATE_SORTIE_SIGNATURE!=""){
                             queryU+=" date_recep_sign_reg=:drsr,";
                             
                             console.log("date sortie signature du fichier");
-                            console.log(moment(new Date(e.DATE_SORTIE_SIGNATURE)).format("YYYY-MM-DD"));
-                            updateOptions['drsr']=typeof e.DATE_SORTIE_SIGNATURE!="undefined"?moment(new Date(e.DATE_SORTIE_SIGNATURE)).format("YYYY-MM-DD"):resultat[0].date_recep_sign_reg?resultat[0].date_recep_sign_reg:null;
+                            console.log(moment(e.DATE_SORTIE_SIGNATURE, "DD/MM/YYYY").format("YYYY-MM-DD"));
+                            updateOptions['drsr']=typeof e.DATE_SORTIE_SIGNATURE!="undefined"?moment(e.DATE_SORTIE_SIGNATURE, "DD/MM/YYYY").format("YYYY-MM-DD"):resultat[0].date_recep_sign_reg?resultat[0].date_recep_sign_reg:null;
                         }
-                        if(e.DATE_RETRAIT!=""){
+                        if(typeof e.DATE_RETRAIT!="undefined"||e.DATE_RETRAIT!=""){
                             queryU+=" date_retrait_reg=:drr,";
                             console.log("date retrait du fichier");
-                            console.log(moment(new Date(e.DATE_RETRAIT)).format("YYYY-MM-DD"));
-                            updateOptions['drr']=typeof e.DATE_RETRAIT!="undefined"?moment(new Date(e.DATE_RETRAIT)).format("YYYY-MM-DD"):resultat[0].date_retrait_reg?resultat[0].date_retrait_reg:null;
+                            console.log(moment(e.DATE_RETRAIT, "DD/MM/YYYY").format("YYYY-MM-DD"));
+                            updateOptions['drr']=typeof e.DATE_RETRAIT!="undefined"?moment(e.DATE_RETRAIT, "DD/MM/YYYY").format("YYYY-MM-DD"):resultat[0].date_retrait_reg?resultat[0].date_retrait_reg:null;
                         }
                         
                         if(typeof e.COMMENTAIRE!="undefined"||e.COMMENTAIRE!=""){
@@ -578,7 +590,7 @@ export default ()=>{
                                 updateOptions['srr']=e.COMMENTAIRE.includes("REJET")?statut:resultat[0].statut_reg_retirer;
                             }else{
                                 updateOptions['srr']= statut; 
-                                queryU+=" statut_reg_retirer=:srr,Comments='"+e.COMMENTAIRE+'%MAN%$'+e.PRESTATION+"!',redac=:r,";
+                                queryU+=` statut_reg_retirer=:srr,Comments='${typeof e.COMMENTAIRE!="undefined"?e.COMMENTAIRE+'%MAN%$'+e.PRESTATION+'!':e.MODE_REGLEMENT=="C"?"LIEU:Siège Nsia Vie Assurances"+'%MAN%$'+e.PRESTATION+'!':'%MAN%$'+e.PRESTATION+'!'}',redac=:r,`;
                             }
                             
 
@@ -597,17 +609,71 @@ export default ()=>{
                             throw new Meteor.Error("bad-coderej","Une erreur est survenue lors de la mise à jour veuillez vérifier votre fichier");
                             return err.reason;
                         });
+                        //envoi des sms suite a mise a jour via fichier
+                        let sms="";
+                        let canSendmap={ok:false,typergt:""};
+                        let lelieu="";
+                        if(e.MODE_REGLEMENT=="C" && e.DATE_SORTIE_SIGNATURE!="" && resultat[resultat.length-1].statut_reg_retirer!="PRET"||resultat[resultat.length-1].statut_reg_retirer!="SORTIE"){
+                            canSendmap.ok=true;
+                            canSendmap.typergt="C";
+                            sms=`cher(e) client(e), le chèque pour votre prestation du ${e.DATE_RECEPTION_DEMANDE} est disponible pour retrait à ${lelieu}.Infoline 22419800`;
+                            if(typeof e.COMMENTAIRE!="undefined"||e.COMMENTAIRE!=""){
+                                if(e.COMMENTAIRE.includes("LIEU:")){
+                                    lelieu=e.COMMENTAIRE.substring(e.COMMENTAIRE.lastIndexOf(':')+1).trim();
+                                    console.log("le lieu en update "+lelieu);
+                                }
+                            }else{
+                                lelieu="LIEU:Siège Nsia Vie Assurances".substring(5).trim();
+                            }
+                        }else if(e.MODE_REGLEMENT=="E" &&  e.DATE_RETRAIT!="" && resultat[resultat.length-1].statut_reg_retirer!="SORTIE"){
+                            canSendmap.ok=true;
+                            canSendmap.typergt="E";
+                            sms=`Cher(e) client(e), le règlement de votre prestation a été fait sur votre compte mobile money le ${e.DATE_RETRAIT!=""?e.DATE_RETRAIT:" "}. Merci de votre fidélité. Infoline 22419800`;
+
+                        }else if(e.MODE_REGLEMENT=="B" && e.DATE_RETRAIT!="" && resultat[resultat.length-1].statut_reg_retirer!="SORTIE"){
+                            canSendmap.ok=true;
+                            canSendmap.typergt="B";
+                            sms=`le règlement de votre prestation a été effectué par virement bancaire sur votre compte le ${e.DATE_RETRAIT}.Merci de votre fidélité. Infoline 22419800`;
+
+                        }
+                        //vrai envoi de sms pour les mises à jour de rgt
+                        if(typeof e.TELEPHONE!="undefined"){
+                            nbrgt4sms++;
+                            if(canSendmap.ok){
+                                axios.post(wsSMS,{
+                                    username:"GESDREG",
+                                    password:"GESDREG",
+                                    telephone:parseInt(e.TELEPHONE),
+                                    expeditor:"Nsia Vie CI",
+                                    typeEnvoi:`Disponibilié des règlements ${canSendmap.typergt=="C"?"cheques":canSendmap.typergt=="B"?"bancaires":"mobiles"} du ${moment(Date.now()).format("DD-MM-YYY")}`,
+                                    sms:sms,
+                                }).then((r)=>{
+                                    console.log("envoi des sms");
+                                    console.dir(r);
+                                    let json=r.data;
+                                    if(json.status===200){
+                                        //envoi a l'api GESMS effectué
+                                        message+=`<p>Client:${e.nom_beneficiaire} | police:${e.wnupo} | règlement:${e.wnrgt} | mode de règlement:${e.MRGGT} | téléphone:${number} | envoi de sms effectué: OUI | sms:${sms}</p>`;
+
+                                    }else{
+                                        message+=`<p>Client:${e.nom_beneficiaire} | police:${e.wnupo} | règlement:${e.wnrgt} | mode de règlement:${e.MRGGT} | téléphone:${number} | envoi de sms effectué: NON | sms:${sms}</p>`;
+
+                                    }
+                                });
+                            }
+                        }
+                        
                     }else{
                         console.log("about to insert rgt manuel");
                             if(resultat.length<2){
                                 DBSQLSERVER.query(query,{
                                     replacements:{
                                     
-                                        ddt:e.DATE_ENTREE_TRESO?moment(new Date(e.DATE_ENTREE_TRESO)).format("YYYY-MM-DD"):null,
-                                        dst:e.DATE_SORTIE_TRESO?moment(new Date(e.DATE_SORTIE_TRESO)).format("YYYY-MM-DD"):null,
-                                        dds:e.DATE_ENTREE_SIGNATURE?moment(new Date(e.DATE_ENTREE_SIGNATURE)).format("YYYY-MM-DD"):null,
-                                        drsr:e.DATE_SORTIE_SIGNATURE?moment(new Date(e.DATE_SORTIE_SIGNATURE)).format("YYYY-MM-DD"):null,
-                                        drr:e.DATE_RETRAIT?moment(new Date(e.DATE_RETRAIT)).format("YYYY-MM-DD"):null,
+                                        ddt:e.DATE_ENTREE_TRESO?moment(e.DATE_ENTREE_TRESO, "DD/MM/YYYY").format("YYYY-MM-DD"):null,
+                                        dst:e.DATE_SORTIE_TRESO?moment(e.DATE_SORTIE_TRESO, "DD/MM/YYYY").format("YYYY-MM-DD"):null,
+                                        dds:e.DATE_ENTREE_SIGNATURE?moment(e.DATE_ENTREE_SIGNATURE, "DD/MM/YYYY").format("YYYY-MM-DD"):null,
+                                        drsr:e.DATE_SORTIE_SIGNATURE?moment(e.DATE_SORTIE_SIGNATURE, "DD/MM/YYYY").format("YYYY-MM-DD"):null,
+                                        drr:e.DATE_RETRAIT?moment(e.DATE_RETRAIT, "DD/MM/YYYY").format("YYYY-MM-DD"):null,
                                         r:redac.codeRedac,
                                         srr:statut,
                                         p:e.POLICE,
@@ -619,7 +685,7 @@ export default ()=>{
                                         c:e.CHEQUE?parseInt(e.CHEQUE):null,
                                         mrggt:e.MODE_REGLEMENT,
                                         ban:e.BANQUE?e.BANQUE:null,
-                                        com:e.COMMENTAIRE+'%MAN%$'+e.PRESTATION+'!',
+                                        com:typeof e.COMMENTAIRE!="undefined"?e.COMMENTAIRE+'%MAN%$'+e.PRESTATION+'!':e.MODE_REGLEMENT=="C"?"LIEU:Siège Nsia Vie Assurances"+'%MAN%$'+e.PRESTATION+'!':'%MAN%$'+e.PRESTATION+'!',
                                     },
                                     type:DBSQLSERVER.QueryTypes.INSERT
                                 }).catch((err)=>{
@@ -629,75 +695,100 @@ export default ()=>{
                                 });
                                 
                                 //on fait l'envoi des sms et du mail rapport
-                                if(e.MODE_REGLEMENT=="C"){
-                                    if(statut=="PRET"){
-                                        if(typeof e.COMMENTAIRE!="undefined"||e.COMMENTAIRE!=""){
-                                            if(e.COMMENTAIRE.includes("LIEU:")){
-                                                //get the string after it
-                                                nbrgt4sms++;
-                                            }
+                                if(typeof e.TELEPHONE!="undefined"){
+                                    let sms="";
+                                    let lelieu="";
+                                    if(e.MODE_REGLEMENT=="C"){
+                                        if(statut=="PRET"){
+                                            if(typeof e.COMMENTAIRE=="undefined"||!e.COMMENTAIRE.includes("LIEU:"))
+                                            lelieu="LIEU:Siège Nsia Vie Assurances".substring(5).trim();
+                                            else lelieu=e.COMMENTAIRE.substring(e.COMMENTAIRE.lastIndexOf(':')+1).trim();
+                                            console.log("le lieu en update "+lelieu);
+                                                //ENVOI POUR LES CHEQUES
+                                                //si la mise a jour mettra le reglement cheque a PRET donc disponible on peut proceder a l'envoi du sms
+                                                    //get the string after it
+                                                    nbrgt4sms++;
+                                                    sms=`cher(e) client(e), le chèque pour votre prestation du ${e.DATE_RECEPTION_DEMANDE} est disponible pour retrait à ${lelieu}.Infoline 22419800`;
+                                                    let getphonequery="select dbo.contact_id(:wasrg) as TELEPHONE";
+                                                    axios.post(wsSMS,{
+                                                        username:"GESDREG",
+                                                        password:"GESDREG",
+                                                        telephone:parseInt(e.TELEPHONE),
+                                                        expeditor:"Nsia Vie CI",
+                                                        typeEnvoi:`Disponibilié des règlements cheques du ${moment(Date.now()).format("DD-MM-YYY")}`,
+                                                        sms:sms,
+                                                    }).then((r)=>{
+                                                        console.log("envoi des sms");
+                                                        console.dir(r);
+                                                        let json=r.data;
+                                                        if(json.status===200){
+                                                            //envoi a l'api GESMS effectué
+                                                            message+=`<p>Client:${e.nom_beneficiaire} | police:${e.wnupo} | règlement:${e.wnrgt} | mode de règlement:${e.MRGGT} | téléphone:${number} | envoi de sms effectué: OUI | sms:${sms}</p>`;
+
+                                                        }else{
+                                                            message+=`<p>Client:${e.nom_beneficiaire} | police:${e.wnupo} | règlement:${e.wnrgt} | mode de règlement:${e.MRGGT} | téléphone:${number} | envoi de sms effectué: NON | sms:${sms}</p>`;
+
+                                                        }
+                                                    });
+                
+
+                                                
+                                            
+                                        }
+                                    }else if(e.MODE_REGLEMENT=="B"){
+                                        if(statut=="SORTIE"){
+                                            nbrgt4sms++;
+                                            sms=`le règlement de votre prestation a été effectué par virement bancaire sur votre compte le ${e.DATE_RETRAIT}.Merci de votre fidélité. Infoline 22419800`;
+                                            axios.post(wsSMS,{
+                                                username:"GESDREG",
+                                                password:"GESDREG",
+                                                telephone:parseInt(e.TELEPHONE),
+                                                expeditor:"Nsia Vie CI",
+                                                typeEnvoi:`Disponibilié des règlements bancaires du ${moment(Date.now()).format("DD-MM-YYY")}`,
+                                                sms:sms,
+                                            }).then((r)=>{
+                                                console.log("envoi des sms");
+                                                console.dir(r);
+                                                let json=r.data;
+                                                if(json.status===200){
+                                                    //envoi a l'api GESMS effectué
+                                                    message+=`<p>Client:${resultat.nom_beneficiaire} | police:${resultat.wnupo} | règlement:${resultat.wnrgt} | mode de règlement:${resultat.MRGGT} | téléphone:${number} | envoi de sms effectué: OUI | sms:${sms}</p>`;
+
+                                                }else{
+                                                    message+=`<p>Client:${resultat.nom_beneficiaire} | police:${resultat.wnupo} | règlement:${resultat.wnrgt} | mode de règlement:${resultat.MRGGT} | téléphone:${number} | envoi de sms effectué: NON | sms:${sms}</p>`;
+
+                                                }
+                                            });
+                                        
+                                        }
+                                    }else if(e.MODE_REGLEMENT=="E"){
+                                        if(statut=="SORTIE"){
+                                            nbrgt4sms++;
+                                            sms=`Cher(e) client(e), le règlement de votre prestation a été fait sur votre compte mobile money le ${e.DATE_RETRAIT}. Merci de votre fidélité. Infoline 22419800`;
+                                            axios.post(wsSMS,{
+                                                username:"GESDREG",
+                                                password:"GESDREG",
+                                                telephone:parseInt(e.TELEPHONE),
+                                                expeditor:"Nsia Vie CI",
+                                                typeEnvoi:`Disponibilié des règlements mobiles du ${moment(Date.now()).format("DD-MM-YYY")}`,
+                                                sms:sms,
+                                            }).then((r)=>{
+                                                console.log("envoi des sms");
+                                                console.dir(r);
+                                                let json=r.data;
+                                                if(json.status===200){
+                                                    //envoi a l'api GESMS effectué
+                                                    message+=`<p>Client:${resultat.nom_beneficiaire} | police:${resultat.wnupo} | règlement:${resultat.wnrgt} | mode de règlement:${resultat.MRGGT} | téléphone:${number} | envoi de sms effectué: OUI | sms:${sms}</p>`;
+
+                                                }else{
+                                                    message+=`<p>Client:${resultat.nom_beneficiaire} | police:${resultat.wnupo} | règlement:${resultat.wnrgt} | mode de règlement:${resultat.MRGGT} | téléphone:${number} | envoi de sms effectué: NON | sms:${sms}</p>`;
+
+                                                }
+                                            });
                                         }
                                     }
-                                }else if(e.MODE_REGLEMENT=="B"){
-                                    if(statut=="SORTIE"){
-                                        nbrgt4sms++;
-                                        let sms=`le règlement de votre prestation a été effectué par virement bancaire sur votre compte le ${e.DATE_RETRAIT}.Merci de votre fidélité. Infoline 22419800`;
-                                        let getphonequery="select dbo.contact_id(:wasrg) as TELEPHONE";
-                                        DBSQLSERVER.query(getphonequery,{
-                                                replacements:{
-                                                    wasrg:resultat.wasrg,   
-                                                },
-                                                type:DBSQLSERVER.QueryTypes.SELECT
-                                            }).then((phoneR)=>{
-                                                console.log("numero de telephone est: "+phoneR.TELEPHONE);
-                                                let number='';
-                                                if(isNaN(parseInt(phoneR.TELEPHONE))){
-                                                    console.log("numero non valide");
-                                                    message+=`<p>Client:${resultat.nom_beneficiaire} | police:${resultat.wnupo} | règlement:${resultat.wnrgt} | mode de règlement:${resultat.MRGGT} | téléphone:${phoneR.TELEPHONE} | envoi de sms effectué: NON | sms:${sms}</p>`;
-                                                }else if(phoneR.TELEPHONE.length>8){
-                                                    if(phoneR.TELEPHONE.includes("/")){
-                                                        //get the strings before and after the /
-                                                        let numarray=phoneR.TELEPHONE.split('/');
-                                                        //verifie que l'on a affaire a de bons numeros mobile et non des fixes
-                                                        if(!numarray[0].startsWith("22")||!numarray[0].startsWith("21")||!numarray[0].startsWith("20")||!numarray[0].startsWith("23")||!numarray[0].startsWith("24")){
-                                                            //on peut envoyer le sms sur ce numero
-                                                            number=numarray[0];
-                                                        }else if(!numarray[1].startsWith("22")||!numarray[1].startsWith("21")||!numarray[1].startsWith("20")||!numarray[1].startsWith("23")||!numarray[1].startsWith("24")){
-                                                            //on envoi sur le deuxieme numero en base
-                                                            number=numarray[1];
-                                                        }
-                                                    }
-                                                }else{
-                                                    if(!phoneR.TELEPHONE.startsWith("22")||!phoneR.TELEPHONE.startsWith("21")||!phoneR.TELEPHONE.startsWith("20")||!phoneR.TELEPHONE.startsWith("23")||!phoneR.TELEPHONE.startsWith("24")){
-                                                        //on peut envoyer le sms sur ce numero
-                                                        number=phoneR.TELEPHONE;
-                                                    }
-                                                }
-                                                
-                                                axios.post(wsSMS,{
-                                                    username:"GESDREG",
-                                                    password:"GESDREG",
-                                                    telephone:parseInt(number),
-                                                    expeditor:"Nsia Vie CI",
-                                                    typeEnvoi:`Disponibilié des règlements bancaires du ${moment(Date.now()).format("DD-MM-YYY")}`,
-                                                    sms:sms,
-                                                }).then((r)=>{
-                                                    console.log("envoi des sms");
-                                                    console.dir(r);
-                                                    let json=r.data;
-                                                    if(json.status===200){
-                                                        //envoi a l'api GESMS effectué
-                                                        message+=`<p>Client:${resultat.nom_beneficiaire} | police:${resultat.wnupo} | règlement:${resultat.wnrgt} | mode de règlement:${resultat.MRGGT} | téléphone:${number} | envoi de sms effectué: OUI | sms:${sms}</p>`;
-
-                                                    }else{
-                                                        message+=`<p>Client:${resultat.nom_beneficiaire} | police:${resultat.wnupo} | règlement:${resultat.wnrgt} | mode de règlement:${resultat.MRGGT} | téléphone:${number} | envoi de sms effectué: NON | sms:${sms}</p>`;
-
-                                                    }
-                                                });
-                                            });
-                                    
-                                    }
                                 }
+                                
                                 
                             }else{
                                 throw new Meteor.Error("bad-coderej","Veuillez vérifier la ligne "+(i+2)+" du fichier des règlements manuels.le règlement existe déjà");
@@ -712,7 +803,7 @@ export default ()=>{
             message+="<p>Cordialement.<br/>Cet email est auto-généré</p>"
             //on envoi le rapport d4envoi des sms par mail
             if(nbrgt4sms>0)
-            Meteor.call("sendEmail",[redac.email,Meteor.settings.ADMINMAIL],"thibaut.zehi@groupensia.com",`Envoi des sms de disponibilité de règlement via GESDREG du ${moment(Date.now()).format("DD-MM-YYYY")}`,message);
+            Meteor.call("sendEmail",[redac.email,Meteor.settings.ADMINMAIL],process.env.CCMAIL,`Envoi des sms de disponibilité de règlement via GESDREG du ${moment(Date.now()).format("DD-MM-YYYY")}`,message);
 
 
            
@@ -727,7 +818,7 @@ export default ()=>{
             let comment;
             let getPoliceQuery="select wnupo,MNTGT from exp.regdispo";
             const redac=Meteor.users.findOne({_id:Meteor.user()._id});
-            let message=`<p>Bonjour cher tous, <br/>Veuillez trouver ci-dessous le rapport des envois de sms de disponibilités des règlements effectués ce jour via GESDREG suite à une mise à jour de ${redac.codeRedac}</p>`;
+            let message=`<p>Bonjour cher tous, <br/>Les envois de sms de disponibilités des règlements ont été effectués ce jour via GESDREG suite à une mise à jour de ${redac.codeRedac}</p>`;
             let nbrgt4sms=0;
             //console.log(typeof values.date_sort_treso);
             switch(values.choixForm){
@@ -875,7 +966,7 @@ export default ()=>{
                                 arr.map((e)=>{
                                     //vrai envoi de sms
                                     nbrgt4sms++;
-                                    let sms=`le règlement de votre prestation a été effectué par virement bancaire sur votre compte le ${values.date_retrait_reg}.Merci de votre fidélité. Infoline 22419800`;
+                                    let sms=`le règlement de votre prestation a été effectué par virement bancaire sur votre compte le ${moment(values.date_retrait_reg).format("DD-MM-YYYY")}.Merci de votre fidélité. Infoline 22419800`;
                                     let getphonequery="select dbo.contact_id(:wasrg) as TELEPHONE";
                                     DBSQLSERVER.query(getphonequery,{
                                             replacements:{
@@ -883,15 +974,16 @@ export default ()=>{
                                             },
                                             type:DBSQLSERVER.QueryTypes.SELECT
                                         }).then((phoneR)=>{
-                                            console.log("numero de telephone est: "+phoneR.TELEPHONE);
+                                            
+                                            console.log("numero de telephone est: "+phoneR[0].TELEPHONE);
                                             let number='';
-                                            if(isNaN(parseInt(phoneR.TELEPHONE))){
+                                            if(isNaN(parseInt(phoneR[0].TELEPHONE))){
                                                 console.log("numero non valide");
                                                 message+=`<p>Client:${e.nom_beneficiaire} | police:${e.wnupo} | règlement:${e.wnrgt} | mode de règlement:${e.MRGGT} | téléphone:${phoneR.TELEPHONE} | envoi de sms effectué: NON | sms:${sms}</p>`;
-                                            }else if(phoneR.TELEPHONE.length>8){
-                                                if(phoneR.TELEPHONE.includes("/")){
+                                            }else if(phoneR[0].TELEPHONE.length>8){
+                                                if(phoneR[0].TELEPHONE.includes("/")){
                                                     //get the strings before and after the /
-                                                    let numarray=phoneR.TELEPHONE.split('/');
+                                                    let numarray=phoneR[0].TELEPHONE.split('/');
                                                     //verifie que l'on a affaire a de bons numeros mobile et non des fixes
                                                     if(!numarray[0].startsWith("22")||!numarray[0].startsWith("21")||!numarray[0].startsWith("20")||!numarray[0].startsWith("23")||!numarray[0].startsWith("24")){
                                                         //on peut envoyer le sms sur ce numero
@@ -902,9 +994,9 @@ export default ()=>{
                                                     }
                                                 }
                                             }else{
-                                                if(!phoneR.TELEPHONE.startsWith("22")||!phoneR.TELEPHONE.startsWith("21")||!phoneR.TELEPHONE.startsWith("20")||!phoneR.TELEPHONE.startsWith("23")||!phoneR.TELEPHONE.startsWith("24")){
+                                                if(!phoneR[0].TELEPHONE.startsWith("22")||!phoneR[0].TELEPHONE.startsWith("21")||!phoneR[0].TELEPHONE.startsWith("20")||!phoneR[0].TELEPHONE.startsWith("23")||!phoneR[0].TELEPHONE.startsWith("24")){
                                                     //on peut envoyer le sms sur ce numero
-                                                    number=phoneR.TELEPHONE;
+                                                    number=phoneR[0].TELEPHONE;
                                                 }
                                             }
                                             
@@ -933,7 +1025,7 @@ export default ()=>{
                                 message+="<p>Cordialement.<br/>Cet email est auto-généré</p>"
                                 //on envoi le rapport d4envoi des sms par mail
                                 if(nbrgt4sms>0)
-                                Meteor.call("sendEmail",[redac.email,Meteor.settings.ADMINMAIL],"thibaut.zehi@groupensia.com",`Envoi des sms de disponibilité de règlement via GESDREG du ${moment(Date.now()).format("DD-MM-YYYY")}`,message);
+                                Meteor.call("sendEmail",[redac.email,Meteor.settings.ADMINMAIL],process.env.CCMAIL,`Envoi des sms de disponibilité de règlement via GESDREG du ${moment(Date.now()).format("DD-MM-YYYY")}`,message);
                     
                             }
                         }).catch((err)=>{
@@ -1205,7 +1297,7 @@ export default ()=>{
                                                                         password:"GESDREG",
                                                                         telephone:parseInt(number),
                                                                         expeditor:"Nsia Vie CI",
-                                                                        typeEnvoi:`Disponibilié des règlements cheques ou especes du ${moment(Date.now()).format("DD-MM-YYY")}`,
+                                                                        typeEnvoi:`Disponibilié des règlements cheques du ${moment(Date.now()).format("DD-MM-YYY")}`,
                                                                         sms:sms,
                                                                     }).then((r)=>{
                                                                         console.log("envoi des sms");
@@ -1224,12 +1316,12 @@ export default ()=>{
                         
             
                                                         }
-                                                    }else if(values.statut=="SORTIE"||values.date_retrait_reg){
+                                                    }else if((values.statut=="SORTIE"||values.date_retrait_reg)&& e.MRGGT!="B"){
                                                         //ENVOI DES SMS MOBILE MONEY
                                                         let sms="";
                                                         nbrgt4sms++;
                                                         if(e.MRGGT=="E"){
-                                                          sms=`Cher(e) client(e), le règlement de votre prestation a été fait sur votre compte mobile money le ${values.date_recep_sign_reg}. Merci de votre fidélité. Infoline 22419800`;
+                                                          sms=`Cher(e) client(e), le règlement de votre prestation a été fait sur votre compte mobile money le ${values.date_retrait_reg?moment(values.date_retrait_reg).format("DD-MM-YYYY"):englishDateToFr(e.date_retrait_reg)}. Merci de votre fidélité. Infoline 22419800`;
                                                         }
                                                         let getphonequery="select dbo.contact_id(:wasrg) as TELEPHONE";
                                                             DBSQLSERVER.query(getphonequery,{
@@ -1268,7 +1360,7 @@ export default ()=>{
                                                                         password:"GESDREG",
                                                                         telephone:parseInt(number),
                                                                         expeditor:"Nsia Vie CI",
-                                                                        typeEnvoi:`Disponibilié des règlements cheques ou especes du ${moment(Date.now()).format("DD-MM-YYY")}`,
+                                                                        typeEnvoi:`Disponibilié des règlements mobiles du ${moment(Date.now()).format("DD-MM-YYY")}`,
                                                                         sms:sms,
                                                                     }).then((r)=>{
                                                                         console.log("envoi des sms");
