@@ -11,7 +11,7 @@ services:
     restart: always
     image: gesdregofficial:latest
     ports:
-      - 82:3000
+      - 83:3000
     links:
       - mongo
     environment:
