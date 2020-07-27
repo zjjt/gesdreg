@@ -1737,7 +1737,7 @@ export const pubsub = new PubSub();
                                             return dispo;
                                         })
                                     );
-                                    if(r.cheque && !r.Comments.includes("%MAN%")){
+                                if(r.cheque){
                                         promises.push(
                                             Promise.all([
                                                 DBSQLSERVER.query(chequeQuery,{ replacements:{numcheque:r.cheque},type:DBSQLSERVER.QueryTypes.SELECT})
