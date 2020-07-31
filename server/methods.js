@@ -640,26 +640,33 @@ export default ()=>{
                         if(typeof e.TELEPHONE!="undefined"){
                             nbrgt4sms++;
                             if(canSendmap.ok){
-                                axios.post(wsSMS,{
-                                    username:"GESDREG",
-                                    password:"GESDREG",
-                                    telephone:parseInt(e.TELEPHONE),
-                                    expeditor:"Nsia Vie CI",
-                                    typeEnvoi:`Disponibilié des règlements ${canSendmap.typergt=="C"?"cheques":canSendmap.typergt=="B"?"bancaires":"mobiles"} du ${moment(Date.now()).format("DD-MM-YYY")}`,
-                                    sms:sms,
-                                }).then((r)=>{
-                                    console.log("envoi des sms");
-                                    console.dir(r);
-                                    let json=r.data;
-                                    if(json.status===200){
-                                        //envoi a l'api GESMS effectué
-                                        message+=`<p>Client:${e.nom_beneficiaire} | police:${e.wnupo} | règlement:${e.wnrgt} | mode de règlement:${e.MRGGT} | téléphone:${number} | envoi de sms effectué: OUI | sms:${sms}</p>`;
-
-                                    }else{
-                                        message+=`<p>Client:${e.nom_beneficiaire} | police:${e.wnupo} | règlement:${e.wnrgt} | mode de règlement:${e.MRGGT} | téléphone:${number} | envoi de sms effectué: NON | sms:${sms}</p>`;
-
-                                    }
-                                });
+                                if(process.env.SMSONOFF==="YES"){
+                                    axios.post(wsSMS,{
+                                        username:"GESDREG",
+                                        password:"GESDREG",
+                                        telephone:e.TELEPHONE,
+                                        expeditor:"Nsia Vie CI",
+                                        typeEnvoi:`Disponibilié des règlements ${canSendmap.typergt=="C"?"cheques":canSendmap.typergt=="B"?"bancaires":"mobiles"} du ${moment(Date.now()).format("DD-MM-YYY")}`,
+                                        sms:sms,
+                                    }).then((r)=>{
+                                        console.log("envoi des sms");
+                                        console.dir(r.data);
+                                        let json=r.data;
+                                        if(json.status===200){
+                                            //envoi a l'api GESMS effectué
+                                            message+=`<p>Client:${e.nom_beneficiaire} | police:${e.wnupo} | règlement:${e.wnrgt} | mode de règlement:${e.MRGGT} | téléphone:${number} | envoi de sms effectué: OUI | sms:${sms}</p>`;
+    
+                                        }else{
+                                            message+=`<p>Client:${e.nom_beneficiaire} | police:${e.wnupo} | règlement:${e.wnrgt} | mode de règlement:${e.MRGGT} | téléphone:${number} | envoi de sms effectué: NON | sms:${sms}</p>`;
+    
+                                        }
+                                        message+="<p>Cordialement.<br/>Cet email est auto-généré</p>"
+                                        //on envoi le rapport d4envoi des sms par mail
+                                        //if(nbrgt4sms>0)
+                                        Meteor.call("sendEmail",[redac.email,Meteor.settings.ADMINMAIL],process.env.CCMAIL,`Envoi des sms de disponibilité de règlement via GESDREG du ${moment(Date.now()).format("DD-MM-YYYY")}`,message);
+    
+                                    });
+                                }
                             }
                         }
                         
@@ -710,26 +717,33 @@ export default ()=>{
                                                     nbrgt4sms++;
                                                     sms=`cher(e) client(e), le chèque pour votre prestation du ${e.DATE_RECEPTION_DEMANDE} est disponible pour retrait à ${lelieu}.Infoline 22419800`;
                                                     let getphonequery="select dbo.contact_id(:wasrg) as TELEPHONE";
-                                                    axios.post(wsSMS,{
-                                                        username:"GESDREG",
-                                                        password:"GESDREG",
-                                                        telephone:parseInt(e.TELEPHONE),
-                                                        expeditor:"Nsia Vie CI",
-                                                        typeEnvoi:`Disponibilié des règlements cheques du ${moment(Date.now()).format("DD-MM-YYY")}`,
-                                                        sms:sms,
-                                                    }).then((r)=>{
-                                                        console.log("envoi des sms");
-                                                        console.dir(r);
-                                                        let json=r.data;
-                                                        if(json.status===200){
-                                                            //envoi a l'api GESMS effectué
-                                                            message+=`<p>Client:${e.nom_beneficiaire} | police:${e.wnupo} | règlement:${e.wnrgt} | mode de règlement:${e.MRGGT} | téléphone:${number} | envoi de sms effectué: OUI | sms:${sms}</p>`;
-
-                                                        }else{
-                                                            message+=`<p>Client:${e.nom_beneficiaire} | police:${e.wnupo} | règlement:${e.wnrgt} | mode de règlement:${e.MRGGT} | téléphone:${number} | envoi de sms effectué: NON | sms:${sms}</p>`;
-
-                                                        }
-                                                    });
+                                                    if(process.env.SMSONOFF==="YES"){
+                                                        axios.post(wsSMS,{
+                                                            username:"GESDREG",
+                                                            password:"GESDREG",
+                                                            telephone:e.TELEPHONE,
+                                                            expeditor:"Nsia Vie CI",
+                                                            typeEnvoi:`Disponibilié des règlements cheques du ${moment(Date.now()).format("DD-MM-YYY")}`,
+                                                            sms:sms,
+                                                        }).then((r)=>{
+                                                            console.log("envoi des sms");
+                                                            console.dir(r.data);
+                                                            let json=r.data;
+                                                            if(json.status===200){
+                                                                //envoi a l'api GESMS effectué
+                                                                message+=`<p>Client:${e.nom_beneficiaire} | police:${e.wnupo} | règlement:${e.wnrgt} | mode de règlement:${e.MRGGT} | téléphone:${number} | envoi de sms effectué: OUI | sms:${sms}</p>`;
+    
+                                                            }else{
+                                                                message+=`<p>Client:${e.nom_beneficiaire} | police:${e.wnupo} | règlement:${e.wnrgt} | mode de règlement:${e.MRGGT} | téléphone:${number} | envoi de sms effectué: NON | sms:${sms}</p>`;
+    
+                                                            }
+                                                            message+="<p>Cordialement.<br/>Cet email est auto-généré</p>"
+                                                            //on envoi le rapport d4envoi des sms par mail
+                                                            //if(nbrgt4sms>0)
+                                                            Meteor.call("sendEmail",[redac.email,Meteor.settings.ADMINMAIL],process.env.CCMAIL,`Envoi des sms de disponibilité de règlement via GESDREG du ${moment(Date.now()).format("DD-MM-YYYY")}`,message);
+            
+                                                        });
+                                                    }
                 
 
                                                 
@@ -739,52 +753,66 @@ export default ()=>{
                                         if(statut=="SORTIE"){
                                             nbrgt4sms++;
                                             sms=`le règlement de votre prestation a été effectué par virement bancaire sur votre compte le ${e.DATE_RETRAIT}.Merci de votre fidélité. Infoline 22419800`;
-                                            axios.post(wsSMS,{
-                                                username:"GESDREG",
-                                                password:"GESDREG",
-                                                telephone:parseInt(e.TELEPHONE),
-                                                expeditor:"Nsia Vie CI",
-                                                typeEnvoi:`Disponibilié des règlements bancaires du ${moment(Date.now()).format("DD-MM-YYY")}`,
-                                                sms:sms,
-                                            }).then((r)=>{
-                                                console.log("envoi des sms");
-                                                console.dir(r);
-                                                let json=r.data;
-                                                if(json.status===200){
-                                                    //envoi a l'api GESMS effectué
-                                                    message+=`<p>Client:${resultat.nom_beneficiaire} | police:${resultat.wnupo} | règlement:${resultat.wnrgt} | mode de règlement:${resultat.MRGGT} | téléphone:${number} | envoi de sms effectué: OUI | sms:${sms}</p>`;
-
-                                                }else{
-                                                    message+=`<p>Client:${resultat.nom_beneficiaire} | police:${resultat.wnupo} | règlement:${resultat.wnrgt} | mode de règlement:${resultat.MRGGT} | téléphone:${number} | envoi de sms effectué: NON | sms:${sms}</p>`;
-
-                                                }
-                                            });
+                                            if(process.env.SMSONOFF==="YES"){
+                                                axios.post(wsSMS,{
+                                                    username:"GESDREG",
+                                                    password:"GESDREG",
+                                                    telephone:e.TELEPHONE,
+                                                    expeditor:"Nsia Vie CI",
+                                                    typeEnvoi:`Disponibilié des règlements bancaires du ${moment(Date.now()).format("DD-MM-YYY")}`,
+                                                    sms:sms,
+                                                }).then((r)=>{
+                                                    console.log("envoi des sms");
+                                                    console.dir(r.data);
+                                                    let json=r.data;
+                                                    if(json.status===200){
+                                                        //envoi a l'api GESMS effectué
+                                                        message+=`<p>Client:${resultat.nom_beneficiaire} | police:${resultat.wnupo} | règlement:${resultat.wnrgt} | mode de règlement:${resultat.MRGGT} | téléphone:${number} | envoi de sms effectué: OUI | sms:${sms}</p>`;
+    
+                                                    }else{
+                                                        message+=`<p>Client:${resultat.nom_beneficiaire} | police:${resultat.wnupo} | règlement:${resultat.wnrgt} | mode de règlement:${resultat.MRGGT} | téléphone:${number} | envoi de sms effectué: NON | sms:${sms}</p>`;
+    
+                                                    }
+                                                    message+="<p>Cordialement.<br/>Cet email est auto-généré</p>"
+                                                    //on envoi le rapport d4envoi des sms par mail
+                                                    //if(nbrgt4sms>0)
+                                                    Meteor.call("sendEmail",[redac.email,Meteor.settings.ADMINMAIL],process.env.CCMAIL,`Envoi des sms de disponibilité de règlement via GESDREG du ${moment(Date.now()).format("DD-MM-YYYY")}`,message);
+    
+                                                });
+                                            }
                                         
                                         }
                                     }else if(e.MODE_REGLEMENT=="E"){
                                         if(statut=="SORTIE"){
                                             nbrgt4sms++;
                                             sms=`Cher(e) client(e), le règlement de votre prestation a été fait sur votre compte mobile money le ${e.DATE_RETRAIT}. Merci de votre fidélité. Infoline 22419800`;
-                                            axios.post(wsSMS,{
-                                                username:"GESDREG",
-                                                password:"GESDREG",
-                                                telephone:parseInt(e.TELEPHONE),
-                                                expeditor:"Nsia Vie CI",
-                                                typeEnvoi:`Disponibilié des règlements mobiles du ${moment(Date.now()).format("DD-MM-YYY")}`,
-                                                sms:sms,
-                                            }).then((r)=>{
-                                                console.log("envoi des sms");
-                                                console.dir(r);
-                                                let json=r.data;
-                                                if(json.status===200){
-                                                    //envoi a l'api GESMS effectué
-                                                    message+=`<p>Client:${resultat.nom_beneficiaire} | police:${resultat.wnupo} | règlement:${resultat.wnrgt} | mode de règlement:${resultat.MRGGT} | téléphone:${number} | envoi de sms effectué: OUI | sms:${sms}</p>`;
-
-                                                }else{
-                                                    message+=`<p>Client:${resultat.nom_beneficiaire} | police:${resultat.wnupo} | règlement:${resultat.wnrgt} | mode de règlement:${resultat.MRGGT} | téléphone:${number} | envoi de sms effectué: NON | sms:${sms}</p>`;
-
-                                                }
-                                            });
+                                            if(process.env.SMSONOFF==="YES"){
+                                                axios.post(wsSMS,{
+                                                    username:"GESDREG",
+                                                    password:"GESDREG",
+                                                    telephone:e.TELEPHONE,
+                                                    expeditor:"Nsia Vie CI",
+                                                    typeEnvoi:`Disponibilié des règlements mobiles du ${moment(Date.now()).format("DD-MM-YYY")}`,
+                                                    sms:sms,
+                                                }).then((r)=>{
+                                                    console.log("envoi des sms");
+                                                    console.dir(r.data);
+                                                    let json=r.data;
+                                                    if(json.status===200){
+                                                        //envoi a l'api GESMS effectué
+                                                        message+=`<p>Client:${resultat.nom_beneficiaire} | police:${resultat.wnupo} | règlement:${resultat.wnrgt} | mode de règlement:${resultat.MRGGT} | téléphone:${number} | envoi de sms effectué: OUI | sms:${sms}</p>`;
+    
+                                                    }else{
+                                                        message+=`<p>Client:${resultat.nom_beneficiaire} | police:${resultat.wnupo} | règlement:${resultat.wnrgt} | mode de règlement:${resultat.MRGGT} | téléphone:${number} | envoi de sms effectué: NON | sms:${sms}</p>`;
+    
+                                                    }
+                                                    message+="<p>Cordialement.<br/>Cet email est auto-généré</p>"
+                                                    //on envoi le rapport d4envoi des sms par mail
+                                                    //if(nbrgt4sms>0)
+                                                    Meteor.call("sendEmail",[redac.email,Meteor.settings.ADMINMAIL],process.env.CCMAIL,`Envoi des sms de disponibilité de règlement via GESDREG du ${moment(Date.now()).format("DD-MM-YYYY")}`,message);
+    
+                                                });
+                                            }
                                         }
                                     }
                                 }
@@ -800,11 +828,7 @@ export default ()=>{
                 return countRes;
                 
             });
-            message+="<p>Cordialement.<br/>Cet email est auto-généré</p>"
-            //on envoi le rapport d4envoi des sms par mail
-            if(nbrgt4sms>0)
-            Meteor.call("sendEmail",[redac.email,Meteor.settings.ADMINMAIL],process.env.CCMAIL,`Envoi des sms de disponibilité de règlement via GESDREG du ${moment(Date.now()).format("DD-MM-YYYY")}`,message);
-
+            
 
            
 
@@ -1000,33 +1024,37 @@ export default ()=>{
                                                 }
                                             }
                                             
-                                            axios.post(wsSMS,{
-                                                username:"GESDREG",
-                                                password:"GESDREG",
-                                                telephone:parseInt(number),
-                                                expeditor:"Nsia Vie CI",
-                                                typeEnvoi:`Disponibilié des règlements bancaires du ${moment(Date.now()).format("DD-MM-YYY")}`,
-                                                sms:sms,
-                                            }).then((r)=>{
-                                                console.log("envoi des sms");
-                                                console.dir(r);
-                                                let json=r.data;
-                                                if(json.status===200){
-                                                    //envoi a l'api GESMS effectué
-                                                    message+=`<p>Client:${e.nom_beneficiaire} | police:${e.wnupo} | règlement:${e.wnrgt} | mode de règlement:${e.MRGGT} | téléphone:${number} | envoi de sms effectué: OUI | sms:${sms}</p>`;
-
-                                                }else{
-                                                    message+=`<p>Client:${e.nom_beneficiaire} | police:${e.wnupo} | règlement:${e.wnrgt} | mode de règlement:${e.MRGGT} | téléphone:${number} | envoi de sms effectué: NON | sms:${sms}</p>`;
-
-                                                }
-                                            });
+                                            if(process.env.SMSONOFF==="YES"){
+                                                axios.post(wsSMS,{
+                                                    username:"GESDREG",
+                                                    password:"GESDREG",
+                                                    telephone:number,
+                                                    expeditor:"Nsia Vie CI",
+                                                    typeEnvoi:`Disponibilié des règlements bancaires du ${moment(Date.now()).format("DD-MM-YYY")}`,
+                                                    sms:sms,
+                                                }).then((r)=>{
+                                                    console.log("envoi des sms");
+                                                    console.dir(r.data);
+                                                    let json=r.data;
+                                                    if(json.status===200){
+                                                        //envoi a l'api GESMS effectué
+                                                        message+=`<p>Client:${e.nom_beneficiaire} | police:${e.wnupo} | règlement:${e.wnrgt} | mode de règlement:${e.MRGGT} | téléphone:${number} | envoi de sms effectué: OUI | sms:${sms}</p>`;
+    
+                                                    }else{
+                                                        message+=`<p>Client:${e.nom_beneficiaire} | police:${e.wnupo} | règlement:${e.wnrgt} | mode de règlement:${e.MRGGT} | téléphone:${number} | envoi de sms effectué: NON | sms:${sms}</p>`;
+    
+                                                    }
+                                                    message+="<p>Cordialement.<br/>Cet email est auto-généré</p>"
+                                                    //on envoi le rapport d4envoi des sms par mail
+                                                    //if(nbrgt4sms>0)
+                                                    Meteor.call("sendEmail",[redac.email,Meteor.settings.ADMINMAIL],process.env.CCMAIL,`Envoi des sms de disponibilité de règlement via GESDREG du ${moment(Date.now()).format("DD-MM-YYYY")}`,message);
+                                        
+                                                });
+                                            }
+                                            
                                         });
                                 });
-                                message+="<p>Cordialement.<br/>Cet email est auto-généré</p>"
-                                //on envoi le rapport d4envoi des sms par mail
-                                if(nbrgt4sms>0)
-                                Meteor.call("sendEmail",[redac.email,Meteor.settings.ADMINMAIL],process.env.CCMAIL,`Envoi des sms de disponibilité de règlement via GESDREG du ${moment(Date.now()).format("DD-MM-YYYY")}`,message);
-                    
+                                
                             }
                         }).catch((err)=>{
                             console.log(err);
@@ -1291,27 +1319,34 @@ export default ()=>{
                                                                             number=phoneR[0].TELEPHONE;
                                                                         }
                                                                     }
+                                                                    if(process.env.SMSONOFF==="YES"){
+                                                                        axios.post(wsSMS,{
+                                                                            username:"GESDREG",
+                                                                            password:"GESDREG",
+                                                                            telephone:number,
+                                                                            expeditor:"Nsia Vie CI",
+                                                                            typeEnvoi:`Disponibilié des règlements cheques du ${moment(Date.now()).format("DD-MM-YYY")}`,
+                                                                            sms:sms,
+                                                                        }).then((r)=>{
+                                                                            console.log("envoi des sms");
+                                                                            console.dir(r.data);
+                                                                            let json=r.data;
+                                                                            if(json.status===200){
+                                                                                //envoi a l'api GESMS effectué
+                                                                                message+=`<p>Client:${e.nom_beneficiaire} | police:${e.wnupo} | règlement:${e.wnrgt} | mode de règlement:${e.MRGGT} | téléphone:${number} | envoi de sms effectué: OUI | sms:${sms}</p>`;
+    
+                                                                            }else{
+                                                                                message+=`<p>Client:${e.nom_beneficiaire} | police:${e.wnupo} | règlement:${e.wnrgt} | mode de règlement:${e.MRGGT} | téléphone:${number} | envoi de sms effectué: NON | sms:${sms}</p>`;
+    
+                                                                            }
+                                                                            message+="<p>Cordialement.<br/>Cet email est auto-généré</p>"
+                                                                            //on envoi le rapport d4envoi des sms par mail
+                                                                            //if(nbrgt4sms>0)
+                                                                            Meteor.call("sendEmail",[redac.email,Meteor.settings.ADMINMAIL],"thibaut.zehi@groupensia.com",`Envoi des sms de disponibilité de règlement via GESDREG du ${moment(Date.now()).format("DD-MM-YYYY")}`,message);
+                                                                
+                                                                        });
+                                                                    }
                                                                     
-                                                                    axios.post(wsSMS,{
-                                                                        username:"GESDREG",
-                                                                        password:"GESDREG",
-                                                                        telephone:parseInt(number),
-                                                                        expeditor:"Nsia Vie CI",
-                                                                        typeEnvoi:`Disponibilié des règlements cheques du ${moment(Date.now()).format("DD-MM-YYY")}`,
-                                                                        sms:sms,
-                                                                    }).then((r)=>{
-                                                                        console.log("envoi des sms");
-                                                                        console.dir(r);
-                                                                        let json=r.data;
-                                                                        if(json.status===200){
-                                                                            //envoi a l'api GESMS effectué
-                                                                            message+=`<p>Client:${e.nom_beneficiaire} | police:${e.wnupo} | règlement:${e.wnrgt} | mode de règlement:${e.MRGGT} | téléphone:${number} | envoi de sms effectué: OUI | sms:${sms}</p>`;
-
-                                                                        }else{
-                                                                            message+=`<p>Client:${e.nom_beneficiaire} | police:${e.wnupo} | règlement:${e.wnrgt} | mode de règlement:${e.MRGGT} | téléphone:${number} | envoi de sms effectué: NON | sms:${sms}</p>`;
-
-                                                                        }
-                                                                    });
                                                                 });
                         
             
@@ -1355,26 +1390,34 @@ export default ()=>{
                                                                         }
                                                                     }
                                                                     
-                                                                    axios.post(wsSMS,{
-                                                                        username:"GESDREG",
-                                                                        password:"GESDREG",
-                                                                        telephone:parseInt(number),
-                                                                        expeditor:"Nsia Vie CI",
-                                                                        typeEnvoi:`Disponibilié des règlements mobiles du ${moment(Date.now()).format("DD-MM-YYY")}`,
-                                                                        sms:sms,
-                                                                    }).then((r)=>{
-                                                                        console.log("envoi des sms");
-                                                                        console.dir(r);
-                                                                        let json=r.data;
-                                                                        if(json.status===200){
-                                                                            //envoi a l'api GESMS effectué
-                                                                            message+=`<p>Client:${e.nom_beneficiaire} | police:${e.wnupo} | règlement:${e.wnrgt} | mode de règlement:${e.MRGGT} | téléphone:${number} | envoi de sms effectué: OUI | sms:${sms}</p>`;
-
-                                                                        }else{
-                                                                            message+=`<p>Client:${e.nom_beneficiaire} | police:${e.wnupo} | règlement:${e.wnrgt} | mode de règlement:${e.MRGGT} | téléphone:${number} | envoi de sms effectué: NON | sms:${sms}</p>`;
-
-                                                                        }
-                                                                    });
+                                                                    if(process.env.SMSONOFF==="YES"){
+                                                                        axios.post(wsSMS,{
+                                                                            username:"GESDREG",
+                                                                            password:"GESDREG",
+                                                                            telephone:number,
+                                                                            expeditor:"Nsia Vie CI",
+                                                                            typeEnvoi:`Disponibilié des règlements mobiles du ${moment(Date.now()).format("DD-MM-YYY")}`,
+                                                                            sms:sms,
+                                                                        }).then((r)=>{
+                                                                            console.log("envoi des sms");
+                                                                            console.dir(r.data);
+                                                                            let json=r.data;
+                                                                            if(json.status===200){
+                                                                                //envoi a l'api GESMS effectué
+                                                                                message+=`<p>Client:${e.nom_beneficiaire} | police:${e.wnupo} | règlement:${e.wnrgt} | mode de règlement:${e.MRGGT} | téléphone:${number} | envoi de sms effectué: OUI | sms:${sms}</p>`;
+    
+                                                                            }else{
+                                                                                message+=`<p>Client:${e.nom_beneficiaire} | police:${e.wnupo} | règlement:${e.wnrgt} | mode de règlement:${e.MRGGT} | téléphone:${number} | envoi de sms effectué: NON | sms:${sms}</p>`;
+    
+                                                                            }
+                                                                            message+="<p>Cordialement.<br/>Cet email est auto-généré</p>"
+                                                                            //on envoi le rapport d4envoi des sms par mail
+                                                                            //if(nbrgt4sms>0)
+                                                                            Meteor.call("sendEmail",[redac.email,Meteor.settings.ADMINMAIL],"thibaut.zehi@groupensia.com",`Envoi des sms de disponibilité de règlement via GESDREG du ${moment(Date.now()).format("DD-MM-YYYY")}`,message);
+                                                                
+                                                                        });
+                                                                    }
+                                                                    
                                                                 });
                                                     }
                                                 }
@@ -1390,11 +1433,7 @@ export default ()=>{
                            
                             
                         });
-                        message+="<p>Cordialement.<br/>Cet email est auto-généré</p>"
-                        //on envoi le rapport d4envoi des sms par mail
-                        if(nbrgt4sms>0)
-                        Meteor.call("sendEmail",[redac.email,Meteor.settings.ADMINMAIL],"thibaut.zehi@groupensia.com",`Envoi des sms de disponibilité de règlement via GESDREG du ${moment(Date.now()).format("DD-MM-YYYY")}`,message);
-            
+                        
                         return prom;
                     }
                    

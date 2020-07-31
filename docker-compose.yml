@@ -24,6 +24,7 @@ services:
       PORT: 3000
       SENDERMAIL: 'thibaut.zehi@groupensia.com'
       SENDERPASS: 'ZjjTEnt@1988'
+      SMSONOFF: 'YES'
       SMTP_HOST: 10.10.4.15
       SMTP_PORT: 25
       #CCMAIL: "Exploitation_VIECI@groupensia.com,anastasie.assale@groupensia.com"
